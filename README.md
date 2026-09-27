@@ -36,7 +36,7 @@ Anote o modelo do celular, o navegador e qualquer toque que não funcionou. O ar
 5. Use a barra inferior para caneta, marca-texto, formas, seta, texto e borracha.
 6. Salve manualmente ou aguarde o salvamento local automático; `Exportar` gera um JSON transferível.
 
-Os dados ficam no `localStorage` do navegador. O backup é mantido na chave local anterior; o app não sincroniza dispositivos.
+Os dados ficam no `localStorage` do navegador. **Exportar** baixa o quadro aberto; **Backup completo** baixa todos os mapas e seus dados de canvas em um único JSON Mynder. Importar um arquivo de mapa ou backup completo acrescenta cópias à lista e não substitui os quadros existentes. Guarde o backup fora do dispositivo: o app não sincroniza dispositivos.
 
 ## Validação atual
 

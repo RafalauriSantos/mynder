@@ -37,6 +37,7 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - Conexões livres entre nós.
 - Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
 - Seleção, arraste, zoom, pan, ajuste à tela, desfazer/refazer e exportação/importação JSON.
+- Exportação de um mapa ou de todos os mapas em um backup JSON; importar backup acrescenta cópias sem substituir documentos locais.
 - Salvamento no `localStorage`; sem conta, servidor de dados ou sincronização entre dispositivos.
 - Princípio para futuras etapas de nuvem: sincronização é uma cópia recuperável, nunca requisito para abrir ou editar localmente; falhas de autenticação, rede ou serviço não podem apagar nem bloquear dados locais.
 - Layout responsivo para desktop e celular; na revisão de 27/09/2026, o canvas foi conferido em viewport de navegador de 390 × 844 px. A revisão não substitui teste em aparelho físico.
@@ -101,6 +102,12 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 ### Etapa 5 — Planejar sincronização pessoal (proposta pronta para revisão)
 
 Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar edição local/offline e evitar sobrescrita silenciosa. O plano está em [SYNC_PLAN.md](SYNC_PLAN.md) e aplica resiliência e sustentabilidade como critérios: uso local independente, cópia na nuvem recuperável, exportação portátil, conflitos preservados e falha de serviço sem perda local. A proposta para a fase pessoal usa Pages Functions + D1 e avalia Cloudflare Access com Google para a API. **Pré voo somente leitura concluído (27/09/2026):** o painel confirma que a produção é o projeto Pages `mynder` (`mynder.pages.dev`), ligado ao repositório e branch `main`; o assistente de Access aceita esse hostname e apresenta campo opcional de caminho; a conta está em Zero Trust Free. Nenhuma aplicação Access foi salva, nenhum provedor Google foi configurado e nenhuma rota foi protegida ou testada em runtime. Os passos de configuração e validação continuam pré requisitos da implementação, junto com identificar uma chave de identidade estável. O `wrangler.jsonc` ainda descreve Workers Static Assets, portanto essa divergência deve ser resolvida quando a implementação escolher o alvo de deploy. Nenhum login, backend ou sync foi iniciado nesta etapa de planejamento.
+
+### Etapa 6 — Portabilidade local completa
+
+**Concluída (27/09/2026):** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
+
+**Validação:** `npm test` passou com 18 testes, incluindo roundtrip de múltiplos mapas, preservação de conteúdo de canvas, importação do formato individual e rejeição de backups inválidos; `npm run build` passou. A interface local foi revista e o botão foi acionado em viewport de navegador de 713 × 720 px. Não foi exercitada a seleção de arquivo na interface nesta rodada nem feito novo teste em aparelho físico; o teste físico anterior cobriu os fluxos já existentes, não este botão novo.
 
 ## Decisão técnica atual
 
