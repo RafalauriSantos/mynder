@@ -13,6 +13,18 @@ npm run dev -- --host 0.0.0.0
 
 No computador, abra o endereço informado pelo Vite. Para testar em um celular na mesma rede Wi-Fi, use o endereço `http://IP-DO-COMPUTADOR:5173/`.
 
+## Testar a versão publicada no celular
+
+Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e experimente:
+
+1. Crie um quadro a partir de uma ideia sua em Markdown.
+2. Edite o Markdown e confira se o mapa mental acompanha a hierarquia.
+3. No Canvas, mova e conecte nós e faça um desenho usando toque.
+4. Salve e recarregue a página no mesmo navegador para confirmar que o quadro continua disponível.
+5. Para conferir a recuperação de um mapa vazio, use um quadro separado: apague seus nós, toque em **Escrever uma ideia** e gere outro mapa.
+
+O armazenamento é local ao navegador e ao dispositivo; quadros não são sincronizados entre celulares ou navegadores.
+
 ## Fluxo principal
 
 1. Use `Texto → mapa` para criar um quadro a partir de Markdown.
@@ -26,7 +38,7 @@ Os dados ficam no `localStorage` do navegador. O backup é mantido na chave loca
 
 ## Validação atual
 
-Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. Os dados ficam no `localStorage`; a validação em aparelho Android ou iOS real ainda depende de um dispositivo acessível na mesma rede.
+Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. Os dados ficam no `localStorage`; a validação de toque em aparelho Android ou iOS real ainda depende do uso em um dispositivo físico.
 
 ## Licença
 
