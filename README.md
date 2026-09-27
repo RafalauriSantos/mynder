@@ -29,13 +29,13 @@ Anote o modelo do celular, o navegador e qualquer toque que não funcionou. O ar
 
 ### Conferir o backup completo sem tocar nos seus mapas
 
-1. Abra `mynder.pages.dev` em uma aba anônima/privada do celular.
-2. Crie dois mapas temporários em **Novo mapa**; coloque uma ideia diferente em cada um.
-3. Toque em **Backup completo** e confirme que o arquivo `mynder-backup.json` foi baixado.
-4. Toque em **Importar JSON**, escolha esse arquivo na pasta de Downloads/Arquivos e confira se os dois mapas aparecem com o sufixo “(importado)” e o conteúdo correto.
-5. Feche a aba privada. Os mapas do navegador normal não são afetados; o arquivo de teste pode ser removido da pasta Downloads se desejar.
+1. Na aba normal, abra um quadro seu (ou crie um com uma ideia sua) e toque em **Backup completo**. Confirme que `mynder-backup.json` foi baixado.
+2. Abra `mynder.pages.dev` em uma aba anônima/privada do celular.
+3. Toque em **Importar JSON** e escolha o backup na pasta de Downloads/Arquivos.
+4. Confira se os mapas aparecem com o sufixo “(importado)”. Abra seu quadro e confira o conteúdo no Mapa mental e no Canvas.
+5. Feche a aba privada. A lista original continua intacta; o backup permanece na pasta de Downloads até você removê-lo.
 
-Esse roteiro testa toque, download e seleção do arquivo no aparelho físico. Não use seus mapas pessoais nessa validação: importar sempre cria cópias adicionais.
+Esse roteiro testa toque, download e seleção do arquivo no aparelho físico usando um quadro seu. A importação é feita na sessão privada para que as cópias não apareçam na lista normal.
 
 ## Fluxo principal
 
