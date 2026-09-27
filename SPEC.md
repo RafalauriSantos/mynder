@@ -81,7 +81,11 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 **Estado vazio (concluído):** em viewport de navegador de 390 × 844 px, apagar o último nó mostrou a ação para escrever uma ideia. Preencher o Markdown reconstituiu o mesmo quadro, sem duplicar a lista; após salvar e recarregar, a hierarquia continuou disponível no Canvas. Isso não substitui a validação em aparelho físico.
 
+**Exportação/importação e canvas móvel (concluídos no navegador):** em viewport de 390 × 844 px, exportar e importar um quadro preservou os 7 nós e sua hierarquia. No Canvas, uma conexão livre e um desenho foram mantidos no JSON exportado; salvar e recarregar manteve esses elementos no quadro. Durante essa revisão, a barra de ações de um nó selecionado cobria os controles superiores em tela pequena e impedia tocar em “Importar JSON”. A barra agora ocupa uma faixa própria entre os controles do quadro e o Canvas, com rolagem horizontal no celular. Após o ajuste, a importação foi repetida com um nó selecionado e funcionou. A tela também foi revisada em viewport de navegador de 1280 × 800 px.
+
 **Validação física parcial (27/09/2026):** o usuário confirmou que salvar e recarregar funcionaram em seu celular com um quadro próprio. A recuperação de um quadro vazio e os fluxos de exportação/importação ainda não foram confirmados em aparelho físico.
+
+**Validação automatizada da etapa 3 (27/09/2026):** `npm test` passou com 14 testes; `npm run build` concluiu. O bundler emitiu um aviso informativo sobre `use client` em `@xyflow/react`. A revisão do navegador não registrou erros de console. O ajuste visual foi revisado nas viewports de navegador indicadas acima; não equivale a teste físico.
 
 ### Etapa 4 — Decisão de produto
 
