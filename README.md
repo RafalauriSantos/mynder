@@ -15,15 +15,15 @@ No computador, abra o endereço informado pelo Vite. Para testar em um celular n
 
 ## Testar a versão publicada no celular
 
-Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e experimente:
+Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e use um quadro seu. Faça esta verificação curta:
 
-1. Crie um quadro a partir de uma ideia sua em Markdown.
-2. Edite o Markdown e confira se o mapa mental acompanha a hierarquia.
-3. No Canvas, mova e conecte nós e faça um desenho usando toque.
-4. Salve e recarregue a página no mesmo navegador para confirmar que o quadro continua disponível.
-5. Para conferir a recuperação de um mapa vazio, use um quadro separado: apague seus nós, toque em **Escrever uma ideia** e gere outro mapa.
+1. Abra ou crie um quadro e confira se consegue editar o Markdown e ver a hierarquia mudar.
+2. No Canvas, mova um nó, conecte dois nós e faça um desenho usando toque.
+3. Toque em **Salvar**, recarregue a página e abra o quadro de novo. Confira se os nós, a conexão e o desenho continuam lá.
+4. Toque em **Exportar**. Depois use **Importar JSON** e selecione o arquivo exportado; confira se o quadro importado abre com o mesmo conteúdo.
+5. Em um quadro separado, apague os nós, toque em **Escrever uma ideia** e gere um mapa novo. Assim você verifica a recuperação sem apagar seu quadro pessoal.
 
-O armazenamento é local ao navegador e ao dispositivo; quadros não são sincronizados entre celulares ou navegadores.
+Anote o modelo do celular, o navegador e qualquer toque que não funcionou. O armazenamento é local ao navegador e ao dispositivo; a importação deve usar o arquivo exportado, pois quadros não são sincronizados entre celulares ou navegadores.
 
 ## Fluxo principal
 

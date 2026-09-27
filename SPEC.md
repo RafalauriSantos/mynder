@@ -87,9 +87,11 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 **Validação automatizada da etapa 3 (27/09/2026):** `npm test` passou com 14 testes; `npm run build` concluiu. O bundler emitiu um aviso informativo sobre `use client` em `@xyflow/react`. A revisão do navegador não registrou erros de console. O ajuste visual foi revisado nas viewports de navegador indicadas acima; não equivale a teste físico.
 
+**Pendente para concluir a validação de uso pessoal:** testar em um celular físico com um quadro próprio, incluindo salvar/recarregar, exportar/importar JSON e recuperar um quadro vazio separado. O roteiro está no README. Registrar modelo do aparelho, navegador, resultado e qualquer problema relatado antes de encerrar a etapa 3.
+
 ### Etapa 4 — Decisão de produto
 
-Só após uso recorrente, decidir se Mynder precisa de sincronização na nuvem ou compartilhamento. Essa decisão muda privacidade, autenticação, suporte e custo.
+Só após a validação física da etapa 3 e uso recorrente, decidir se Mynder precisa de sincronização na nuvem ou compartilhamento. Até esse retorno, manter a decisão pendente; ela muda privacidade, autenticação, suporte e custo.
 
 ## Decisão técnica atual
 
