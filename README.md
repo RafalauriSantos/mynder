@@ -54,9 +54,13 @@ Esse roteiro testa toque, download e seleção do arquivo no aparelho físico us
 
 Os dados ficam no `localStorage` do navegador. **Exportar** baixa o quadro aberto; **Backup completo** baixa todos os mapas e seus dados de canvas em um único JSON Mynder. Importar um arquivo de mapa ou backup completo acrescenta cópias à lista e não substitui os quadros existentes. Guarde o backup fora do dispositivo: o app não sincroniza dispositivos.
 
+### Uso sem conexão
+
+Depois de abrir o Mynder conectado pelo menos uma vez e aparecer “Mynder está pronto para abrir sem conexão neste navegador”, o shell e os arquivos da aplicação ficam em cache para reabrir o app sem rede. Os quadros continuam no `localStorage` desse navegador e dessa origem; o primeiro acesso, outro dispositivo/navegador ou dados do site apagados exigem conexão. Isso não substitui backups exportados. Quando uma nova versão estiver disponível, o app oferece atualizá-la ou deixar para depois; a atualização salva os mapas antes de recarregar.
+
 ## Validação atual
 
-Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. Os dados ficam no `localStorage`; a validação de toque em aparelho Android ou iOS real ainda depende do uso em um dispositivo físico.
+Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. A reabertura offline deve ser validada no navegador depois da primeira visita conectada; também confira em aparelho Android ou iOS real.
 
 ## Licença
 
