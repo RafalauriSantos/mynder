@@ -37,7 +37,7 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
 - Seleção, arraste, zoom, pan, ajuste à tela, desfazer/refazer e exportação/importação JSON.
 - Salvamento no `localStorage`; sem conta, servidor de dados ou sincronização entre dispositivos.
-- Layout responsivo para desktop e celular.
+- Layout responsivo para desktop e celular; na revisão de 27/09/2026, o canvas foi conferido em viewport de navegador de 390 × 844 px. A revisão não substitui teste em aparelho físico.
 
 ## Distinções importantes
 

@@ -110,8 +110,8 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
   .context { top: 138px; right: 8px; left: 8px; justify-content: flex-start; }
   .context>b { display: none; }
   .context button { min-height: 40px; padding: 8px; font-size: 11px; }
-  .tools { max-height: 128px; flex-wrap: wrap; overflow: auto; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
-  .tools button { min-height: 42px; }
+  .tools { max-height: none; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding: 8px 10px max(8px, env(safe-area-inset-bottom)); scroll-snap-type: x proximity; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+  .tools button { flex: none; min-height: 42px; scroll-snap-align: start; }
   .modal { align-items: flex-start; padding-top: 35px; }
   .modal textarea { height: 160px; }
 }
