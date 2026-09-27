@@ -13,6 +13,12 @@ npm run dev -- --host 0.0.0.0
 
 No computador, abra o endereço informado pelo Vite. Para testar em um celular na mesma rede Wi-Fi, use o endereço `http://IP-DO-COMPUTADOR:5173/`.
 
+## Publicação
+
+O projeto Cloudflare Pages `mynder` publica o repositório `RafalauriSantos/mynder`: push para `main` inicia automaticamente `npm run build` e publica `dist` em [mynder.pages.dev](https://mynder.pages.dev/). Esse é o fluxo normal de produção.
+
+Para uma publicação manual do branch atual no mesmo projeto Pages, use `npm run deploy`. O comando compila e chama `wrangler pages deploy`; ele não publica um Worker separado. Prefira o push para `main` no uso normal, pois a integração Git já faz o deploy automaticamente.
+
 ## Testar a versão publicada no celular
 
 Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e use um quadro seu. Faça esta verificação curta:

@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "test": "node --test document.test.mjs storage.test.mjs backup.test.mjs",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler pages deploy dist --project-name mynder"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
