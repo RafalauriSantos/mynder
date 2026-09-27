@@ -58,6 +58,17 @@ Os dados ficam no `localStorage` do navegador. **Exportar** baixa o quadro abert
 
 Depois de abrir o Mynder conectado pelo menos uma vez e aparecer “Mynder está pronto para abrir sem conexão neste navegador”, o shell e os arquivos da aplicação ficam em cache para reabrir o app sem rede. Os quadros continuam no `localStorage` desse navegador e dessa origem; o primeiro acesso, outro dispositivo/navegador ou dados do site apagados exigem conexão. Isso não substitui backups exportados. Quando uma nova versão estiver disponível, o app oferece atualizá-la ou deixar para depois; a atualização salva os mapas antes de recarregar.
 
+### Validar o uso offline no celular
+
+Use o mesmo navegador e aparelho durante todo o teste. Antes de começar, confirme que tem um backup recente do seu quadro.
+
+1. Com a internet ligada, abra [mynder.pages.dev](https://mynder.pages.dev/) e espere aparecer “Mynder está pronto para abrir sem conexão neste navegador”. Abra um quadro seu.
+2. Faça uma alteração pequena e salve. Desligue Wi-Fi e dados móveis (ou ative o modo avião), feche a aba e abra novamente o mesmo endereço.
+3. Confirme que o app e o quadro abrem. Faça outra alteração, salve e recarregue a página ainda sem internet; confira se ela continua lá.
+4. Toque em **Exportar** sem internet e confira se o arquivo JSON aparece nos Downloads/Arquivos do celular. Depois, ligue a internet novamente.
+
+Anote o modelo do aparelho e o navegador. Se algum passo falhar, informe o número e o que apareceu; não limpe os dados do site durante o teste.
+
 ## Validação atual
 
 Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. A reabertura offline deve ser validada no navegador depois da primeira visita conectada; também confira em aparelho Android ou iOS real.
