@@ -113,15 +113,17 @@ Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar
 
 **Etapa 6 concluída:** portabilidade de múltiplos mapas foi validada por testes automatizados, navegador isolado e teste físico relatado pelo usuário.
 
-### Etapa 7 — Acesso local quando a rede falha (em validação)
+### Etapa 7 — Acesso local quando a rede falha (concluída)
 
 **Objetivo:** depois de uma primeira visita conectada, permitir abrir o shell do app sem rede e continuar editando e salvando mapas existentes no armazenamento local. A implementação não cria conta, API ou sync. O service worker pré-armazena os recursos de produção e mostra uma confirmação para atualizações; antes de atualizar, salva os mapas locais. A primeira abertura, outro navegador/dispositivo ou dados do site apagados ainda exigem rede; backups continuam necessários.
 
-**Validação em desktop (27/09/2026):** build de produção local servido por `wrangler pages dev`, viewport de navegador de 1536 × 864 px. O aviso “Mynder está pronto para abrir sem conexão neste navegador” apareceu. Com o servidor interrompido, recarregar abriu o app pelo cache; um quadro sintético previamente salvo apareceu na lista, foi editado sem conexão e continuou disponível após novo recarregamento offline. O botão Exportar permaneceu disponível, mas o download offline não foi confirmado: a inspeção da página interna de downloads foi bloqueada pela política do navegador. Ainda falta testar o roteiro offline em celular físico e confirmar nele a exportação.
+**Validação em desktop (27/09/2026):** build de produção local servido por `wrangler pages dev`, viewport de navegador de 1536 × 864 px. O aviso “Mynder está pronto para abrir sem conexão neste navegador” apareceu. Com o servidor interrompido, recarregar abriu o app pelo cache; um quadro sintético previamente salvo apareceu na lista, foi editado sem conexão e continuou disponível após novo recarregamento offline. O botão Exportar permaneceu disponível; o download não pôde ser confirmado no desktop.
 
 **Publicado para validação física (27/09/2026):** o commit `4918136` foi publicado automaticamente em produção pelo Cloudflare Pages e o painel registrou status `success`. O app está disponível em [mynder.pages.dev](https://mynder.pages.dev/).
 
-**Critérios pendentes:** confirmar no celular, após uma visita conectada, desligar a rede, reabrir/recarregar o Mynder, editar e salvar um quadro, recarregar e conferir a edição, e exportar um JSON. Modelo e navegador do aparelho devem ser anotados. A etapa permanece em validação até essa confirmação.
+**Validação física confirmada pelo usuário (27/09/2026):** o usuário confirmou que o teste offline passou em um celular físico usando um quadro próprio. O roteiro cobria primeira abertura conectada, reabertura com a rede desligada, edição e salvamento, recarregamento offline com a edição preservada e exportação do JSON sem conexão. Isso confirma também a exportação que não pôde ser verificada no teste desktop. Modelo do aparelho e navegador não foram informados.
+
+**Etapa 7 concluída:** shell do app, quadro local, edição/salvamento após recarga offline e exportação foram validados em uso físico relatado pelo usuário; o desktop também confirmou a reabertura e persistência offline. A confirmação física é relato do usuário, sem telemetria ou identificação do aparelho.
 
 ## Decisão técnica atual
 

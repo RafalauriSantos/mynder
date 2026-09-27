@@ -71,7 +71,7 @@ Anote o modelo do aparelho e o navegador. Se algum passo falhar, informe o núme
 
 ## Validação atual
 
-Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. A reabertura offline deve ser validada no navegador depois da primeira visita conectada; também confira em aparelho Android ou iOS real.
+Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. O uso offline em celular físico foi confirmado pelo usuário e está registrado na etapa 7 da [SPEC.md](SPEC.md); o roteiro acima pode ser usado para repetir essa validação.
 
 ## Licença
 
