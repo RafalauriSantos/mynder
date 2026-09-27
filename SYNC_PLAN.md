@@ -1,6 +1,14 @@
 # Plano proposto — sincronização pessoal
 
-**Estado:** proposta de MVP pronta para revisão; nenhuma infraestrutura, conta de autenticação ou sincronização foi implementada.
+**Estado:** proposta de MVP para revisão; nenhuma infraestrutura, conta de autenticação ou sincronização foi implementada.
+
+## Critério principal: resiliência e sustentabilidade
+
+- O armazenamento local continua sendo editável sem login, rede ou disponibilidade de Cloudflare/Google. A sincronização não é necessária para abrir, alterar ou exportar um quadro.
+- A nuvem guarda uma réplica e histórico recuperável; não substitui silenciosamente a cópia local. Falhas de API, limite de cota ou autenticação deixam alterações locais intactas e pendentes.
+- Exportação/importação JSON continua sendo o formato portátil de saída. O modelo de dados e a identidade interna não devem depender do e-mail exibido ou de um ID específico do provedor; mapear uma identidade externa verificada a um ID interno estável.
+- Exclusões e conflitos precisam de recuperação explícita. Uma sincronização não pode resolver divergências usando “última gravação vence” sem avisar.
+- Manter o número de serviços e código próprio pequeno, mas contabilizar o custo de migração se compartilhar quadros exigir outro modelo de identidade.
 
 ## Objetivo do primeiro incremento
 
@@ -9,11 +17,12 @@ Abrir os mesmos quadros no celular e no computador usando a mesma identidade. Ca
 ## Proposta técnica
 
 1. **Manter a hospedagem atual e o endereço `mynder.pages.dev`.** Adicionar uma API pequena em Pages Functions sob `/api/*` e vinculá-la a um banco D1. Pages Functions aceita bindings D1 e executa no runtime Workers. Antes de codificar, confirmar no painel qual projeto publica o site: o endereço público é Pages, enquanto o `wrangler.jsonc` no repositório declara assets para Workers. Evitar manter dois deploys concorrentes.
-2. **Usar Cloudflare Access com Google apenas na API de sincronização.** O app e os quadros locais continuam públicos e sem login; ao ativar sync, a pessoa passa pelo login do Access usando Google. A política deve permitir somente a conta Google do proprietário nesta etapa pessoal. O Pages Function valida o JWT do Access em cada chamada e obtém a identidade apenas dessa asserção verificada; nunca aceita `ownerId` enviado pelo navegador. Não criar senhas, cadastro próprio nem reset de senha.
-3. **Guardar um documento Mynder v2 inteiro por linha no D1.** Cada linha associa identidade autenticada, ID do quadro, revisão, JSON e data de atualização. Usar prepared statements e verificar que a identidade tem acesso ao quadro em toda leitura ou escrita.
+2. **Preferir autenticação gerenciada em vez de criar senhas.** Para o incremento estritamente pessoal, Cloudflare Access com Google na API de sync é a opção de menor código próprio: Access valida o login e o Pages Function valida o JWT em cada chamada; nunca aceitar `ownerId` enviado pelo navegador. A política pode ser restrita ao proprietário no primeiro momento. O app e os dados locais continuam públicos e utilizáveis sem login.
+3. **Guardar um documento Mynder v2 inteiro por linha no D1.** Cada linha associa ID interno de proprietário, ID do quadro, revisão, JSON e data de atualização. Usar prepared statements e verificar que a identidade autenticada tem acesso ao quadro em toda leitura ou escrita. Não usar e-mail mutável como chave primária; mapear `issuer + subject` verificados para um identificador interno e confirmar quais claims o Access entrega antes de fechar o esquema.
 4. **Manter `localStorage` como cópia de trabalho e preservar a exportação JSON.** No primeiro acesso autenticado, mostrar os quadros locais e pedir confirmação antes de copiá-los para a nuvem. Nunca limpar os dados locais como efeito da sincronização.
-5. **Sincronizar ao abrir e depois de salvar, com indicador de estado.** Sem conexão, salvar localmente e marcar pendência para nova tentativa. Cada gravação remota inclui a revisão que o aparelho leu; se outra edição já avançou a revisão, recusar a sobrescrita e preservar uma cópia recuperável do conflito. Sem mesclagem automática ou colaboração em tempo real.
-6. **Propagar exclusões como marcações de excluído**, para quadros apagados em um aparelho não reaparecerem ao sincronizar outro. A recuperação deve ser explícita e compatível com o backup local.
+5. **Sincronizar ao abrir e depois de salvar, com indicador de estado.** Sem conexão ou API, salvar localmente e marcar pendência para nova tentativa idempotente. Cada gravação remota inclui a revisão lida; se outra edição já avançou a revisão, recusar sobrescrita e preservar uma cópia recuperável do conflito. Sem mesclagem automática ou colaboração em tempo real.
+6. **Propagar exclusões como marcações de excluído**, para quadros apagados em um aparelho não reaparecerem ao sincronizar outro. Manter período de recuperação definido; exportação local deve continuar disponível mesmo se a conta remota for removida.
+7. **Definir recuperação e saída antes do deploy:** validar restauração de backup, documentar como exportar todos os quadros da nuvem e como excluir a conta/dados. D1 Time Travel ajuda em recuperação operacional, mas não substitui exportação independente nem restauração testada.
 
 ## Critérios de aceite do futuro MVP
 
@@ -24,6 +33,9 @@ Abrir os mesmos quadros no celular e no computador usando a mesma identidade. Ca
 - Uma identidade não consegue ler, substituir ou excluir os quadros de outra.
 - A importação inicial pede confirmação e não apaga a cópia local; exportação/importação JSON continuam funcionando.
 - Falha de autenticação ou de rede mostra estado compreensível e mantém os dados locais disponíveis.
+- Indisponibilidade do provedor de identidade, da API ou estouro de cota não apaga ou bloqueia edição e exportação local; a pendência é retomada sem duplicar quadros.
+- Uma exportação integral pode ser importada em uma instalação limpa, permitindo sair do Cloudflare sem depender da identidade original.
+- Uma restauração de backup remoto recupera ao menos um quadro e suas conexões e desenhos, com procedimento documentado.
 
 ## Custo e limites a conferir antes de provisionar
 
@@ -46,18 +58,16 @@ Referências oficiais:
 
 Compartilhamento entre pessoas, permissões por quadro, colaboração em tempo real, mesclagem de conflitos, migração para domínio próprio e cobrança. Compartilhamento vem depois e exigirá regras de acesso por quadro; liberar um endereço no Access não substitui essas regras.
 
-## Decisões registradas
+## Recomendação e limites
 
-O app continua público e utilizável localmente sem conta. O login Google via Cloudflare Access será exigido somente para sincronizar quadros entre dispositivos, condicionado ao ensaio de roteamento indicado abaixo.
+Para sincronização pessoal, Access + Google continua sendo a recomendação inicial por delegar autenticação e reduzir código sensível de sessão/senha, dentro do ecossistema já usado. A razão principal não é apenas custo: menos componentes próprios significam menos rotinas de segurança para manter. O formato Mynder, exportação e ID interno precisam continuar independentes do provedor para reduzir lock-in e permitir migração.
 
-### Recomendação de autenticação
-
-Recomenda-se Cloudflare Access usando Google como provedor de identidade e protegendo apenas a API de sync. Para o estágio de sincronização pessoal, permitir somente o e-mail do proprietário; o modo local segue público. O Access valida o login, Pages Functions valida a asserção JWT e D1 guarda os quadros separados por identidade. Isso evita construir e operar cadastro, senha, verificação de e-mail e recuperação de conta. O plano Access Free admite até 50 usuários e a configuração Google documentada não requer Google Workspace nem domínio próprio.
+Esta escolha vale para sync pessoal, não é compromisso automático com a futura colaboração. Se o produto precisar de cadastro aberto ou contas geridas dentro do Mynder, reavaliar Access contra um fluxo OIDC da aplicação antes dessa etapa; não improvisar compartilhamento ampliando uma allowlist.
 
 ### Limitação e pré-requisito de implementação
 
-A documentação confirma que Access aceita regras por caminho, que Pages integra com Access em `pages.dev` e que Pages Functions pode validar JWTs do Access. Contudo, o procedimento documentado para habilitar Access na URL de produção `pages.dev` protege o hostname; ele não demonstra claramente que a integração pelo painel permite limitar a proteção apenas a `/api/*`. Antes de implementar, fazer um ensaio de configuração sem publicar alterações: confirmar no painel do projeto se a aplicação Access pode ser limitada a `/api/*` e verificar que `/` continua público. Se o Pages não permitir essa combinação, reavaliar o desenho antes de codificar; não proteger o app inteiro por acidente.
+A documentação confirma que Access aceita regras por caminho, que Pages integra com Access em `pages.dev` e que Pages Functions pode validar JWTs do Access. Contudo, o procedimento documentado para habilitar Access na URL de produção `pages.dev` protege o hostname; ele não demonstra claramente que a integração pelo painel permite limitar a proteção apenas a `/api/*`. Antes de implementar, fazer um ensaio de configuração sem publicar alterações: confirmar no painel do projeto se a aplicação Access pode ser limitada a `/api/*` e verificar que `/` continua público. Também verificar a estabilidade dos claims usados como sujeito, a restauração de um backup e como exportar tudo. Se algum requisito falhar, rever o desenho antes de codificar; não proteger o app inteiro nem iniciar sync sem essas garantias.
 
 O login Google via Access é autenticação de acesso ao app e pode servir à sync pessoal. Não equivale a cadastro aberto de usuários Mynder. Compartilhamento futuro exige autorização por quadro e regras de membros no backend, independente do login.
 
-**Critérios para considerar este planejamento concluído:** objetivo e exclusões do MVP definidos; cópia local e importação inicial protegidas; controle de conflito e exclusão especificados; modelo de identidade e segurança por quadro definidos; custo gratuito e pré-requisito de roteamento registrados. A configuração real de Access, OAuth, Pages Functions e D1 pertence a uma etapa de implementação posterior.
+**Critérios para considerar o MVP futuro resiliente:** o modo local funciona durante indisponibilidade de serviços; cópia inicial pede confirmação; conflitos e exclusões são recuperáveis; autorização é validada no servidor por quadro; identidade possui mapeamento interno migrável; exportação completa e restauração foram exercitadas; custo/cotas e limites de recuperação são conhecidos. A configuração de Access, Pages Functions e D1 e esses ensaios pertencem à implementação futura, ainda não realizada.

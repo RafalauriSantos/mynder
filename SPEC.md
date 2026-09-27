@@ -15,7 +15,7 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 1. **O quadro é o centro.** Hierarquia, conexões livres e desenhos convivem no mesmo espaço.
 2. **Começar é rápido.** Uma ideia pode ser colada como texto ou Markdown e virar uma estrutura visual.
 3. **A estrutura continua maleável.** Nós podem ser movidos, editados, recolhidos, reorganizados e conectados de outras formas.
-4. **Os dados pertencem à pessoa.** O protótipo salva no navegador e oferece exportação local.
+4. **Os dados pertencem à pessoa.** O uso local não depende de conta ou conexão; exportação em formato aberto permite levar os quadros para fora do serviço.
 5. **Interface quieta, conteúdo em destaque.** A identidade deve parecer uma ferramenta de pensamento, com espaço, contraste legível e controles claros.
 
 ## Experiência principal
@@ -38,6 +38,7 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
 - Seleção, arraste, zoom, pan, ajuste à tela, desfazer/refazer e exportação/importação JSON.
 - Salvamento no `localStorage`; sem conta, servidor de dados ou sincronização entre dispositivos.
+- Princípio para futuras etapas de nuvem: sincronização é uma cópia recuperável, nunca requisito para abrir ou editar localmente; falhas de autenticação, rede ou serviço não podem apagar nem bloquear dados locais.
 - Layout responsivo para desktop e celular; na revisão de 27/09/2026, o canvas foi conferido em viewport de navegador de 390 × 844 px. A revisão não substitui teste em aparelho físico.
 
 ## Distinções importantes
@@ -56,6 +57,8 @@ Login, nuvem e sincronização, colaboração simultânea, inteligência artific
 - Uma pessoa consegue criar um quadro, importar uma ideia e continuar editando sem sair da tela principal.
 - Hierarquia e conexões livres são visualmente distinguíveis.
 - Salvamento e exportação são compreensíveis; dados existentes continuam legíveis após atualizações.
+- Indisponibilidade da nuvem ou do provedor de identidade não impede abrir, editar e exportar quadros locais.
+- Dados sincronizados podem ser exportados em formato Mynder independente do provedor e restaurados após falha ou troca de serviço.
 - Os controles essenciais funcionam em telas pequenas e não bloqueiam o quadro.
 - A marca Mynder aparece de forma consistente na interface, na aba e nos materiais do projeto.
 
@@ -95,9 +98,9 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 **Limite atual:** o protótipo continua local, com exportação/importação JSON. Nenhuma sincronização ou colaboração foi implementada. Planejar cada uma em uma etapa própria, começando pela sincronização pessoal e considerando seus efeitos em privacidade, autenticação, suporte e custo.
 
-### Etapa 5 — Planejar sincronização pessoal (plano pronto para revisão)
+### Etapa 5 — Planejar sincronização pessoal (proposta pronta para revisão)
 
-Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar edição local/offline e evitar sobrescrita silenciosa. O plano está em [SYNC_PLAN.md](SYNC_PLAN.md): Pages Functions + D1, cópia de trabalho em `localStorage`, e Cloudflare Access com Google para exigir login somente na API de sincronização. Antes de implementar, confirmar no painel que a rota `/api/*` pode ficar protegida no projeto `pages.dev` sem exigir login para abrir o app. Também confirmar o projeto de deploy real antes de alterar a configuração, pois o `wrangler.jsonc` local declara Workers Static Assets. Login, backend e sincronização seguem fora do escopo de implementação até uma etapa futura explicitamente iniciada.
+Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar edição local/offline e evitar sobrescrita silenciosa. O plano está em [SYNC_PLAN.md](SYNC_PLAN.md) e aplica resiliência e sustentabilidade como critérios: uso local independente, cópia na nuvem recuperável, exportação portátil, conflitos preservados e falha de serviço sem perda local. A proposta para a fase pessoal usa Pages Functions + D1 e avalia Cloudflare Access com Google para a API. Antes de implementar, confirmar no painel que `/api/*` pode ficar protegido em `pages.dev` sem exigir login para abrir o app, identificar uma chave de identidade estável e confirmar o projeto de deploy real (`wrangler.jsonc` descreve Workers Static Assets). Nenhum login, backend ou sync foi iniciado nesta etapa de planejamento.
 
 ## Decisão técnica atual
 
