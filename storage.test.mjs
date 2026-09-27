@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {test,beforeEach} from 'node:test';
+import {blank} from './src/document.ts';
+import {load,save,decode} from './src/storage.ts';
+let data,failKey;
+beforeEach(()=>{data=new Map();failKey='';globalThis.localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>{if(k===failKey)throw new Error('QuotaExceededError');data.set(k,v)}}});
+test('save and reopen returns the complete document',()=>{const d=blank();d.topics[0].collapsed=true;save([d]);assert.deepEqual(load().docs,[d]);assert.equal(load().blocked,false)});
+test('failed write preserves the last valid document',()=>{const d=blank();save([d]);failKey='rascunho-v2';assert.throws(()=>save([{...d,title:'unsaved'}]));assert.equal(load().docs[0].title,d.title)});
+test('corrupt primary recovers backup without overwriting original',()=>{const d=blank();save([d]);save([{...d,title:'Second'}]);data.set('rascunho-v2','broken');const recovered=load();assert.equal(recovered.blocked,true);assert.equal(recovered.docs[0].title,d.title);assert.equal(data.get('rascunho-v2'),'broken')});
+test('invalid backup leaves storage blocked and untouched',()=>{data.set('rascunho-v2','broken');data.set('rascunho-v2-backup','also broken');assert.equal(load().blocked,true);assert.equal(data.get('rascunho-v2'),'broken')});
+test('legacy migration preserves canvas and original markdown',()=>{const original=JSON.stringify([{title:'Old',markdown:'# Original',nodes:[{id:'a',text:'Edited',x:50,y:70,color:'#333'},{id:'b',text:'Child',x:80,y:90,color:'#333'}],edges:[{id:'e',from:'a',to:'b'}]}]);data.set('rascunho-documents-v1',original);const result=load();assert.equal(result.blocked,false);assert.equal(result.docs[0].topics[0].text,'Edited');assert.equal(result.docs[0].markdown,'# Original');assert.equal(result.docs[0].links.length,1);assert.equal(data.get('rascunho-documents-v1'),original)});
+test('duplicate documents are rejected',()=>{const d=blank();assert.throws(()=>decode(JSON.stringify([d,d])))});
