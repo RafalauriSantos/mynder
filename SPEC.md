@@ -95,6 +95,10 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 **Limite atual:** o protótipo continua local, com exportação/importação JSON. Nenhuma sincronização ou colaboração foi implementada. Planejar cada uma em uma etapa própria, começando pela sincronização pessoal e considerando seus efeitos em privacidade, autenticação, suporte e custo.
 
+### Etapa 5 — Planejar sincronização pessoal (proposta em revisão)
+
+Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar edição local/offline e evitar sobrescrita silenciosa. A proposta atual e seus critérios estão em [SYNC_PLAN.md](SYNC_PLAN.md). A recomendação usa Pages Functions + D1 e Cloudflare Access com PIN por e-mail, mantendo o `localStorage` como cópia local. A implementação depende de uma escolha ainda aberta: proteger todo o app atrás do Access ou manter o uso local público com autenticação separada para sincronizar. Também é preciso confirmar o projeto de deploy real antes de alterar a configuração, pois o app público está em `pages.dev` e o `wrangler.jsonc` local descreve Workers Static Assets.
+
 ## Decisão técnica atual
 
 Aplicação web em React, TypeScript e Vite; canvas baseado em React Flow; desenhos vetoriais persistidos como dados; armazenamento local no navegador; hospedagem estática no Cloudflare Pages. Manter a solução simples enquanto o fluxo principal é validado.
