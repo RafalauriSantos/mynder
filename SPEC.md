@@ -91,7 +91,9 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 ### Etapa 4 — Decisão de produto
 
-Após algum uso recorrente, decidir com o usuário se Mynder precisa de sincronização na nuvem ou compartilhamento. A validação física da etapa 3 foi concluída, mas um teste pontual não confirma uso recorrente; manter esta decisão pendente até haver essa experiência. A decisão muda privacidade, autenticação, suporte e custo.
+**Direção definida com o usuário:** a evolução desejada segue esta ordem: primeiro sincronizar os quadros da mesma pessoa entre seus dispositivos; depois permitir compartilhar quadros com outras pessoas. A preferência define prioridade de produto, mas não define arquitetura, autenticação, privacidade, custos ou prazo.
+
+**Limite atual:** o protótipo continua local, com exportação/importação JSON. Nenhuma sincronização ou colaboração foi implementada. Planejar cada uma em uma etapa própria, começando pela sincronização pessoal e considerando seus efeitos em privacidade, autenticação, suporte e custo.
 
 ## Decisão técnica atual
 
