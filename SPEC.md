@@ -20,15 +20,18 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 
 ## Experiência principal
 
-1. A pessoa cria um quadro vazio ou cola texto/Markdown.
-2. Mynder converte títulos e listas em nós organizados hierarquicamente.
-3. A pessoa ajusta a estrutura no canvas, adicionando nós, conexões e desenhos.
-4. O quadro salva localmente e pode ser exportado como JSON.
+1. A pessoa cria um quadro ou cola texto/Markdown.
+2. Mynder converte títulos e listas em uma hierarquia e mostra o mapa mental.
+3. A pessoa alterna para o canvas livre para mover nós, criar conexões e desenhar.
+4. As duas vistas mostram a mesma hierarquia; editar Markdown atualiza o mapa e o canvas.
+5. O quadro salva localmente e pode ser exportado como JSON.
 
 ## Escopo do protótipo atual
 
 - Lista local de quadros, com criação e seleção.
-- Conversão de texto/Markdown em hierarquia editável no canvas.
+- Modo Mapa mental com Markmap e expansão/recolhimento de ramos.
+- Modo Canvas livre com a hierarquia editável, conexões independentes e desenhos.
+- Conversão de texto/Markdown em hierarquia compartilhada; regenerar Markdown atualiza as duas vistas.
 - Edição de texto, criação de nós filhos e irmãos, mudança de pai, recolhimento de ramos e organização automática.
 - Conexões livres entre nós.
 - Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
@@ -38,7 +41,8 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 
 ## Distinções importantes
 
-- O fluxo atual converte Markdown em nós do canvas. Ainda não há uma visualização Markmap separada nem sincronização bidirecional entre Markdown e mapa depois da importação.
+- A estrutura dos nós é compartilhada entre Mapa mental e Canvas. Conexões livres e desenhos são recursos do Canvas.
+- A edição de Markdown reconstrói a hierarquia. IDs e posições de nós cujo caminho e texto continuam iguais são preservados; conexões ligadas a nós removidos são descartadas e desenhos permanecem no quadro.
 - A aparência desejada pode se aproximar de mapas mentais visuais como os do NotebookLM, mas Mynder deve manter edição livre e desenho no próprio quadro.
 - “Profissional” nesta etapa significa identidade coerente, interface confiável, boa usabilidade e dados exportáveis; não implica login ou infraestrutura de equipe.
 
@@ -56,13 +60,13 @@ Login, nuvem e sincronização, colaboração simultânea, inteligência artific
 
 ## Próximas etapas
 
-### Etapa 1 — Fundamento visual e identidade
+### Etapa 1 — Fundamento visual e identidade (concluída)
 
 Aplicar a marca Mynder, estabelecer tipografia, cores, hierarquia de controles e estados de interação. Preservar o formato dos documentos e as chaves de armazenamento atuais.
 
-### Etapa 2 — Fluxo de mapa mental
+### Etapa 2 — Refinar o fluxo de mapa mental
 
-Dar mais clareza ao começo por texto/Markdown, à edição da estrutura e à transição para o quadro livre. Avaliar uma apresentação de mapa visual mais próxima do modo radial/orgânico, mantendo os mesmos dados editáveis.
+Dar mais clareza ao começo por texto/Markdown, à edição da estrutura e à transição para o quadro livre. Refinar controles de navegação, edição por toque e apresentação radial/orgânica sem duplicar os dados.
 
 ### Etapa 3 — Robustez de uso pessoal
 

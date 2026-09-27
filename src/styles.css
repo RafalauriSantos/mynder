@@ -54,9 +54,20 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .top span { color: var(--green); font-size: 11px; }
 .top>button:first-child { display: none; }
 .top button { min-height: 36px; padding: 7px 12px; font-size: 12px; }
+.view-tabs { display: flex; gap: 4px; padding: 9px 18px 0; border-bottom: 1px solid var(--line); background: var(--paper); }
+.view-tabs button { min-height: 38px; padding: 8px 13px; border: 0; border-radius: 7px 7px 0 0; background: transparent; color: var(--muted); font-size: 12px; }
+.view-tabs button.selected { position: relative; background: var(--canvas); color: var(--ink); font-weight: 700; }
+.view-tabs button.selected::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--accent); content: ""; }
 .actions { display: flex; flex: none; gap: 6px; overflow: auto; padding: 11px 18px; background: #f8f6f0; }
 .actions button { flex: none; min-height: 36px; padding: 7px 11px; font-size: 12px; }
-.board { position: relative; flex: 1; min-height: 150px; background-color: var(--canvas); background-image: radial-gradient(#d7d2c6 0.8px, transparent 0.8px); background-size: 24px 24px; }
+.mindmap-view { position: relative; flex: 1; min-height: 150px; overflow: hidden; background: var(--canvas); }
+.mindmap-view .markmap { display: block; width: 100%; height: 100%; --markmap-font: 15px/1.5 "Trebuchet MS", "Segoe UI", sans-serif; --markmap-text-color: var(--ink); --markmap-circle-open-bg: var(--paper); --markmap-highlight-node-bg: #bf55381a; }
+.mindmap-view .markmap-link { stroke-width: 2px; }
+.map-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 25px; text-align: center; background: var(--canvas); }
+.map-empty>span { color: var(--accent); font-size: 28px; }
+.map-empty h2 { margin: 12px 0 6px; font: 25px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+.map-empty p { max-width: 330px; color: var(--muted); line-height: 1.6; }
+.board { position: relative; flex: 1; min-height: 150px; background: var(--canvas); }
 .topic { position: relative; width: 224px; min-height: 65px; max-height: 300px; overflow: visible; padding: 17px 20px; border: 1.5px solid; border-radius: 12px; background: var(--paper); box-shadow: 0 5px 16px #3734270b; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
 .topic>span { display: block; max-height: 250px; overflow: auto; }
 .topic.chosen { box-shadow: 0 0 0 4px #bf553826, 0 7px 22px #37342714; }
@@ -94,6 +105,8 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
   .top span { order: 5; width: 100%; text-align: right; }
   .top button { min-height: 36px; padding: 6px 9px; }
   .actions { padding: 8px; }
+  .view-tabs { padding: 6px 8px 0; }
+  .view-tabs button { flex: 1; }
   .context { top: 138px; right: 8px; left: 8px; justify-content: flex-start; }
   .context>b { display: none; }
   .context button { min-height: 40px; padding: 8px; font-size: 11px; }

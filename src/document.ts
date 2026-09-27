@@ -3,7 +3,7 @@ export type Topic = { id: string; text: string; parentId?: string; position: Poi
 export type Link = { id: string; source: string; target: string };
 export type Drawing = { id: string; kind: 'pen' | 'highlight' | 'rectangle' | 'ellipse' | 'arrow' | 'text'; points: Point[]; color: string; text?: string };
 export type Document = { version: 2; id: string; title: string; topics: Topic[]; links: Link[]; drawings: Drawing[]; viewport: { x: number; y: number; zoom: number }; markdown: string; updatedAt: number };
-export const colors = ['#6a70ce', '#258d85', '#c17e30', '#ae629b', '#4e8ab8'];
+export const colors = ['#bf5538', '#536c58', '#b58236', '#627b9b', '#986b85'];
 export const id = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 export function blank(title = 'Nova ideia'): Document {
  return {version:2,id:id(),title,topics:[{id:id(),text:title,position:{x:0,y:0},collapsed:false,color:colors[0]}],links:[],drawings:[],viewport:{x:100,y:180,zoom:1},markdown:'',updatedAt:Date.now()};
@@ -54,6 +54,19 @@ export function importMarkdown(text:string):Document {
  const roots=doc.topics.filter(n=>!n.parentId);
  if(roots.length>1){const root:Topic={id:id(),text:'Minhas ideias',position:{x:0,y:0},collapsed:false,color:colors[0]};roots.forEach(n=>n.parentId=root.id);doc.topics.unshift(root)}
  doc.title=doc.topics[0].text;return organize(doc);
+}
+export function toMarkdown(doc:Document):string {
+ const children=new Map<string|undefined,Topic[]>();
+ for(const topic of doc.topics){const siblings=children.get(topic.parentId)??[];siblings.push(topic);children.set(topic.parentId,siblings)}
+ const lines:string[]=[];
+ const write=(topic:Topic,depth:number)=>{
+  const label=topic.text.replace(/\s*\n\s*/g,' ').trim()||'Ideia sem título';
+  if(depth<6)lines.push(`${'#'.repeat(depth+1)} ${label}`);
+  else lines.push(`${'  '.repeat(depth-6)}- ${label}`);
+  for(const child of children.get(topic.id)??[])write(child,depth+1);
+ };
+ for(const root of children.get(undefined)??[])write(root,0);
+ return lines.join('\n');
 }
 export function validate(value:unknown):Document {
  const d=value as Document;const finite=(n:unknown)=>typeof n==='number'&&Number.isFinite(n);const point=(p:Point)=>p&&finite(p.x)&&finite(p.y);
