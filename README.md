@@ -17,6 +17,8 @@ No computador, abra o endereço informado pelo Vite. Para testar em um celular n
 
 Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e use um quadro seu. Faça esta verificação curta:
 
+Antes de editar seu quadro, toque em **Exportar** para guardar um backup. **Importar JSON** cria outro quadro com o sufixo “(importado)” e não substitui o atual.
+
 1. Abra ou crie um quadro e confira se consegue editar o Markdown e ver a hierarquia mudar.
 2. No Canvas, mova um nó, conecte dois nós e faça um desenho usando toque.
 3. Toque em **Salvar**, recarregue a página e abra o quadro de novo. Confira se os nós, a conexão e o desenho continuam lá.

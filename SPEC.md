@@ -86,11 +86,11 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 **Exportação/importação e canvas móvel (concluídos no navegador):** em viewport de 390 × 844 px, exportar e importar um quadro preservou os 7 nós e sua hierarquia. No Canvas, uma conexão livre e um desenho foram mantidos no JSON exportado; salvar e recarregar manteve esses elementos no quadro. Durante essa revisão, a barra de ações de um nó selecionado cobria os controles superiores em tela pequena e impedia tocar em “Importar JSON”. A barra agora ocupa uma faixa própria entre os controles do quadro e o Canvas, com rolagem horizontal no celular. Após o ajuste, a importação foi repetida com um nó selecionado e funcionou. A tela também foi revisada em viewport de navegador de 1280 × 800 px.
 
-**Validação física (27/09/2026):** após receber o roteiro, o usuário relatou que todos os testes funcionaram no celular: edição do Markdown, manipulação e desenho no Canvas, salvar/recarregar, exportar/importar JSON e recuperar um quadro vazio separado. O teste foi feito com um quadro próprio. O modelo do aparelho e o navegador não foram informados; este registro reflete o relato do usuário.
+**Relato anterior de validação física (27/09/2026):** o histórico registrou que os testes funcionaram no celular com um quadro próprio. Porém, a instrução atual desta etapa pede explicitamente um teste físico ainda pendente. Para não tomar o relato anterior como prova suficiente do requisito atual, é necessário repetir/confirmar os fluxos no aparelho e registrar modelo e navegador.
 
 **Validação automatizada da etapa 3 (27/09/2026):** `npm test` passou com 14 testes; `npm run build` concluiu. O bundler emitiu um aviso informativo sobre `use client` em `@xyflow/react`. A revisão do navegador não registrou erros de console. O ajuste visual foi revisado nas viewports de navegador indicadas acima; não equivale a teste físico.
 
-**Etapa 3 concluída:** a revisão de navegador e a validação física relatada cobrem os fluxos desta etapa. O modelo e o navegador do teste físico permanecem desconhecidos.
+**Estado da etapa 3:** validações automatizadas e revisão de navegador concluídas; reteste em celular físico com quadro próprio pendente. O roteiro está em [README.md](README.md), seção “Testar a versão publicada no celular”. Não avançar para implementação de sincronização até registrar esse resultado.
 
 ### Etapa 4 — Decisão de produto
 
