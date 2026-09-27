@@ -105,11 +105,13 @@ Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar
 
 ### Etapa 6 — Portabilidade local completa
 
-**Implementação concluída; validação física pendente:** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
+**Implementação concluída:** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
 
 **Validação feita:** `npm test` passou com 18 testes, incluindo roundtrip de múltiplos mapas, preservação de conteúdo de canvas, importação do formato individual e rejeição de backups inválidos; `npm run build` passou. Na versão publicada `mynder.pages.dev`, um fluxo Playwright isolado usou três mapas fictícios: baixou um arquivo Mynder v1 com os três mapas, importou-o e exibiu as três cópias com sufixo “(importado)”. Uma cópia foi aberta tanto no Mapa mental como no Canvas. O estado responsivo foi conferido em viewport de 390 × 844 px; console sem erros nem avisos. A interface local também havia sido revista em 713 × 720 px.
 
-**Falta validar no celular físico:** baixar o arquivo e importá-lo pela interface. O roteiro de cinco passos “Conferir o backup completo sem tocar nos seus mapas” está no [README.md](README.md). O teste físico relatado anteriormente cobre os fluxos anteriores, não este backup novo.
+**Validação física confirmada (27/09/2026):** o usuário confirmou que conseguiu baixar e importar o backup completo pelo navegador do celular, usando um quadro próprio e seguindo o roteiro em aba privada para manter a lista original intacta. O modelo do aparelho e o navegador não foram informados.
+
+**Etapa 6 concluída:** portabilidade de múltiplos mapas foi validada por testes automatizados, navegador isolado e teste físico relatado pelo usuário.
 
 ## Decisão técnica atual
 
