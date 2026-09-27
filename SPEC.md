@@ -105,9 +105,11 @@ Definir o MVP para abrir os mesmos quadros em dispositivos diferentes, preservar
 
 ### Etapa 6 — Portabilidade local completa
 
-**Concluída (27/09/2026):** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
+**Implementação concluída; validação física pendente:** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
 
-**Validação:** `npm test` passou com 18 testes, incluindo roundtrip de múltiplos mapas, preservação de conteúdo de canvas, importação do formato individual e rejeição de backups inválidos; `npm run build` passou. A interface local foi revista e o botão foi acionado em viewport de navegador de 713 × 720 px. Não foi exercitada a seleção de arquivo na interface nesta rodada nem feito novo teste em aparelho físico; o teste físico anterior cobriu os fluxos já existentes, não este botão novo.
+**Validação feita:** `npm test` passou com 18 testes, incluindo roundtrip de múltiplos mapas, preservação de conteúdo de canvas, importação do formato individual e rejeição de backups inválidos; `npm run build` passou. A interface local foi revista e o botão foi acionado em viewport de navegador de 713 × 720 px. Após o push, o controle “Backup completo” também foi confirmado na versão publicada `mynder.pages.dev` em sessão isolada de navegador.
+
+**Falta validar no celular físico:** baixar o arquivo e importá-lo pela interface. O roteiro de cinco passos “Conferir o backup completo sem tocar nos seus mapas” está no [README.md](README.md). O teste físico relatado anteriormente cobre os fluxos anteriores, não este backup novo.
 
 ## Decisão técnica atual
 

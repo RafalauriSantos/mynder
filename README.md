@@ -27,6 +27,16 @@ Antes de editar seu quadro, toque em **Exportar** para guardar um backup. **Impo
 
 Anote o modelo do celular, o navegador e qualquer toque que não funcionou. O armazenamento é local ao navegador e ao dispositivo; a importação deve usar o arquivo exportado, pois quadros não são sincronizados entre celulares ou navegadores.
 
+### Conferir o backup completo sem tocar nos seus mapas
+
+1. Abra `mynder.pages.dev` em uma aba anônima/privada do celular.
+2. Crie dois mapas temporários em **Novo mapa**; coloque uma ideia diferente em cada um.
+3. Toque em **Backup completo** e confirme que o arquivo `mynder-backup.json` foi baixado.
+4. Toque em **Importar JSON**, escolha esse arquivo na pasta de Downloads/Arquivos e confira se os dois mapas aparecem com o sufixo “(importado)” e o conteúdo correto.
+5. Feche a aba privada. Os mapas do navegador normal não são afetados; o arquivo de teste pode ser removido da pasta Downloads se desejar.
+
+Esse roteiro testa toque, download e seleção do arquivo no aparelho físico. Não use seus mapas pessoais nessa validação: importar sempre cria cópias adicionais.
+
 ## Fluxo principal
 
 1. Use `Texto → mapa` para criar um quadro a partir de Markdown.
