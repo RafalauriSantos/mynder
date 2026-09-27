@@ -67,6 +67,7 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .map-empty>span { color: var(--accent); font-size: 28px; }
 .map-empty h2 { margin: 12px 0 6px; font: 25px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
 .map-empty p { max-width: 330px; color: var(--muted); line-height: 1.6; }
+.map-empty button { margin-top: 8px; }
 .board { position: relative; flex: 1; min-height: 150px; background: var(--canvas); }
 .topic { position: relative; width: 224px; min-height: 65px; max-height: 300px; overflow: visible; padding: 17px 20px; border: 1.5px solid; border-radius: 12px; background: var(--paper); box-shadow: 0 5px 16px #3734270b; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
 .topic>span { display: block; max-height: 250px; overflow: auto; }

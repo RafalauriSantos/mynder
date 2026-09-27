@@ -32,6 +32,7 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - Modo Mapa mental com Markmap e expansão/recolhimento de ramos.
 - Modo Canvas livre com a hierarquia editável, conexões independentes e desenhos.
 - Conversão de texto/Markdown em hierarquia compartilhada; regenerar Markdown atualiza as duas vistas.
+- O estado sem nós oferece ação direta para inserir Markdown e reconstruir o mesmo quadro.
 - Edição de texto, criação de nós filhos e irmãos, mudança de pai, recolhimento de ramos e organização automática.
 - Conexões livres entre nós.
 - Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
@@ -77,6 +78,8 @@ Dar mais clareza ao começo por texto/Markdown, à edição da estrutura e à tr
 ### Etapa 3 — Robustez de uso pessoal
 
 Revisar estados vazios, salvamento, recuperação e exportação/importação; validar o uso real em celular e desktop.
+
+**Estado vazio (concluído):** em viewport de navegador de 390 × 844 px, apagar o último nó mostrou a ação para escrever uma ideia. Preencher o Markdown reconstituiu o mesmo quadro, sem duplicar a lista; após salvar e recarregar, a hierarquia continuou disponível no Canvas. Isso não substitui a validação em aparelho físico.
 
 ### Etapa 4 — Decisão de produto
 
