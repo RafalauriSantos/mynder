@@ -51,9 +51,18 @@ export function importMarkdown(text:string):Document {
   if(h)headings.push({level:h[1].length,node});if(li)lists.push({indent:li[1].replace(/\t/g,'    ').length,node});
  }
  if(!doc.topics.length)throw new Error('Escreva pelo menos uma ideia.');
- const roots=doc.topics.filter(n=>!n.parentId);
- if(roots.length>1){const root:Topic={id:id(),text:'Minhas ideias',position:{x:0,y:0},collapsed:false,color:colors[0]};roots.forEach(n=>n.parentId=root.id);doc.topics.unshift(root)}
  doc.title=doc.topics[0].text;return organize(doc);
+}
+export function regenerateMarkdown(current:Document,text:string):Document {
+ const next=importMarkdown(text);const oldByPath=new Map<string,Topic[]>();
+ const key=(parent:string,label:string,rootIndex:number)=>parent?`${parent}\u001f${label.trim().toLowerCase()}`:`@root:${rootIndex}`;
+ const indexOld=(topic:Topic,parentPath:string,rootIndex:number)=>{const path=key(parentPath,topic.text,rootIndex);const matches=oldByPath.get(path)??[];matches.push(topic);oldByPath.set(path,matches);for(const child of current.topics.filter(item=>item.parentId===topic.id))indexOld(child,path,rootIndex)};
+ current.topics.filter(topic=>!topic.parentId).forEach((root,index)=>indexOld(root,'',index));
+ const topics:Topic[]=[];
+ const rebuild=(topic:Topic,parentId?:string,parentPath='',rootIndex=0)=>{const path=key(parentPath,topic.text,rootIndex);const existing=oldByPath.get(path)?.shift();const nextId=existing?.id??topic.id;topics.push({...topic,id:nextId,parentId,position:existing?.position??topic.position});for(const child of next.topics.filter(item=>item.parentId===topic.id))rebuild(child,nextId,path,rootIndex)};
+ next.topics.filter(topic=>!topic.parentId).forEach((root,index)=>rebuild(root,undefined,'',index));
+ const validIds=new Set(topics.map(topic=>topic.id));
+ return {...current,title:next.title,markdown:text,topics,links:current.links.filter(link=>validIds.has(link.source)&&validIds.has(link.target)),viewport:current.viewport,updatedAt:Date.now()};
 }
 export function toMarkdown(doc:Document):string {
  const children=new Map<string|undefined,Topic[]>();

@@ -58,6 +58,10 @@ Login, nuvem e sincronização, colaboração simultânea, inteligência artific
 - Os controles essenciais funcionam em telas pequenas e não bloqueiam o quadro.
 - A marca Mynder aparece de forma consistente na interface, na aba e nos materiais do projeto.
 
+## Validação automatizada
+
+`npm test` cobre regras de Markdown, hierarquia, regeneração, conexões, validação JSON e armazenamento local. GitHub Actions roda os testes e a compilação em cada push para `main` e em pull requests. A interação e a qualidade visual continuam precisando de revisão no navegador; esta etapa ainda não inclui testes de ponta a ponta.
+
 ## Próximas etapas
 
 ### Etapa 1 — Fundamento visual e identidade (concluída)

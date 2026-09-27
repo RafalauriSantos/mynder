@@ -26,7 +26,7 @@ Os dados ficam no `localStorage` do navegador. O backup é mantido na chave loca
 
 ## Validação atual
 
-`npm run build` valida a compilação. Os dados ficam no `localStorage`; a validação em aparelho Android ou iOS real ainda depende de um dispositivo acessível na mesma rede.
+Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. Os dados ficam no `localStorage`; a validação em aparelho Android ou iOS real ainda depende de um dispositivo acessível na mesma rede.
 
 ## Licença
 

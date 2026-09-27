@@ -19,7 +19,7 @@ function treeFromDocument(doc: Document): MindNode {
   });
   const roots = children.get(undefined) ?? [];
   if (roots.length === 1) return build(roots[0], '#262a26');
-  return { content: doc.title, children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
+  return { content: 'Minhas ideias', children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
 }
 
 export function MindMap({ doc }: { doc: Document }) {
