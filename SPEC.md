@@ -72,6 +72,8 @@ Aplicar a marca Mynder, estabelecer tipografia, cores, hierarquia de controles e
 
 Dar mais clareza ao começo por texto/Markdown, à edição da estrutura e à transição para o quadro livre. Refinar controles de navegação, edição por toque e apresentação radial/orgânica sem duplicar os dados.
 
+**Validação parcial (27/09/2026):** na versão publicada, em viewport de navegador de 390 × 844 px, foi conferido o fluxo Markdown → mapa → edição do Markdown → Canvas; o novo ramo apareceu nas duas vistas com a hierarquia correspondente. A etapa continua em andamento: falta validar em aparelho físico com um quadro do usuário e decidir ajustes de apresentação a partir desse uso.
+
 ### Etapa 3 — Robustez de uso pessoal
 
 Revisar estados vazios, salvamento, recuperação e exportação/importação; validar o uso real em celular e desktop.
