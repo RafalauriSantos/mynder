@@ -2,13 +2,15 @@
 
 ## Visão
 
-Mynder é um espaço pessoal para pensar visualmente. A pessoa começa com uma ideia, organiza conceitos como um mapa mental e continua trabalhando no mesmo quadro: cria nós, estabelece relações e desenha à mão livre.
+Mynder é uma ferramenta pública para raciocínio visual individual. Cada pessoa trabalha em seu próprio espaço privado: começa com uma ideia, organiza conceitos como um mapa mental e continua no mesmo quadro, criando nós, relações e desenhos à mão livre.
 
 **Promessa do produto:** transformar pensamentos em um mapa visual que continua editável.
 
 ## Para quem
 
 Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter de escolher entre uma árvore rígida e uma tela em branco.
+
+**Direção de produto (27/09/2026):** o Mynder deve poder ser usado por pessoas diferentes com contas próprias. Cada pessoa vê e sincroniza apenas os próprios quadros; compartilhar quadros com outras pessoas continua sendo uma etapa futura separada.
 
 ## Princípios
 
@@ -39,7 +41,8 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - Seleção, arraste, zoom, pan, ajuste à tela, desfazer/refazer e exportação/importação JSON.
 - Exportação de um mapa ou de todos os mapas em um backup JSON; importar backup acrescenta cópias sem substituir documentos locais.
 - Salvamento no `localStorage`; sem conta, servidor de dados ou sincronização entre dispositivos.
-- Princípio para futuras etapas de nuvem: sincronização é uma cópia recuperável, nunca requisito para abrir ou editar localmente; falhas de autenticação, rede ou serviço não podem apagar nem bloquear dados locais.
+- Direção para as próximas etapas: permitir que pessoas criem suas próprias contas e sincronizem entre dispositivos. O servidor deve autorizar cada operação pelos dados de identidade verificados e pelo proprietário do quadro; nunca confiar em um `ownerId` enviado pelo navegador. Uma conta não pode ler, alterar ou excluir dados de outra.
+- Os quadros locais continuam editáveis e exportáveis sem login ou rede. No mesmo navegador, o espaço local anônimo e os caches de contas autenticadas devem ficar separados; importar dados para uma conta exige confirmação e nunca apaga a cópia local.
 - Layout responsivo para desktop e celular; na revisão de 27/09/2026, o canvas foi conferido em viewport de navegador de 390 × 844 px. A revisão não substitui teste em aparelho físico.
 
 ## Distinções importantes
@@ -49,13 +52,15 @@ Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter
 - A aparência desejada pode se aproximar de mapas mentais visuais como os do NotebookLM, mas Mynder deve manter edição livre e desenho no próprio quadro.
 - “Profissional” nesta etapa significa identidade coerente, interface confiável, boa usabilidade e dados exportáveis; não implica login ou infraestrutura de equipe.
 
-## Fora do escopo por enquanto
+## Fora do protótipo local atual
 
-Login, nuvem e sincronização, colaboração simultânea, inteligência artificial, agentes, RAG, integrações MCP, banco externo, permissões de equipe, cobrança e arquitetura distribuída.
+Login, nuvem e sincronização ainda não estão implementados. Colaboração simultânea, compartilhamento de quadros, inteligência artificial, agentes, RAG, integrações MCP, banco externo fora do plano aprovado, permissões de equipe e cobrança não fazem parte da primeira versão multiusuário.
 
 ## Critérios de qualidade
 
 - Uma pessoa consegue criar um quadro, importar uma ideia e continuar editando sem sair da tela principal.
+- Contas diferentes não conseguem ver nem alterar quadros umas das outras; a separação é validada no servidor, não só na interface.
+- Alternar entre contas no mesmo navegador não mistura os respectivos quadros locais; o espaço local anônimo permanece separado.
 - Hierarquia e conexões livres são visualmente distinguíveis.
 - Salvamento e exportação são compreensíveis; dados existentes continuam legíveis após atualizações.
 - Indisponibilidade da nuvem ou do provedor de identidade não impede abrir, editar e exportar quadros locais.
@@ -95,13 +100,13 @@ Revisar estados vazios, salvamento, recuperação e exportação/importação; v
 
 ### Etapa 4 — Decisão de produto
 
-**Direção definida com o usuário:** a evolução desejada segue esta ordem: primeiro sincronizar os quadros da mesma pessoa entre seus dispositivos; depois permitir compartilhar quadros com outras pessoas. A preferência define prioridade de produto, mas não define arquitetura, autenticação, privacidade, custos ou prazo.
+**Direção definida com o usuário:** o app será público e poderá ser usado por pessoas com contas próprias; cada conta terá seus quadros privados. A ordem segue: primeiro sincronizar os quadros da mesma pessoa entre seus dispositivos; depois, em etapa separada, permitir compartilhar quadros com outras pessoas. A autenticação, o isolamento local e remoto, os custos e a proteção contra abuso ainda precisam de plano antes da implementação.
 
 **Limite atual:** o protótipo continua local, com exportação/importação JSON. Nenhuma sincronização ou colaboração foi implementada. Planejar cada uma em uma etapa própria, começando pela sincronização pessoal e considerando seus efeitos em privacidade, autenticação, suporte e custo.
 
-### Etapa 5 — Planejar sincronização pessoal (plano aprovado; implementação pendente)
+### Etapa 5 — Planejar sincronização multiusuário (revisão necessária)
 
-O usuário aprovou em 27/09/2026 o plano em [SYNC_PLAN.md](SYNC_PLAN.md): abrir os mesmos quadros em dispositivos diferentes, preservar uso local/offline, manter uma cópia remota recuperável, exportação portátil e conflitos recuperáveis. A recomendação é validar primeiro Cloudflare IdP restrito a membros da conta; Google continua alternativa, então o provedor final ainda precisa ser confirmado. A inspeção anterior registrou Pages Git integration em `mynder.pages.dev`, produção na branch `main`, build `npm run build` e saída `dist`; sem bindings D1 ou variáveis/segredos, sem aplicação Access e com Cloudflare como IdP listado, sem Google. Nenhum login, backend ou sync foi iniciado; a aprovação do plano não alterou recursos Cloudflare.
+O usuário aprovou a direção de sincronização em 27/09/2026 e esclareceu que o app deve servir a outras pessoas, cada uma com seus próprios quadros privados. Isso muda o plano anterior, que enfatizava sincronização pessoal. [SYNC_PLAN.md](SYNC_PLAN.md) está em revisão para abranger cadastro público, isolamento de dados por conta no servidor e separação dos dados locais por conta. Cloudflare IdP restrito a membros da conta não atende cadastro público; nenhuma autenticação, backend ou sync foi iniciada.
 
 ### Etapa 6 — Portabilidade local completa
 
