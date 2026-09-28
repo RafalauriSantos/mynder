@@ -1,6 +1,6 @@
-# Plano proposto — sincronização pessoal
+# Plano aprovado — sincronização pessoal
 
-**Estado:** proposta revisada em 27/09/2026; nenhuma infraestrutura, conta de autenticação ou sincronização foi implementada. As escolhas abaixo são recomendação para revisão, não autorização para configurar recursos Cloudflare.
+**Estado:** plano aprovado pelo usuário em 27/09/2026. Nenhuma infraestrutura, conta de autenticação ou sincronização foi implementada. O provedor de identidade ainda precisa ser confirmado; a aprovação do plano, por si só, não alterou recursos na conta Cloudflare.
 
 ## Resultado da revisão do plano (27/09/2026)
 
@@ -86,7 +86,9 @@ Compartilhamento entre pessoas, permissões por quadro, colaboração em tempo r
 
 ## Recomendação e limites
 
-Para sincronização pessoal, Access + Google continua sendo a recomendação inicial por delegar autenticação e reduzir código sensível de sessão/senha, dentro do ecossistema já usado. A razão principal não é apenas custo: menos componentes próprios significam menos rotinas de segurança para manter. O formato Mynder, exportação e ID interno precisam continuar independentes do provedor para reduzir lock-in e permitir migração.
+Para sincronização pessoal, a recomendação é validar primeiro o Cloudflare IdP com a opção **Restrict to account members** habilitada. Ele já aparecia entre os provedores da conta na última inspeção documentada e evita criar um cliente OAuth e guardar seu segredo no Google. Essa restrição deve ser conferida na configuração real antes de usá-la: a documentação informa que, quando desligada, qualquer conta Cloudflare pode autenticar, sujeita às políticas de Access. O Google é a alternativa caso Rafael prefira separar a identidade do provedor de hospedagem; nesse caso, será necessário criar um cliente OAuth e guardar seu segredo no Access. A escolha final ainda está pendente e deve preceder qualquer configuração externa.
+
+Em ambos os casos, autenticação gerenciada reduz código próprio de sessão e senha. O formato Mynder, a exportação e o ID interno devem continuar independentes do provedor para reduzir lock-in e permitir migração.
 
 Esta escolha vale para sync pessoal, não é compromisso automático com a futura colaboração. Se o produto precisar de cadastro aberto ou contas geridas dentro do Mynder, reavaliar Access contra um fluxo OIDC da aplicação antes dessa etapa; não improvisar compartilhamento ampliando uma allowlist.
 
