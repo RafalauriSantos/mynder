@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 3
+current_stage: 4
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -48,8 +48,15 @@ stages:
     pushed: true
   - id: 3
     name: "Autenticação configurável e API Pages"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "`server/auth/identity.ts` valida JWT via JWKS remoto HTTPS, assinatura RS256/ES256, issuer, audience, expiração e subject; a identidade contém apenas issuer + subject."
+      - "Middleware deixa o app estático público e exige Bearer em `/api/*`; configuração ausente ou JWKS indisponível falha de forma fechada e segura."
+      - "Pages API implementa sessão, lista/criação, leitura/atualização condicional e tombstone; corpo JSON lido com limite em streaming, sem cache, envelopes restritos e proprietário sempre derivado da identidade verificada."
+      - "npm run test:cloudflare: 23 testes passaram, incluindo fluxo JWT assinado → middleware → endpoint → D1 local e isolamento de identidade."
+      - "npm test: 25 testes passaram; npm run build: passou incluindo TypeScript das Functions; git diff --check passou."
+      - "npm audit --omit=dev continua reportando 4 advisories de produção (3 baixos em KaTeX/markmap-lib e 1 alto em source-map-js), presentes desde o lockfile baseline; sem atualização ampla automática."
+      - "Nenhum provedor público, binding/ID remoto, segredo ou configuração de produção foi criado; API não está ativada em produção."
     commit: null
     pushed: false
   - id: 4
@@ -84,8 +91,8 @@ stages:
     pushed: false
 open_gates:
   - id: auth-provider
-    needed_before: 3
-    description: "Escolher provedor de login público, política de cadastro/abuso e aceitar custos/limites aplicáveis. Nenhum provedor está configurado."
+    needed_before: 8
+    description: "Antes de ativar publicamente, escolher provedor de login, política de cadastro/abuso e aceitar custos/limites; configurar issuer/audience/JWKS reais. Nenhum provedor está configurado."
   - id: cloudflare-resources
     needed_before: 7
     description: "Obter IDs reais de D1/Worker/bindings no ambiente autorizado. Não há IDs locais confirmados."
@@ -93,8 +100,8 @@ open_gates:
     needed_before: 7
     description: "Comparar a configuração do painel Pages com wrangler.jsonc atual antes de torná-lo fonte de verdade."
   - id: oauth-client
-    needed_before: 6
-    description: "Configurar OAuth/registro para clientes MCP e login, com secrets fora do Git."
+    needed_before: 8
+    description: "Antes de conexão MCP pública, configurar OAuth/registro de cliente e secrets fora do Git."
   - id: dependency-advisories
     needed_before: 8
     description: "Revisar e resolver ou aceitar os 4 advisories de dependências de produção já presentes no lockfile de baseline (katex e source-map-js) antes da validação final de produção."

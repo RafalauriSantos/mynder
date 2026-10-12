@@ -15,7 +15,7 @@ export default defineConfig({
     },
   }))],
   test: {
-    include: ['server/maps/**/*.test.ts'],
+    include: ['server/**/*.test.ts'],
     fileParallelism: false,
   },
 });

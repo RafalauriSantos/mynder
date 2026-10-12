@@ -63,15 +63,15 @@
 
 ## Etapa 3 — Autenticação configurável e API Pages
 
-**Arquivos previstos:** `functions/_middleware.ts`, `functions/api/session.ts`, `functions/api/maps.ts`, `functions/api/maps/[id].ts`, `server/auth/`, testes de handler e `wrangler` local isolado.
+**Arquivos:** `functions/_middleware.ts`, `functions/api/session.ts`, `functions/api/maps.ts`, `functions/api/maps/[id].ts`, `functions/api/types.ts`, `server/auth/`, `server/http/` e testes locais. O TypeScript do servidor inclui as Pages Functions.
 
-**Ações:** middleware valida assinatura/chaves, issuer, audience, expiração e subject do provedor selecionado; cria `SyncIdentity` do token verificado. API valida corpo e limites, ignora ou rejeita qualquer `ownerId`, deriva todas as operações da identidade middleware. Raiz pública; API privada. Falha de login não impede modo local.
+**Ações:** verificador OIDC/JWT sem dependência de provedor valida assinatura/JWKS, issuer HTTPS, audience, expiração e subject; cria `SyncIdentity` exclusivamente do token verificado. API valida corpo JSON em streaming (limite de 1.916.384 bytes por request), rejeita envelopes desconhecidos, ignora `ownerId` dentro do documento por validação de contrato e deriva operações da identidade middleware. Raiz e assets públicos; `/api/*` privado. Falha de login não impede modo local.
 
-**Gate externo antes de ativar:** provedor de login público, claims reais, URLs, credenciais OAuth e binding D1 real. Sem isso, testar validação com chaves/JWT efêmeros gerados em testes; não habilitar API anônima.
+**Gate externo antes de ativar:** provedor de login público, claims reais, URLs, credenciais OAuth e binding D1 real. Sem isso, a implementação fica genérica e é testada com chaves/JWT efêmeros e D1 local; não habilitar API anônima.
 
-**Validar:** tokens ausentes, expirados, issuer/audience incorretos, subject vazio, tentativa de falsificar proprietário, rate/size limit e handlers locais com banco local.
+**Validar:** tokens ausentes, expirados, assinatura/issuer/audience incorretos, subject vazio, JWKS indisponível, tentativa de falsificar proprietário, limite de tamanho e handlers locais com banco local. `npm run test:cloudflare` inclui caminho integrado JWT → middleware → Pages API → D1 local.
 
-**Aceite:** autorização server-side fail-closed; todas as rotas isolam identidade; `npm test`, build e teste integrado local passam.
+**Aceite:** autorização server-side fail-closed; todas as rotas isolam identidade; `npm test`, build e teste integrado local passam. Ativação pública continua bloqueada por configuração real do provedor.
 
 ## Etapa 4 — Cache local separado e sincronização
 

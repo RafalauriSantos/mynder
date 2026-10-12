@@ -10,6 +10,6 @@
     "noEmit": true,
     "types": ["@cloudflare/workers-types"]
   },
-  "include": ["server/**/*.ts", "src/document.ts", "src/sync/contracts.ts"],
+  "include": ["server/**/*.ts", "functions/**/*.ts", "src/document.ts", "src/sync/contracts.ts"],
   "exclude": ["server/**/*.test.ts"]
 }
