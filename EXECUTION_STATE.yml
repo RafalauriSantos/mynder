@@ -19,8 +19,8 @@ stages:
       - "npm run build: passou; aviso existente de diretiva use client em @xyflow/react."
       - "SPEC.md, IMPLEMENTATION.md e EXECUTION_STATE.yml revisados; gates externos explicitados, sem credenciais ou IDs inventados."
       - "Cloudflare D1 docs consultada em 2026-10-12: limite de 2.000.000 bytes por string/BLOB/linha; etapa 1 medirá bytes e etapa 2 reavaliará margem."
-    commit: null
-    pushed: false
+    commit: "75f43d4"
+    pushed: true
   - id: 1
     name: "Contratos de documento, identidade e sync"
     status: pending
