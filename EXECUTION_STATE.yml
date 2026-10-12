@@ -80,7 +80,7 @@ stages:
       - "Teste integrado local percorreu create → tombstone → restore → read; identidade cruzada continua recebendo 404."
       - "npm run test:cloudflare: 24 passaram; npm test: 37 passaram; npm run build e git diff --check passaram."
     commit: "97dfe69"
-    pushed: false
+    pushed: true
   - id: 6
     name: "Worker MCP autenticado"
     status: pending
