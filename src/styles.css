@@ -120,3 +120,4 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+ .map-entry{display:flex;align-items:stretch;gap:4px}.map-entry>button:first-child{flex:1;min-width:0;text-align:left}.delete-map{width:2rem;flex:0 0 2rem;padding:0;border:0;background:transparent;color:#8a8178;border-radius:8px;font-size:1.2rem}.delete-map:hover,.delete-map:focus-visible{color:#a33;background:#f3e5df}.danger{background:#a33!important;color:#fff!important;border-color:#a33!important}
