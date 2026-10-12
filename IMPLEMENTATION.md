@@ -53,11 +53,11 @@
 
 **Arquivos previstos:** `migrations/0001_sync.sql`, `server/maps/repository.ts`, `server/maps/repository.test.ts`, `vitest.config.ts` ou config Vite equivalente, configuração de bindings apenas para testes locais.
 
-**Interfaces:** `list(identity)`, `get(identity, mapId)`, `create(identity, document)`, `update(identity, mapId, expectedRevision, document)`, `tombstone(identity, mapId, expectedRevision)`, `restore(identity, mapId)`; nenhum método recebe `ownerId` separado.
+**Interfaces:** `list(identity)`, `get(identity, mapId)`, `create(identity, document)`, `update(identity, mapId, expectedRevision, document)`, `tombstone(identity, mapId, expectedRevision)`, `restore(identity, mapId, expectedRevision)`; nenhum método recebe `ownerId` separado. Criação, atualização, tombstone e restauração aceitam retry idempotente sem avançar revisão novamente.
 
-**Ações:** tabelas internas de identidade e mapas, índice composto por proprietário; prepared statements; `UNIQUE(owner_id, map_id)`; revisão monotônica; transação/condição para update e exclusão lógica. Medir tamanho de JSON completo com desenhos. Se não couber abaixo do limite D1 confirmado no momento, não truncar: parar e redesenhar armazenamento em chunks D1/R2 antes de seguir.
+**Ações:** tabelas internas de identidade e mapas, índice composto por proprietário; prepared statements; `UNIQUE(owner_id, map_id)`; revisão monotônica; batch atômico ao criar proprietário/mapa e condição de revisão para mutações. Medir tamanho de JSON completo com desenhos. Se não couber abaixo do limite D1 confirmado no momento, não truncar: parar e redesenhar armazenamento em chunks D1/R2 antes de seguir.
 
-**Validar:** testes de migração, CRUD, condição de revisão, tombstone/restauração e tentativa de identidade A ler/alterar/apagar mapa de B. Usar a integração Workers Vitest (`vitest@^4.1.0`, `@cloudflare/vitest-plugin@^1`) com Miniflare/D1 por arquivo de teste; nada consulta banco remoto. Comando: `npm run test:cloudflare`.
+**Validar:** testes de migração, CRUD, condição concorrente de revisão, tombstone/restauração/idempotência e tentativa de identidade A ler/alterar/apagar mapa de B. Confirmar que o maior payload permitido é persistido em D1 local abaixo do teto de linha. Usar a integração Workers Vitest (`vitest@^4.1.0`, `@cloudflare/vitest-plugin@^1`) com Miniflare/D1 por arquivo de teste; nada consulta banco remoto. Comando: `npm run test:cloudflare`.
 
 **Aceite:** isolamento demonstrado no repositório, operação atômica de revisão, migração repetível; suíte completa e build passam.
 

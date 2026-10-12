@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && tsc --project tsconfig.server.json && vite build",
     "test": "node --test document.test.mjs storage.test.mjs backup.test.mjs src/sync/contracts.test.mjs",
+    "test:cloudflare": "vitest run --config vitest.config.ts",
     "preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler pages deploy dist --project-name mynder"
   },
@@ -23,10 +24,13 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.61.0",
+    "@cloudflare/vitest-plugin": "^1.4.0",
+    "@cloudflare/workers-types": "^5.20261012.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "typescript": "latest",
     "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.11",
     "wrangler": "^4.142.0"
   }
 }

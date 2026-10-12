@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 2
+current_stage: 3
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -35,8 +35,15 @@ stages:
     pushed: true
   - id: 2
     name: "Schema e repositório D1"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "npm run test:cloudflare: 7 testes Workers/Miniflare passaram; D1 local, sem chamada ou alteração de recurso remoto."
+      - "Cobertura: aplicação repetível da migration, CRUD, isolamento A/B com mesmo mapId, atualização concorrente com uma única revisão vencedora, conflitos obsoletos, tombstone/restauração e retry idempotente."
+      - "Documento sintético com JSON próximo de 1,9 MB foi gravado no D1 local; CHECK de JSON válido e teto em bytes UTF-8 passou; metadados da linha couberam abaixo do limite documentado de 2 MB."
+      - "npm test: 25 passaram, 0 falharam."
+      - "npm run build: passou, incluindo TypeScript do servidor; aviso existente de diretiva use client em @xyflow/react."
+      - "Vitest usa binding TEST_DB gerado somente em memória de configuração local; nenhum ID/binding real Cloudflare foi usado."
+      - "npm audit --omit=dev: 4 advisories existentes no lockfile de baseline (katex 0.16.47, source-map-js 1.2.1); não corrigidos neste escopo e adicionados como gate antes de produção."
     commit: null
     pushed: false
   - id: 3
@@ -88,6 +95,9 @@ open_gates:
   - id: oauth-client
     needed_before: 6
     description: "Configurar OAuth/registro para clientes MCP e login, com secrets fora do Git."
+  - id: dependency-advisories
+    needed_before: 8
+    description: "Revisar e resolver ou aceitar os 4 advisories de dependências de produção já presentes no lockfile de baseline (katex e source-map-js) antes da validação final de produção."
 final_verification:
   npm_test: not_run
   npm_build: not_run
