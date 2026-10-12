@@ -120,9 +120,11 @@ stages:
       - "Login Google, sessão/cache isolado por conta, cópia consentida de mapas anônimos e sync foram integrados. Client ID público ausente: UI informa login não configurado e operação local continua disponível."
       - "D1 `mynder-staging` recebeu migration sem alterar 1 usuário/4 sessões/4 mapas. Backup SQL exportado e restore conferido. D1 vazio duplicado removido após auditoria: nenhum Worker/Pages usava o binding removido. Pages Preview/production e Worker MCP OAuth usam apenas o D1 preservado."
       - "Worker MCP OAuth redeployado; endpoints Pages/MCP sem credencial respondem 401. Login Google real, duas contas/dispositivos e MCP autenticado ainda não foram testados."
+      - "Commit `fcd30e8` enviado para `origin/main`; deployment Pages de production para o commit terminou com `success`. URL principal e URL do deployment servem o bundle que contém a UI Google/sync."
+      - "Smoke live: `mynder.pages.dev` e Preview retornam 200; `/api/session` nas duas origens retorna 401 com desafio Bearer sem token. Client ID Google não está configurado, então login real permanece indisponível e a app local continua utilizável."
       - "npm test 39/39; npm run test:cloudflare 27/27; npm run build e npm run build --prefix mcp passaram; Playwright local validou criação/persistência offline, 0 erros e 0 avisos no console; ambos os audits reportam 0 vulnerabilidades; git diff --check passou."
       - "Gate externo: registrar Google OAuth Web Client, configurar Client ID público no build e secrets AUTH_ISSUER/AUDIENCE/JWKS/secret no Cloudflare. Secret não deve ser colado no chat nem commitado."
-    commit: "af9ba4b"
+    commit: "fcd30e8"
     pushed: true
 open_gates:
   - id: auth-provider
@@ -141,7 +143,7 @@ final_verification:
   npm_test: passed
   npm_build: passed
   local_d1_integration: passed
-  production_deploy: not_run
+  production_deploy: passed
   mcp_live_connection: not_run
   mcp_local_oauth_flow: passed
   mcp_worker_build: passed
