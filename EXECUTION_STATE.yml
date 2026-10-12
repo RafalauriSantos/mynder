@@ -57,7 +57,7 @@ stages:
       - "npm test: 25 testes passaram; npm run build: passou incluindo TypeScript das Functions; git diff --check passou."
       - "npm audit --omit=dev continua reportando 4 advisories de produção (3 baixos em KaTeX/markmap-lib e 1 alto em source-map-js), presentes desde o lockfile baseline; sem atualização ampla automática."
       - "Nenhum provedor público, binding/ID remoto, segredo ou configuração de produção foi criado; API não está ativada em produção."
-    commit: null
+    commit: "ba05338"
     pushed: false
   - id: 4
     name: "Cache local separado e sincronização"
