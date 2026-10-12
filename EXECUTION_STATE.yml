@@ -1,0 +1,90 @@
+project: mynder
+objective: "Sincronização multiusuário Cloudflare com MCP autenticado, preservando offline e JSON"
+updated_at: "2026-10-12"
+repository:
+  path: "C:\\Users\\Rafael lauri\\Projects\\Mynder"
+  branch: main
+  remote: "https://github.com/RafalauriSantos/mynder.git"
+  baseline_commit: "1e7fc25"
+  baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
+current_stage: 0
+stages:
+  - id: 0
+    name: "Baseline e especificação executável"
+    status: passed
+    evidence:
+      - "Checkout confirmado: main; origin/main; HEAD 1e7fc25; branch inicialmente sem alterações rastreadas."
+      - "Artefatos preexistentes .playwright-cli/ e output/ não rastreados foram preservados e não serão incluídos."
+      - "npm test: 18 passaram, 0 falharam."
+      - "npm run build: passou; aviso existente de diretiva use client em @xyflow/react."
+      - "SPEC.md, IMPLEMENTATION.md e EXECUTION_STATE.yml revisados; gates externos explicitados, sem credenciais ou IDs inventados."
+      - "Cloudflare D1 docs consultada em 2026-10-12: limite de 2.000.000 bytes por string/BLOB/linha; etapa 1 medirá bytes e etapa 2 reavaliará margem."
+    commit: null
+    pushed: false
+  - id: 1
+    name: "Contratos de documento, identidade e sync"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 2
+    name: "Schema e repositório D1"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 3
+    name: "Autenticação configurável e API Pages"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 4
+    name: "Cache local separado e sincronização"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 5
+    name: "Serviço de domínio compartilhado"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 6
+    name: "Worker MCP autenticado"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 7
+    name: "Empacotamento e configuração Cloudflare"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+  - id: 8
+    name: "Testes ponta a ponta e produção"
+    status: pending
+    evidence: []
+    commit: null
+    pushed: false
+open_gates:
+  - id: auth-provider
+    needed_before: 3
+    description: "Escolher provedor de login público, política de cadastro/abuso e aceitar custos/limites aplicáveis. Nenhum provedor está configurado."
+  - id: cloudflare-resources
+    needed_before: 7
+    description: "Obter IDs reais de D1/Worker/bindings no ambiente autorizado. Não há IDs locais confirmados."
+  - id: pages-config-migration
+    needed_before: 7
+    description: "Comparar a configuração do painel Pages com wrangler.jsonc atual antes de torná-lo fonte de verdade."
+  - id: oauth-client
+    needed_before: 6
+    description: "Configurar OAuth/registro para clientes MCP e login, com secrets fora do Git."
+final_verification:
+  npm_test: not_run
+  npm_build: not_run
+  local_d1_integration: not_run
+  production_deploy: not_run
+  mcp_live_connection: not_run

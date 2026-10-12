@@ -133,3 +133,25 @@ O usuário aprovou a direção de sincronização em 27/09/2026 e esclareceu que
 ## Decisão técnica atual
 
 Aplicação web em React, TypeScript e Vite; canvas baseado em React Flow; desenhos vetoriais persistidos como dados; armazenamento local no navegador; hospedagem estática no Cloudflare Pages. Manter a solução simples enquanto o fluxo principal é validado.
+
+## Estado atual e alvo executável: sincronização Cloudflare + MCP
+
+**Estado confirmado em 12/10/2026:** `main` contém o app local React/Vite, persistência no `localStorage`, exportação/importação JSON e execução offline após visita conectada. Não existe autenticação, API de mapas, binding D1, sincronização ou servidor MCP no código. O deploy atual de produção usa Pages Git integration e o painel do Pages; `wrangler.jsonc` é atualmente configuração local de Workers Static Assets e não foi confirmado como configuração de produção do Pages.
+
+**Objetivo:** permitir que uma pessoa use seus mapas em mais de um dispositivo e solicite operações nos próprios mapas via MCP. A nuvem será uma cópia sincronizada recuperável; o armazenamento local permanece editável e exportável sem rede. Cada API e ferramenta MCP obterá o proprietário exclusivamente de uma identidade autenticada e validada no servidor. O cliente nunca escolhe ou fornece a identidade proprietária.
+
+**Arquitetura alvo:** manter o frontend em `mynder.pages.dev`; Pages Functions em `/api/*` e binding D1 para sincronização; um Worker remoto MCP para `/mcp`, conectado ao mesmo serviço de domínio e D1. O MCP usa OAuth 2.1 para autorizar o cliente de IA, e a autenticação externa do usuário mapeia para uma identidade Mynder estável. O transporte e os tokens nunca são armazenados em `localStorage`. O Worker MCP pode usar um subdomínio `workers.dev` até haver domínio próprio.
+
+**Invariantes:**
+
+- Documentos v2 locais e backups Mynder v1 continuam legíveis e exportáveis; uso anônimo/offline não exige conta.
+- A primeira importação de mapas anônimos para uma conta exige confirmação e copia, sem apagar a fonte local.
+- O servidor deriva `owner_id` da sessão validada. Todas as consultas de mapas incluem o proprietário autenticado; `ownerId` do corpo, URL ou MCP args é ignorado ou rejeitado.
+- Revisões remotas são condicionais. Conflito, indisponibilidade, autenticação expirada, cotas e limites de tamanho preservam a edição local e mostram pendência/erro acionável.
+- Exclusões remotas são tombstones recuperáveis; conflito nunca usa última gravação vence sem aviso.
+- Ferramentas MCP chamam o mesmo serviço de domínio que a API. O escopo de cada token é mínimo; exclusão pede confirmação explícita e gera recuperação.
+- Nenhum segredo, token OAuth, ID real de database, ID de conta, hostname ou configuração de produção é inventado ou commitado. Produção só passa a usar configuração via Wrangler após comparação com o painel atual e autorização explícita para essa migração.
+
+**Decisões ainda abertas e gates de produção:** escolher o provedor de login público e definir política de cadastro/abuso; verificar o formato e a estabilidade de identidade que o provedor entrega; obter IDs reais dos recursos Cloudflare; decidir se a configuração de Pages permanece no painel ou migra, após download/auditoria do estado atual. O código deve manter interfaces independentes do provedor enquanto essas entradas não existem. Nenhuma configuração paga, conta, OAuth client ou recurso remoto será criada por suposição.
+
+**Plano executável e evidências:** [IMPLEMENTATION.md](IMPLEMENTATION.md) define as etapas e gates; [EXECUTION_STATE.yml](EXECUTION_STATE.yml) é o registro autoritativo da etapa atual, validações, commits, publicação e bloqueios. Uma etapa passa apenas após os comandos e critérios listados passarem. O objetivo permanece aberto até login, sync, isolamento multiusuário, offline/backup, MCP autorizado e validação de produção estarem comprovados.
