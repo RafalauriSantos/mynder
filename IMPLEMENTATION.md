@@ -47,7 +47,7 @@
 
 **Red/Green:** primeiro testar conversão do documento atual para payload JSON UTF-8 medido em bytes, rejeição de IDs proprietários nos dados do cliente e validação de revisão positiva; observar os testes falharem; implementar tipos/validação canônica mínima; adicionar testes de documento próximo do limite e erro serializável sem dados sensíveis.
 
-**Aceite:** contrato independente de React e `localStorage`; payload não aceita identidade proprietária; bytes medidos como UTF-8 reais; testes específicos, suíte completa e build passam. Registrar tamanhos de fixtures sintéticas pequenas, médias e grandes para a etapa de armazenamento.
+**Aceite:** contrato independente de React e `localStorage`; payload não aceita identidade proprietária; bytes medidos como UTF-8 reais; testes específicos, suíte completa e build passam. O teto inicial é 1.900.000 bytes (margem em relação aos 2.000.000 bytes por linha D1 documentados) e deverá ser reavaliado com o schema na etapa 2. Registrar tamanhos de fixtures sintéticas pequenas, médias e grandes para a etapa de armazenamento.
 
 ## Etapa 2 — Schema e repositório D1
 

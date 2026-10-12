@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 0
+current_stage: 2
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -23,8 +23,14 @@ stages:
     pushed: true
   - id: 1
     name: "Contratos de documento, identidade e sync"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "node --test src/sync/contracts.test.mjs: 7 passaram, 0 falharam."
+      - "npm test: 25 passaram, 0 falharam."
+      - "npm run build: passou; aviso existente de diretiva use client em @xyflow/react."
+      - "Payload mede TextEncoder UTF-8, preserva JSON local, rejeita ownerId/owner_id, identidade/revisão inválidas e limite excedido; erros são estruturas seguras serializáveis."
+      - "Fixtures sintéticas UTF-8: pequena 291 B; média 9.703 B; grande 386.274 B; a grande contém 200 tópicos, 250 ligações e 100 desenhos com 200 pontos."
+      - "Teto provisório de payload: 1.900.000 bytes vs. linha D1 de 2.000.000 bytes na documentação oficial; revalidar overhead do schema na etapa 2."
     commit: null
     pushed: false
   - id: 2

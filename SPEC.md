@@ -148,6 +148,7 @@ Aplicação web em React, TypeScript e Vite; canvas baseado em React Flow; desen
 - A primeira importação de mapas anônimos para uma conta exige confirmação e copia, sem apagar a fonte local.
 - O servidor deriva `owner_id` da sessão validada. Todas as consultas de mapas incluem o proprietário autenticado; `ownerId` do corpo, URL ou MCP args é ignorado ou rejeitado.
 - Revisões remotas são condicionais. Conflito, indisponibilidade, autenticação expirada, cotas e limites de tamanho preservam a edição local e mostram pendência/erro acionável.
+- O payload JSON de cada documento para sync tem teto inicial de 1.900.000 bytes UTF-8, abaixo do limite D1 documentado de 2.000.000 bytes por linha; documentos maiores continuam locais/exportáveis e recebem erro recuperável. A etapa D1 deve confirmar o espaço reservado para colunas/metadados antes de manter esse teto.
 - Exclusões remotas são tombstones recuperáveis; conflito nunca usa última gravação vence sem aviso.
 - Ferramentas MCP chamam o mesmo serviço de domínio que a API. O escopo de cada token é mínimo; exclusão pede confirmação explícita e gera recuperação.
 - Nenhum segredo, token OAuth, ID real de database, ID de conta, hostname ou configuração de produção é inventado ou commitado. Produção só passa a usar configuração via Wrangler após comparação com o painel atual e autorização explícita para essa migração.
