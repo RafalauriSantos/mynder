@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 4
+current_stage: 5
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -70,7 +70,7 @@ stages:
       - "npm run test:cloudflare: 23 testes passaram; npm run build passou; git diff --check passou."
       - "Integração visual e importação inicial do espaço anônimo não foram habilitadas sem provedor/login; o cache de conta permanece isolado e o modo local permanece padrão."
     commit: "c089c0e"
-    pushed: false
+    pushed: true
   - id: 5
     name: "Serviço de domínio compartilhado"
     status: pending
