@@ -79,7 +79,7 @@ stages:
       - "Pages handlers não acessam SQL/repositório diretamente; todos chamam o serviço. Novo `POST /api/maps/:id/restore` usa revisão esperada e mesma identidade autenticada."
       - "Teste integrado local percorreu create → tombstone → restore → read; identidade cruzada continua recebendo 404."
       - "npm run test:cloudflare: 24 passaram; npm test: 37 passaram; npm run build e git diff --check passaram."
-    commit: null
+    commit: "97dfe69"
     pushed: false
   - id: 6
     name: "Worker MCP autenticado"
