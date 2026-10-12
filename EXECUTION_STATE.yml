@@ -61,8 +61,14 @@ stages:
     pushed: true
   - id: 4
     name: "Cache local separado e sincronização"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "`src/sync/local-store.ts` usa SHA-256 de issuer + subject para particionar cache e backup; `rascunho-v2` anônimo não é lido, movido ou alterado pelo store de contas."
+      - "`src/sync/client.ts` pede Bearer token por callback em memória, não persiste credenciais e valida payload/resposta; suporta session, list, create, update condicional e delete tombstone."
+      - "`src/sync/engine.ts` reconcilia novos, remotos, alterações, exclusões e conflitos sem merge destrutivo; checkpoints após operações remotas concluídas."
+      - "npm test: 36 testes passaram, incluindo partição A/B/anon, backup local, chamadas autenticadas, envio/recebimento, conflito e tombstone; 0 falhas."
+      - "npm run test:cloudflare: 23 testes passaram; npm run build passou; git diff --check passou."
+      - "Integração visual e importação inicial do espaço anônimo não foram habilitadas sem provedor/login; o cache de conta permanece isolado e o modo local permanece padrão."
     commit: null
     pushed: false
   - id: 5

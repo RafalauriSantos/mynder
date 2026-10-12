@@ -75,13 +75,13 @@
 
 ## Etapa 4 — Cache local separado e sincronização
 
-**Arquivos previstos:** `src/sync/local-store.ts`, `src/sync/client.ts`, `src/sync/queue.ts`, `src/sync/*.test.mjs`, alterações mínimas em `src/main.tsx` e UI.
+**Arquivos:** `src/sync/local-store.ts`, `src/sync/client.ts`, `src/sync/engine.ts` e testes Node. O login ainda não tem provedor escolhido; por isso a UI não inicia sessão nem sync sozinha. A API client recebe um fornecedor de token em memória, que será ligado ao login na ativação.
 
-**Ações:** separar chave anônima de chaves por `(issuer, subject)`; primeira cópia para nuvem apresenta quantidade e pede confirmação; nunca apaga a origem; salvar local antes da rede; fila idempotente; baixar apenas revisão alterada; expor estados `local`, `pending`, `synced`, `conflict`, `error`; conflito preserva cópia local recuperável; exclusões sincronizam tombstone. Sem merge automático.
+**Ações:** separar chave anônima existente de cache por hash SHA-256 de `(issuer, subject)`; a separação não move nem altera os JSON anônimos. Cache de conta mantém backup local, baselines de revisão e mapas descartados. API client solicita token sob demanda, não o persiste, e suporta sessão/CRUD condicional. Motor idempotente envia mapas novos e edições locais, baixa alterações remotas, registra tombstones, checkpointa cada progresso e preserva edições divergentes como conflitos. Sem merge automático. A integração UI e a confirmação para importar mapas anônimos permanecem antes da ativação com provedor real.
 
-**Validar:** offline edit → recarregar → reconectar; alternar contas A/B/anon; retry duplicado; conflito de duas revisões; exclusão propagada; exportar/importar JSON em cada estado.
+**Validar:** alternar stores A/B/anon; cache danificado e backup; credencial ausente antes de rede; payload sem proprietário; create/pull/update/delete/tombstone/retry, alterações divergentes preservadas e checkpoints após escrita.
 
-**Aceite:** todos os critérios locais da SPEC passam; automação com duas identidades e API local demonstra sincronização sem vazamento; suíte completa e build passam.
+**Aceite:** primitivas de cache, API client e reconciliação passam testes determinísticos; app existente e JSON anônimo continuam intactos. A ligação à UI e teste offline/reconexão após login ficam para a ativação, pois ainda dependem do provedor externo.
 
 ## Etapa 5 — Serviço de domínio compartilhado
 
