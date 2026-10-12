@@ -115,10 +115,11 @@ stages:
       - "Audit inicial root: 4 advisories de produção (source-map-js alto, KaTeX 3 baixos). `npm audit fix` sem `--force` removeu advisories de source-map-js/ferramentas; override de KaTeX em 0.19.0 removeu o último alerta sem downgrade de markmap."
       - "`npm audit --omit=dev`: 0 vulnerabilidades; `npm audit --prefix mcp`: 0 vulnerabilidades. `npm ls katex --all` confirma KaTeX 0.19.0 sob markmap-lib/markdown-it-katex."
       - "Após atualizar dependências: `npm test` 37/37; `npm run test:cloudflare` 26/26; `npm run build`, `npm run build --prefix mcp` e `git diff --check` passaram. Aviso `use client` de @xyflow/react permanece informativo."
+      - "Commit `af9ba4b` enviado para `origin/main`; o deploy automático Pages de produção terminou com status `success`."
       - "Ainda sem IdP OIDC escolhido, política de cadastro/abuso, clientes OAuth ou credenciais; não há UI de login/sync integrada. Produção mantém Pages sem DB binding/secrets e nenhum mapa remoto criado."
       - "Próxima validação necessita escolha do provedor, configuração real dos callbacks/segredos e autorização para D1 de produção vazio separado; D1 legado permanece intacto."
-    commit: null
-    pushed: false
+    commit: "af9ba4b"
+    pushed: true
 open_gates:
   - id: auth-provider
     needed_before: 8
@@ -147,3 +148,4 @@ final_verification:
   pages_production_build_after_stage7: passed
   production_login_and_sync: not_run
   root_production_dependency_audit: passed
+  pages_production_build_after_stage8_dependency_fix: passed
