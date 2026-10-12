@@ -74,7 +74,7 @@ describe('authenticated Pages map API handlers',()=>{
 
   it('connects signed-token middleware to the owner-scoped D1 route end to end',async()=>{
     const now=Math.floor(Date.now()/1000);
-    const token=await new SignJWT({ownerId:'forged-owner'})
+    const token=await new SignJWT({ownerId:'forged-owner',email_verified:true})
       .setProtectedHeader({alg:'RS256',kid:'end-to-end-test-key'})
       .setIssuer(issuer).setAudience(audience).setSubject('end-to-end-user').setIssuedAt(now).setExpirationTime(now+300).sign(privateKey);
     const request=new Request('https://mynder.test/api/maps',{headers:{authorization:`Bearer ${token}`}});

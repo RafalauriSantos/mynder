@@ -17,9 +17,9 @@ beforeAll(async()=>{
 const config={issuer,audience,jwksUrl};
 const fetchJwks: typeof fetch=async()=>Response.json({keys:[publicJwk]});
 
-async function token(claims:{iss?:string;aud?:string;sub?:string;exp?:number;ownerId?:string;nonce?:string}={}){
+async function token(claims:{iss?:string;aud?:string;sub?:string;exp?:number;ownerId?:string;nonce?:string;emailVerified?:boolean}={}){
   const now=Math.floor(Date.now()/1000);
-  const jwt=new SignJWT({ownerId:'untrusted',...(claims.ownerId===undefined?{}:{ownerId:claims.ownerId}),...(claims.nonce===undefined?{}:{nonce:claims.nonce})})
+  const jwt=new SignJWT({ownerId:'untrusted',email_verified:claims.emailVerified??true,...(claims.ownerId===undefined?{}:{ownerId:claims.ownerId}),...(claims.nonce===undefined?{}:{nonce:claims.nonce})})
     .setProtectedHeader({alg:'RS256',kid:'test-key'})
     .setIssuer(claims.iss??issuer)
     .setAudience(claims.aud??audience)
@@ -52,6 +52,12 @@ describe('provider-neutral OIDC identity verification',()=>{
     expect(valid).toEqual({issuer,subject:'verified-user'});
     await expect(verifyIdentityToken(await token({nonce:'different'}),{...config,nonce},fetchJwks)).rejects.toMatchObject({code:'invalid_token'});
     await expect(verifyIdentityToken(await token(),{...config,nonce},fetchJwks)).rejects.toMatchObject({code:'invalid_token'});
+  });
+
+  it('can require a verified email for open Google registration',async()=>{
+    const verified=await verifyIdentityToken(await token(),{...config,requireVerifiedEmail:true},fetchJwks);
+    expect(verified).toEqual({issuer,subject:'verified-user'});
+    await expect(verifyIdentityToken(await token({emailVerified:false}),{...config,requireVerifiedEmail:true},fetchJwks)).rejects.toMatchObject({code:'invalid_token'});
   });
 
   it('rejects expired, unsigned, missing-subject and oversized tokens',async()=>{

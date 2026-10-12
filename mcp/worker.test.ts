@@ -60,7 +60,7 @@ async function sha256Base64Url(value:string):Promise<string>{
 
 async function identityToken(subject:string,nonce:string){
   const now=Math.floor(Date.now()/1000);
-  return new SignJWT({nonce})
+  return new SignJWT({nonce,email_verified:true})
     .setProtectedHeader({alg:'RS256',kid:'mcp-test-key'})
     .setIssuer(issuer).setAudience(audience).setSubject(subject).setIssuedAt(now).setExpirationTime(now+300)
     .sign(privateKey);

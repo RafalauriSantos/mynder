@@ -206,7 +206,7 @@ async function finishUpstreamSignIn(request:Request,env:MynderMcpEnv,oauth:Retur
     if(!code||code.length>4_096||!transaction.data?.verifier||!transaction.data?.nonce)return response(400,'Resposta de login inválida. Reinicie a conexão MCP.');
     const metadata=await getOidcMetadata(env);
     const idToken=await exchangeOidcCode(code,transaction.data.verifier,env,metadata);
-    const identity=await verifyIdentityToken(idToken,{issuer:env.AUTH_ISSUER,audience:env.AUTH_AUDIENCE,jwksUrl:env.AUTH_JWKS_URL,nonce:transaction.data.nonce});
+    const identity=await verifyIdentityToken(idToken,{issuer:env.AUTH_ISSUER,audience:env.AUTH_AUDIENCE,jwksUrl:env.AUTH_JWKS_URL,nonce:transaction.data.nonce,requireVerifiedEmail:true});
     const userId=await stableUserId(identity);
     const completed=await oauth.completeAuthorization({request:transaction.request,userId,metadata:{},scope:transaction.request.scope,props:{identity}});
     transaction.headers.set('location',completed.redirectTo);

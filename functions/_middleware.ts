@@ -26,6 +26,7 @@ export const onRequest: PagesFunction<SyncApiEnv, string, SyncApiContext['data']
       issuer: context.env.AUTH_ISSUER,
       audience: context.env.AUTH_AUDIENCE,
       jwksUrl: context.env.AUTH_JWKS_URL,
+      requireVerifiedEmail: true,
     });
   } catch (error) {
     if (error instanceof AuthVerificationError && error.code === 'invalid_token') {

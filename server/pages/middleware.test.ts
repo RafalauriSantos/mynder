@@ -16,7 +16,7 @@ beforeAll(async()=>{
 
 async function signedToken(){
   const now=Math.floor(Date.now()/1000);
-  return new SignJWT({ownerId:'untrusted-owner'}).setProtectedHeader({alg:'RS256',kid:'middleware-test-key'}).setIssuer(issuer).setAudience(audience).setSubject('verified-subject').setIssuedAt(now).setExpirationTime(now+300).sign(privateKey);
+  return new SignJWT({ownerId:'untrusted-owner',email_verified:true}).setProtectedHeader({alg:'RS256',kid:'middleware-test-key'}).setIssuer(issuer).setAudience(audience).setSubject('verified-subject').setIssuedAt(now).setExpirationTime(now+300).sign(privateKey);
 }
 
 describe('Pages auth middleware',()=>{

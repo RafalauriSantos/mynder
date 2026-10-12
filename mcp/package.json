@@ -5,8 +5,8 @@
   "scripts": {
     "build": "tsc --noEmit -p tsconfig.json",
     "cloudflare:configure": "node scripts/configure-cloudflare.mjs",
-    "cloudflare:migrations:staging": "wrangler d1 migrations list mynder-sync-staging --remote --config .wrangler/wrangler.generated.jsonc",
-    "cloudflare:migrate:staging": "wrangler d1 migrations apply mynder-sync-staging --remote --config .wrangler/wrangler.generated.jsonc",
+    "cloudflare:migrations:staging": "wrangler d1 migrations list mynder-staging --remote --config .wrangler/wrangler.generated.jsonc",
+    "cloudflare:migrate:staging": "wrangler d1 migrations apply mynder-staging --remote --config .wrangler/wrangler.generated.jsonc",
     "cloudflare:dry-run:staging": "wrangler deploy --dry-run --config .wrangler/wrangler.generated.jsonc",
     "cloudflare:deploy:staging": "wrangler deploy --config .wrangler/wrangler.generated.jsonc",
     "test": "npm --prefix .. run test:cloudflare"

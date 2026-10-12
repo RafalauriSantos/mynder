@@ -97,10 +97,10 @@ stages:
     status: passed
     evidence:
       - "Pages `mynder` auditado: GitHub/main, `npm run build` → `dist`; painel comparado com `wrangler.jsonc`. O dashboard permanece fonte de verdade e produção não recebeu configuração nova."
-      - "Inventário preservado: D1 legado `mynder-staging` tinha 1 usuário, 4 sessões e 4 mapas; Worker legado `mynder-mcp-staging` tinha configuração/token do modelo anterior. Nenhum foi alterado ou reutilizado."
-      - "Provisionado D1 limpo `mynder-sync-staging` e aplicada remotamente `migrations/0001_sync.sql`; schema contém `sync_owners`/`sync_maps`, sem mapas ou usuários no banco novo."
+      - "Inventário preservado: D1 `mynder-staging` tinha 1 usuário, 4 sessões e 4 mapas; Worker legado `mynder-mcp-staging` não foi alterado."
+      - "D1 `mynder-sync-staging` foi temporariamente criado, sem usuários/mapas; removido somente após backup e restauração local validada do banco preservado, migração do schema e auditoria de bindings sem referências."
       - "Provisionado KV `mynder-oauth-staging`; novo Worker `mynder-mcp-oauth-staging` usa somente bindings DB/OAUTH_KV e flag `global_fetch_strictly_public`; deployment separado concluído."
-      - "Pages Preview ligado ao D1 novo e publicado no alias `mynder-sync-staging`; produção verificada sem D1 binding e sem variáveis/secrets. Deployment Preview registrou status `success`."
+      - "Pages Preview e production do projeto `mynder` agora compartilham o D1 único `mynder-staging`; configuração fail-closed preservada."
       - "Smoke live: raiz Pages Preview 200; `/api/session` e `/api/maps` sem token 401 com desafio Bearer; `/mcp` sem token 401 com desafio OAuth; metadata MCP identifica issuer e resource exatos do Worker."
       - "Gerador `mcp/scripts/configure-cloudflare.mjs` resolve recursos por nomes exatos, exige `MYNDER_WORKERS_SUBDOMAIN` e mantém IDs/hostname somente em config gerado dentro de `.wrangler/`, ignorado pelo Git. `wrangler deploy --dry-run` passou."
       - "Commit `7739793` enviado para `origin/main`; o build/deploy automático Pages de produção para esse commit terminou com status `success`. A configuração de produção permaneceu sem binding D1 e sem autenticação/sync ativados."
@@ -116,23 +116,27 @@ stages:
       - "`npm audit --omit=dev`: 0 vulnerabilidades; `npm audit --prefix mcp`: 0 vulnerabilidades. `npm ls katex --all` confirma KaTeX 0.19.0 sob markmap-lib/markdown-it-katex."
       - "Após atualizar dependências: `npm test` 37/37; `npm run test:cloudflare` 26/26; `npm run build`, `npm run build --prefix mcp` e `git diff --check` passaram. Aviso `use client` de @xyflow/react permanece informativo."
       - "Commit `af9ba4b` enviado para `origin/main`; o deploy automático Pages de produção terminou com status `success`."
-      - "Ainda sem IdP OIDC escolhido, política de cadastro/abuso, clientes OAuth ou credenciais; não há UI de login/sync integrada. Produção mantém Pages sem DB binding/secrets e nenhum mapa remoto criado."
-      - "Próxima validação necessita escolha do provedor, configuração real dos callbacks/segredos e autorização para D1 de produção vazio separado; D1 legado permanece intacto."
+      - "Decisões do usuário: Google OIDC; cadastro para qualquer conta Google com e-mail verificado; exatamente um D1 Mynder total, compartilhado entre ambientes."
+      - "Login Google, sessão/cache isolado por conta, cópia consentida de mapas anônimos e sync foram integrados. Client ID público ausente: UI informa login não configurado e operação local continua disponível."
+      - "D1 `mynder-staging` recebeu migration sem alterar 1 usuário/4 sessões/4 mapas. Backup SQL exportado e restore conferido. D1 vazio duplicado removido após auditoria: nenhum Worker/Pages usava o binding removido. Pages Preview/production e Worker MCP OAuth usam apenas o D1 preservado."
+      - "Worker MCP OAuth redeployado; endpoints Pages/MCP sem credencial respondem 401. Login Google real, duas contas/dispositivos e MCP autenticado ainda não foram testados."
+      - "npm test 39/39; npm run test:cloudflare 27/27; npm run build e npm run build --prefix mcp passaram; Playwright local validou criação/persistência offline, 0 erros e 0 avisos no console; ambos os audits reportam 0 vulnerabilidades; git diff --check passou."
+      - "Gate externo: registrar Google OAuth Web Client, configurar Client ID público no build e secrets AUTH_ISSUER/AUDIENCE/JWKS/secret no Cloudflare. Secret não deve ser colado no chat nem commitado."
     commit: "af9ba4b"
     pushed: true
 open_gates:
   - id: auth-provider
     needed_before: 8
-    description: "Antes de ativar publicamente, escolher provedor de login, política de cadastro/abuso e aceitar custos/limites; configurar issuer/audience/JWKS reais. Nenhum provedor está configurado."
+    description: "Google OIDC e cadastro de usuário verificado escolhidos. Configurar credenciais reais e validar o fluxo; rever cotas/custos antes de uso amplo."
   - id: cloudflare-resources
     needed_before: 8
-    description: "Staging está isolado e validado. Antes de produção, provisionar/selecionar D1 de produção separado e bindings/secrets em ambiente production. O D1 legado com dados segue preservado."
+    description: "Um D1 total escolhido, configurado para Preview e production; ambientes compartilham dados. Confirmar backup/restauração operacional antes de uso amplo."
   - id: oauth-client
     needed_before: 8
-    description: "Escolher IdP OIDC e política de cadastro/abuso, registrar clientes/callbacks reais e configurar issuer/audience/JWKS/segredo fora do Git. OAuth MCP e DCR estão implementados; CIMD foi habilitado apenas no Worker novo de staging com global_fetch_strictly_public."
+    description: "Registrar Google OAuth Web Client e callback MCP; configurar AUTH_ISSUER/AUDIENCE/JWKS e OIDC_CLIENT_SECRET via Cloudflare secrets/settings; configurar VITE_GOOGLE_CLIENT_ID no build. OAuth MCP e DCR estão implementados."
   - id: account-login-sync-ui
     needed_before: 8
-    description: "A interface ainda não liga login OIDC, cache isolado por conta, API client e syncAccount. Escolher o IdP primeiro; implementar sem misturar nem apagar o espaço anônimo."
+    description: "Implementação local integrada; validar login real e sync autenticado em múltiplas contas/dispositivos após provisionar credenciais Google."
 final_verification:
   npm_test: passed
   npm_build: passed

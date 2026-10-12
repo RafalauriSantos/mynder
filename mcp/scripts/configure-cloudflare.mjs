@@ -9,7 +9,9 @@ const repositoryDirectory = path.resolve(workerDirectory, '..');
 const wranglerCli = path.join(repositoryDirectory, 'node_modules', 'wrangler', 'bin', 'wrangler.js');
 const outputDirectory = path.join(workerDirectory, '.wrangler');
 const outputPath = path.join(outputDirectory, 'wrangler.generated.jsonc');
-const databaseName = 'mynder-sync-staging';
+// One shared Mynder D1 is intentional per the user's explicit choice. Keep the
+// legacy schema and maps in place while adding the sync schema to this DB.
+const databaseName = 'mynder-staging';
 const namespaceTitle = 'mynder-oauth-staging';
 const workerName = 'mynder-mcp-oauth-staging';
 const workersSubdomain = process.env.MYNDER_WORKERS_SUBDOMAIN?.trim();

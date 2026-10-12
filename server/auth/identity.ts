@@ -6,6 +6,7 @@ export type IdentityVerificationConfig = Readonly<{
   audience?: string;
   jwksUrl?: string;
   nonce?: string;
+  requireVerifiedEmail?: boolean;
 }>;
 
 export class AuthVerificationError extends Error {
@@ -105,6 +106,9 @@ export async function verifyIdentityToken(
 
   try {
     if (config.nonce !== undefined && (!config.nonce || payload.nonce !== config.nonce)) {
+      throw new AuthVerificationError('invalid_token');
+    }
+    if (config.requireVerifiedEmail && payload.email_verified !== true) {
       throw new AuthVerificationError('invalid_token');
     }
     return validateSyncIdentity({issuer: payload.iss, subject: payload.sub});
