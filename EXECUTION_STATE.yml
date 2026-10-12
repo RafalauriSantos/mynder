@@ -103,10 +103,11 @@ stages:
       - "Pages Preview ligado ao D1 novo e publicado no alias `mynder-sync-staging`; produção verificada sem D1 binding e sem variáveis/secrets. Deployment Preview registrou status `success`."
       - "Smoke live: raiz Pages Preview 200; `/api/session` e `/api/maps` sem token 401 com desafio Bearer; `/mcp` sem token 401 com desafio OAuth; metadata MCP identifica issuer e resource exatos do Worker."
       - "Gerador `mcp/scripts/configure-cloudflare.mjs` resolve recursos por nomes exatos, exige `MYNDER_WORKERS_SUBDOMAIN` e mantém IDs/hostname somente em config gerado dentro de `.wrangler/`, ignorado pelo Git. `wrangler deploy --dry-run` passou."
+      - "Commit `7739793` enviado para `origin/main`; o build/deploy automático Pages de produção para esse commit terminou com status `success`. A configuração de produção permaneceu sem binding D1 e sem autenticação/sync ativados."
       - "`npm run test --prefix mcp`: 26 passaram; `npm test`: 37 passaram; `npm run build`, `npm run build --prefix mcp`, `npm audit --prefix mcp` (0 vulnerabilidades), `git diff --check` passaram. Build mantém aviso informativo existente de `use client` em @xyflow/react."
       - "OIDC real não está configurado; sessão válida foi validada por testes integrados locais, não pelo provedor real. Produção continua offline/JSON e sem sincronização habilitada."
-    commit: null
-    pushed: false
+    commit: "7739793"
+    pushed: true
   - id: 8
     name: "Testes ponta a ponta e produção"
     status: pending
@@ -138,4 +139,5 @@ final_verification:
   staging_resources_and_migrations: passed
   pages_preview_auth_guard: passed
   mcp_staging_auth_guard: passed
+  pages_production_build_after_stage7: passed
   production_login_and_sync: not_run
