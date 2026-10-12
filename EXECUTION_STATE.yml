@@ -110,8 +110,13 @@ stages:
     pushed: true
   - id: 8
     name: "Testes ponta a ponta e produção"
-    status: pending
-    evidence: []
+    status: in_progress
+    evidence:
+      - "Audit inicial root: 4 advisories de produção (source-map-js alto, KaTeX 3 baixos). `npm audit fix` sem `--force` removeu advisories de source-map-js/ferramentas; override de KaTeX em 0.19.0 removeu o último alerta sem downgrade de markmap."
+      - "`npm audit --omit=dev`: 0 vulnerabilidades; `npm audit --prefix mcp`: 0 vulnerabilidades. `npm ls katex --all` confirma KaTeX 0.19.0 sob markmap-lib/markdown-it-katex."
+      - "Após atualizar dependências: `npm test` 37/37; `npm run test:cloudflare` 26/26; `npm run build`, `npm run build --prefix mcp` e `git diff --check` passaram. Aviso `use client` de @xyflow/react permanece informativo."
+      - "Ainda sem IdP OIDC escolhido, política de cadastro/abuso, clientes OAuth ou credenciais; não há UI de login/sync integrada. Produção mantém Pages sem DB binding/secrets e nenhum mapa remoto criado."
+      - "Próxima validação necessita escolha do provedor, configuração real dos callbacks/segredos e autorização para D1 de produção vazio separado; D1 legado permanece intacto."
     commit: null
     pushed: false
 open_gates:
@@ -124,9 +129,9 @@ open_gates:
   - id: oauth-client
     needed_before: 8
     description: "Escolher IdP OIDC e política de cadastro/abuso, registrar clientes/callbacks reais e configurar issuer/audience/JWKS/segredo fora do Git. OAuth MCP e DCR estão implementados; CIMD foi habilitado apenas no Worker novo de staging com global_fetch_strictly_public."
-  - id: dependency-advisories
+  - id: account-login-sync-ui
     needed_before: 8
-    description: "Revisar e resolver ou aceitar os 4 advisories de dependências de produção já presentes no lockfile de baseline (katex e source-map-js) antes da validação final de produção."
+    description: "A interface ainda não liga login OIDC, cache isolado por conta, API client e syncAccount. Escolher o IdP primeiro; implementar sem misturar nem apagar o espaço anônimo."
 final_verification:
   npm_test: passed
   npm_build: passed
@@ -141,3 +146,4 @@ final_verification:
   mcp_staging_auth_guard: passed
   pages_production_build_after_stage7: passed
   production_login_and_sync: not_run
+  root_production_dependency_audit: passed

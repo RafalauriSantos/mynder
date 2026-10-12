@@ -121,7 +121,11 @@
 
 ## Etapa 8 — Testes ponta a ponta e produção
 
-**Ações:** testar duas contas sintéticas isoladas; validar login real com usuário; sync em dois dispositivos; offline e recuperação; ferramenta MCP no cliente configurado; backup remoto completo restaurado em instalação limpa; revisar cotas/custos/retention, política de cadastro, abuso e exclusão de conta.
+**Estado (12/10/2026): em andamento; bloqueada por decisões de identidade e ativação de produção, não por build.** O audit de produção foi corrigido sem `--force`: `npm audit fix` atualizou as dependências transitivas e o override de KaTeX foi fixado em `0.19.0`, versão corrigida. `npm audit --omit=dev` e `npm audit --prefix mcp` agora reportam zero vulnerabilidades; `npm test` (37), `npm run test:cloudflare` (26), `npm run build` e `npm run build --prefix mcp` passaram depois da atualização.
+
+**Ainda necessário:** escolher o IdP OIDC e a política de cadastro público/abuso; registrar o cliente do app e o cliente MCP com callbacks reais; definir os valores reais de issuer/audience/JWKS e o segredo MCP fora do Git; implementar o fluxo de login e ligar o `SyncApiClient`/`syncAccount` à interface sem misturar o espaço anônimo; provisionar D1 de produção separado; validar login/sync entre duas contas e dispositivos, recuperação/offline, MCP autenticado e restauração do backup remoto. Nenhum token de provedor foi inventado e produção permanece sem D1/auth/sync.
+
+**Perguntas de decisão para retomar:** (1) GitHub OIDC, Google OIDC ou outro IdP? (2) cadastro aberto a qualquer usuário desse IdP ou restrito por convite? (3) autorizar um D1 de produção novo e vazio, mantendo o legado intacto? Depois dessas respostas, registrar os clientes/callbacks e disponibilizar as credenciais pelos segredos/bindings do ambiente, nunca no repositório.
 
 **Aceite final:** cada critério de aceite de `SPEC.md` tem evidência de produção ou ambiente remoto equivalente; nenhum bloqueio de identidade, recurso Cloudflare, custo ou recuperação resta; `npm test`, build, integração local e smoke tests passam; produção observada por estado de deploy success.
 
