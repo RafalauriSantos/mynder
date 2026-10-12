@@ -31,8 +31,8 @@ stages:
       - "Payload mede TextEncoder UTF-8, preserva JSON local, rejeita ownerId/owner_id, identidade/revisão inválidas e limite excedido; erros são estruturas seguras serializáveis."
       - "Fixtures sintéticas UTF-8: pequena 291 B; média 9.703 B; grande 386.274 B; a grande contém 200 tópicos, 250 ligações e 100 desenhos com 200 pontos."
       - "Teto provisório de payload: 1.900.000 bytes vs. linha D1 de 2.000.000 bytes na documentação oficial; revalidar overhead do schema na etapa 2."
-    commit: null
-    pushed: false
+    commit: "30c0b0a"
+    pushed: true
   - id: 2
     name: "Schema e repositório D1"
     status: pending
