@@ -78,6 +78,11 @@ export class SyncApiClient{
     return parseMap(await this.request(`/api/maps/${encodeURIComponent(mapId)}`,{method:'DELETE',body:JSON.stringify({expectedRevision})}));
   }
 
+  async restore(mapId:string,expectedRevision:number):Promise<SyncMap>{
+    validateSyncRevision({mapId,revision:expectedRevision});
+    return parseMap(await this.request(`/api/maps/${encodeURIComponent(mapId)}/restore`,{method:'POST',body:JSON.stringify({expectedRevision})}));
+  }
+
   private async request(path:string,init:RequestInit={}):Promise<unknown>{
     let token:string|null;
     try{token=await this.tokenProvider()}

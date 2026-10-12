@@ -8,6 +8,7 @@ import {onRequest as authenticateRequest} from '../../functions/_middleware.ts';
 import {onRequestGet as getSession} from '../../functions/api/session.ts';
 import {onRequestGet as listMaps, onRequestPost as createMap} from '../../functions/api/maps.ts';
 import {onRequestDelete, onRequestGet as getMap, onRequestPut} from '../../functions/api/maps/[id].ts';
+import {onRequestPost as restoreMap} from '../../functions/api/maps/[id]/restore.ts';
 
 const db=env.TEST_DB as unknown as D1Database;
 const migrations=env.TEST_MIGRATIONS as Parameters<typeof applyD1Migrations>[1];
@@ -113,6 +114,18 @@ describe('authenticated Pages map API handlers',()=>{
     expect(deleted.status).toBe(200);
     expect((await deleted.json() as {revision:number;deletedAt:number}).revision).toBe(3);
     expect((await getMap(context(new Request(path),identityB,{id:document.id}))).status).toBe(404);
+  });
+
+  it('restores a tombstone through the shared domain service with a conditional revision',async()=>{
+    const document=blank('Recuperável');
+    await createMap(context(jsonRequest('https://mynder.test/api/maps','POST',{document}),identityA));
+    const path=`https://mynder.test/api/maps/${document.id}`;
+    const deleted=await onRequestDelete(context(jsonRequest(path,'DELETE',{expectedRevision:1}),identityA,{id:document.id}));
+    expect((await deleted.json() as {revision:number}).revision).toBe(2);
+    const restored=await restoreMap(context(jsonRequest(`${path}/restore`,'POST',{expectedRevision:2}),identityA,{id:document.id}));
+    expect(restored.status).toBe(200);
+    expect((await restored.json() as {revision:number;deletedAt?:number}).revision).toBe(3);
+    expect((await getMap(context(new Request(path),identityA,{id:document.id}))).status).toBe(200);
   });
 
   it('rejects oversized request bodies before parsing JSON',async()=>{

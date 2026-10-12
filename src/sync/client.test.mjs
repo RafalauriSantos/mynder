@@ -34,3 +34,16 @@ test('API conflict errors remain typed and local payload validation happens befo
   await assert.rejects(client.create({...document,ownerId:'forged'}),{code:'invalid'});
   assert.equal(calls,1);
 });
+
+test('API client restores a tombstone through the conditional restore route',async()=>{
+  const document=blank('Recuperado');
+  let captured;
+  const client=new SyncApiClient(async()=>'token',async(url,init)=>{
+    captured={url,init};
+    return Response.json({document,revision:3,updatedAt:Date.now()});
+  });
+  const restored=await client.restore(document.id,2);
+  assert.equal(restored.revision,3);
+  assert.equal(captured.url,`/api/maps/${encodeURIComponent(document.id)}/restore`);
+  assert.equal(captured.init.method,'POST');
+});

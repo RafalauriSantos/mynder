@@ -85,11 +85,11 @@
 
 ## Etapa 5 — Serviço de domínio compartilhado
 
-**Arquivos previstos:** `server/maps/service.ts`, `server/maps/service.test.mjs`; refatoração para API e MCP chamarem a mesma validação/repositório.
+**Arquivos:** `server/maps/service.ts`; Pages Functions e futuros transportes chamam este limite de domínio; teste integrado percorre serviço via handlers.
 
-**Ações:** concentrar regras de criação, edição condicional, listagem, exclusão recuperável e auditoria; funções de transporte apenas validam auth e formato e chamam o serviço.
+**Ações:** concentrar listagem, leitura, validação do documento e identidade, criação, atualização condicional, tombstone e restauração. Funções de transporte apenas validam auth/formato e chamam o serviço. Pages inclui `POST /api/maps/:id/restore`.
 
-**Aceite:** API e testes invocam serviço comum; nenhum handler contém consulta SQL sem filtro proprietário; testes de autorização continuam passando.
+**Aceite:** API e testes invocam o serviço comum; handlers não contêm SQL; testes de autorização, restauração e concorrência continuam passando. O futuro MCP deverá usar este mesmo serviço.
 
 ## Etapa 6 — Worker MCP autenticado
 

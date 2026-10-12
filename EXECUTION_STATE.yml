@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 5
+current_stage: 6
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -73,8 +73,12 @@ stages:
     pushed: true
   - id: 5
     name: "Serviço de domínio compartilhado"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "`server/maps/service.ts` centraliza validação de identidade/documento e list/get/create/conditional update/delete/restore sobre o repositório D1."
+      - "Pages handlers não acessam SQL/repositório diretamente; todos chamam o serviço. Novo `POST /api/maps/:id/restore` usa revisão esperada e mesma identidade autenticada."
+      - "Teste integrado local percorreu create → tombstone → restore → read; identidade cruzada continua recebendo 404."
+      - "npm run test:cloudflare: 24 passaram; npm test: 37 passaram; npm run build e git diff --check passaram."
     commit: null
     pushed: false
   - id: 6
