@@ -44,8 +44,8 @@ stages:
       - "npm run build: passou, incluindo TypeScript do servidor; aviso existente de diretiva use client em @xyflow/react."
       - "Vitest usa binding TEST_DB gerado somente em memória de configuração local; nenhum ID/binding real Cloudflare foi usado."
       - "npm audit --omit=dev: 4 advisories existentes no lockfile de baseline (katex 0.16.47, source-map-js 1.2.1); não corrigidos neste escopo e adicionados como gate antes de produção."
-    commit: null
-    pushed: false
+    commit: "ba7c890"
+    pushed: true
   - id: 3
     name: "Autenticação configurável e API Pages"
     status: pending
@@ -101,6 +101,6 @@ open_gates:
 final_verification:
   npm_test: not_run
   npm_build: not_run
-  local_d1_integration: not_run
+  local_d1_integration: passed
   production_deploy: not_run
   mcp_live_connection: not_run
