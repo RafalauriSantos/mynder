@@ -69,7 +69,7 @@ stages:
       - "npm test: 36 testes passaram, incluindo partição A/B/anon, backup local, chamadas autenticadas, envio/recebimento, conflito e tombstone; 0 falhas."
       - "npm run test:cloudflare: 23 testes passaram; npm run build passou; git diff --check passou."
       - "Integração visual e importação inicial do espaço anônimo não foram habilitadas sem provedor/login; o cache de conta permanece isolado e o modo local permanece padrão."
-    commit: null
+    commit: "c089c0e"
     pushed: false
   - id: 5
     name: "Serviço de domínio compartilhado"
