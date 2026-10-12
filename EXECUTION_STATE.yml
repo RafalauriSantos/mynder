@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 6
+current_stage: 7
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -83,8 +83,13 @@ stages:
     pushed: true
   - id: 6
     name: "Worker MCP autenticado"
-    status: pending
-    evidence: []
+    status: in_progress
+    evidence:
+      - "Worker stateless usa `@modelcontextprotocol/server` Streamable HTTP e `@cloudflare/workers-oauth-provider` 1.2.x; authorization server/resource server implementam OAuth 2.1, DCR, PKCE, token com audiência exata e metadata MCP. CIMD fica desabilitado até configurar `global_fetch_strictly_public` no Worker real."
+      - "Fluxo local completo: DCR → consentimento HTML escapado/CSRF → OIDC discovery → PKCE upstream → validação de assinatura/JWKS/issuer/audience/nonce → token OAuth MCP. Nenhuma chave, segredo ou ID remoto usado."
+      - "Teste SDK/Workers local: 401 sem token; identidade A com read+write e B somente read; B não recebe ferramentas de escrita nem lê mapa de A; ownerId forjado rejeitado; conflito não sobrescreve; exclusão sem elicitação não apaga; backup JSON válido."
+      - "`npm run test --prefix mcp` / `npm run test:cloudflare`: 26 passaram; `npm test`: 37 passaram; `npm run build` e `npm run build --prefix mcp` passaram; `npm audit --prefix mcp`: 0 vulnerabilidades; `git diff --check` passou. Aviso root existente de `use client` em @xyflow/react."
+      - "Inventário Cloudflare somente-leitura encontrou Worker `mynder-mcp-staging` e D1 `mynder-staging`; schema D1 legado incompatível; não há KV namespace Mynder. Nenhum recurso ou configuração remota foi alterado."
     commit: null
     pushed: false
   - id: 7
@@ -105,19 +110,22 @@ open_gates:
     description: "Antes de ativar publicamente, escolher provedor de login, política de cadastro/abuso e aceitar custos/limites; configurar issuer/audience/JWKS reais. Nenhum provedor está configurado."
   - id: cloudflare-resources
     needed_before: 7
-    description: "Obter IDs reais de D1/Worker/bindings no ambiente autorizado. Não há IDs locais confirmados."
+    description: "Recursos de staging existem, mas `mynder-staging` tem schema legado incompatível: escolher autorizar migração deliberada ou usar D1 limpo. Não há KV Mynder: autorizar KV dedicado. Recuperar/validar bindings do Worker; IDs reais não vão para o Git."
   - id: pages-config-migration
     needed_before: 7
     description: "Comparar a configuração do painel Pages com wrangler.jsonc atual antes de torná-lo fonte de verdade."
   - id: oauth-client
     needed_before: 8
-    description: "Antes de conexão MCP pública, configurar OAuth/registro de cliente e secrets fora do Git."
+    description: "Para login real, escolher IdP OIDC, registrar cliente com callbacks reais e configurar issuer/audience/JWKS/segredo fora do Git. OAuth MCP e DCR estão implementados; CIMD aguarda compatibility flag no Worker."
   - id: dependency-advisories
     needed_before: 8
     description: "Revisar e resolver ou aceitar os 4 advisories de dependências de produção já presentes no lockfile de baseline (katex e source-map-js) antes da validação final de produção."
 final_verification:
-  npm_test: not_run
-  npm_build: not_run
+  npm_test: passed
+  npm_build: passed
   local_d1_integration: passed
   production_deploy: not_run
   mcp_live_connection: not_run
+  mcp_local_oauth_flow: passed
+  mcp_worker_build: passed
+  mcp_dependency_audit: passed

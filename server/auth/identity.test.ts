@@ -17,9 +17,9 @@ beforeAll(async()=>{
 const config={issuer,audience,jwksUrl};
 const fetchJwks: typeof fetch=async()=>Response.json({keys:[publicJwk]});
 
-async function token(claims:{iss?:string;aud?:string;sub?:string;exp?:number;ownerId?:string}={}){
+async function token(claims:{iss?:string;aud?:string;sub?:string;exp?:number;ownerId?:string;nonce?:string}={}){
   const now=Math.floor(Date.now()/1000);
-  const jwt=new SignJWT({ownerId:'untrusted',...(claims.ownerId===undefined?{}:{ownerId:claims.ownerId})})
+  const jwt=new SignJWT({ownerId:'untrusted',...(claims.ownerId===undefined?{}:{ownerId:claims.ownerId}),...(claims.nonce===undefined?{}:{nonce:claims.nonce})})
     .setProtectedHeader({alg:'RS256',kid:'test-key'})
     .setIssuer(claims.iss??issuer)
     .setAudience(claims.aud??audience)
@@ -44,6 +44,14 @@ describe('provider-neutral OIDC identity verification',()=>{
   it('rejects tokens with the wrong issuer or audience',async()=>{
     await rejectsAs(await token({iss:'https://attacker.example.test'}),'invalid_token');
     await rejectsAs(await token({aud:'another-app'}),'invalid_token');
+  });
+
+  it('validates the OIDC nonce when an authorization flow supplies one',async()=>{
+    const nonce='one-time-login-nonce';
+    const valid=await verifyIdentityToken(await token({nonce}),{...config,nonce},fetchJwks);
+    expect(valid).toEqual({issuer,subject:'verified-user'});
+    await expect(verifyIdentityToken(await token({nonce:'different'}),{...config,nonce},fetchJwks)).rejects.toMatchObject({code:'invalid_token'});
+    await expect(verifyIdentityToken(await token(),{...config,nonce},fetchJwks)).rejects.toMatchObject({code:'invalid_token'});
   });
 
   it('rejects expired, unsigned, missing-subject and oversized tokens',async()=>{

@@ -25,7 +25,7 @@
 - `functions/api/`: Pages Functions autenticadas para sessão, bootstrap, leitura, gravação condicional e tombstone.
 - `migrations/`: schema D1 versionado, com índices por proprietário e revisão.
 - `server/maps/`: lógica de domínio sem dependência de React, usada por Functions e MCP.
-- `mcp/`: Worker dedicado, OAuth 2.1 e ferramentas MCP de mapas.
+- `mcp/`: Worker stateless de MCP via Streamable HTTP, protegido por OAuth 2.1 e login upstream OIDC genérico configurável; o IdP/cliente real e bindings ainda são gates de ativação.
 - `*.test.mjs` e novos testes: unit, integração D1 local, authz multi-identidade e transport/MCP.
 - `SPEC.md`: requisitos e arquitetura normativa; este arquivo: passos; `EXECUTION_STATE.yml`: estado e provas.
 
@@ -93,15 +93,19 @@
 
 ## Etapa 6 — Worker MCP autenticado
 
-**Arquivos previstos:** `mcp/src/index.ts`, `mcp/src/tools.ts`, `mcp/wrangler.jsonc` sem IDs reais, `mcp/*.test.mjs`, pacote/scripts do Worker.
+**Arquivos:** `mcp/worker.ts`, `mcp/tools.ts`, `mcp/worker.test.ts`, `mcp/package.json` e `mcp/tsconfig.json`. Não há `mcp/wrangler.jsonc` nesta etapa: a conta tem Worker/D1 de staging preexistentes, mas o D1 usa schema legado incompatível e não foi escolhido para migração; não há KV namespace dedicada ao Mynder. Não versionar IDs reais.
 
-**Ferramentas:** `list_maps`, `get_map`, `create_map`, `update_map`, `delete_map`, `restore_map`, `export_backup`. Entradas JSON Schema estritas; nunca aceitar owner ID; ferramentas limitadas ao subject OAuth; `delete_map` exige confirmação de elicitação/segunda chamada ou argumento de confirmação emitido para aquele mapId/revisão.
+**Ferramentas:** `mynder_list_maps`, `mynder_get_map`, `mynder_create_map`, `mynder_update_map`, `mynder_delete_map`, `mynder_restore_map`, `mynder_export_backup`. Entradas JSON Schema estritas; nunca aceitar owner ID; ferramentas limitadas à identidade e scopes OAuth; `mynder_delete_map` exige confirmação de elicitação amarrada à chamada atual/mapId/revisão.
 
-**Ações:** usar protocolo HTTP streamable e provedor OAuth 2.1 suportado; ferramentas chamam `server/maps/service.ts`. D1 binding no Worker compartilhado via binding nomeado, com IDs configurados fora do repositório ou fornecidos somente após recurso real existir.
+**Implementação local atual:** Worker stateless atende `/mcp` por Streamable HTTP. `OAuthAuthorizationServer` implementa metadata, DCR, PKCE, emissão/troca/revogação de tokens; `OAuthResourceServer` publica protected-resource metadata e valida tokens com audiência exata. O login upstream é OIDC genérico configurável; discovery, HTTPS, assinatura/JWKS, issuer, audience, expiração, subject e nonce são validados. Consentimento MCP ocorre antes do redirect ao provedor e usa helpers de CSRF/estado vinculado do OAuth Provider. O Worker emite para o MCP token próprio vinculado a scopes e identidade OIDC `(issuer, subject)`; token upstream não é entregue às ferramentas nem persistido nos mapas.
 
-**Validar:** MCP Inspector local; descoberta de ferramentas; chamada autenticada; usuário sem token; token de A contra mapa B; revisão conflitante; exclusão sem/ com confirmação; formato de backup.
+**Segurança/contratos:** ferramentas recebem apenas identidade/scopes do token OAuth validado e chamam `server/maps/service.ts`; não aceitam `ownerId`. `mynder:read` libera ler/exportar; `mynder:write` libera criar/alterar/excluir/restaurar, e ferramentas de escrita nem são anunciadas sem esse scope. Exclusão é tombstone recuperável e pede confirmação por elicitação; cliente sem suporte falha fechado. Backup retorna páginas limitadas no formato JSON Mynder. DCR está habilitado; CIMD fica desabilitado até configurar/validar a compatibility flag Cloudflare `global_fetch_strictly_public`. Nenhum Worker foi publicado ou reconfigurado nesta etapa.
 
-**Gate externo:** cliente OAuth/registro dinâmico, provedor de login e secrets reais precisam de configuração do usuário. Nunca publicar endpoint sem auth.
+**Gate de ativação:** OAuth 2.1 e login OIDC foram exercitados com issuer, JWKS, cliente e chaves sintéticos locais. Antes de conectar usuários reais, escolher IdP/política de cadastro e abuso; registrar cliente OIDC com callbacks reais; configurar issuer, audience, JWKS e segredo fora do Git; configurar bindings D1/KV e endpoint MCP reais. Não publicar/ativar sem esses valores e validação remota.
+
+**Validar:** `npm run test --prefix mcp` (suite Workers com cliente Streamable HTTP SDK); `npm run test:cloudflare`; `npm test`; `npm run build`; `npm run build --prefix mcp`; `npm audit --prefix mcp`; `git diff --check`. Teste SDK local cobre DCR, consentimento, OIDC/PKCE/nonce, token MCP, escopos, duas identidades, conflito, elicitação e backup. É validação de protocolo automatizada, não smoke test em Inspector/produção.
+
+**Gate externo:** escolher/configurar IdP OIDC e registrar callbacks reais; configurar secrets e bindings fora do Git. DCR para clientes MCP está habilitado. Nunca publicar endpoint sem auth.
 
 ## Etapa 7 — Empacotamento e configuração Cloudflare
 
@@ -111,7 +115,7 @@
 
 **Validar:** root público sem sessão, `/api/*` e `/mcp` sem sessão negados, sessão válida autorizada, preview isolado do banco de produção, rollback e logs sem tokens/conteúdo de mapa.
 
-**Gate externo:** autenticação do painel Cloudflare, IDs reais, decisão sobre migração da configuração de produção e autorização de deploy.
+**Gate externo:** o inventário Cloudflare read-only encontrou D1 `mynder-staging` com schema legado `users/sessions/maps`, incompatível com a migration atual; não migrar sem decisão/verificação. Não há KV Mynder (a única listada é de Job Radar). Escolher autorizar migração deliberada do staging ou usar D1 limpo e autorizar KV dedicado. Depois, recuperar/validar bindings do Worker, comparar Pages com o painel, validar preview isolado e obter autorização para deploy.
 
 ## Etapa 8 — Testes ponta a ponta e produção
 

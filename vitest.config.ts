@@ -11,11 +11,12 @@ export default defineConfig({
     miniflare: {
       // Test-only D1 binding. Its generated ID is local to this Vitest run and is not a Cloudflare resource ID.
       d1Databases: {TEST_DB: randomUUID()},
+      kvNamespaces: {TEST_OAUTH_KV: randomUUID()},
       bindings: {TEST_MIGRATIONS: await readD1Migrations(path.join(root, 'migrations'))},
     },
   }))],
   test: {
-    include: ['server/**/*.test.ts'],
+    include: ['server/**/*.test.ts', 'mcp/**/*.test.ts'],
     fileParallelism: false,
   },
 });
