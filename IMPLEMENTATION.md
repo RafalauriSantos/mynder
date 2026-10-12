@@ -109,13 +109,15 @@
 
 ## Etapa 7 — Empacotamento e configuração Cloudflare
 
-**Arquivos previstos:** `functions/`, `migrations/`, scripts de validação; `wrangler` Pages local somente após preservar e comparar `wrangler.jsonc` atual com painel.
+**Estado (12/10/2026): concluída em staging; produção preservada.** O painel Pages foi comparado com `wrangler.jsonc`: o projeto GitHub `mynder` publica `main`, `npm run build` → `dist`; a configuração do painel continua fonte de verdade e o arquivo local permanece sem `pages_build_output_dir`, sem migração acidental. Foi criado o D1 vazio `mynder-sync-staging`, aplicada nele a migration `0001_sync.sql`, e criado o KV `mynder-oauth-staging`. O D1 legado `mynder-staging` (1 usuário, 4 sessões e 4 mapas) não foi tocado. O Worker legado `mynder-mcp-staging` também não foi alterado.
 
-**Ações:** adicionar Functions sem tornar a configuração Wrangler atual fonte de verdade acidental; baixar configuração real do Pages somente após arquivar conteúdo original, revisar diff e confirmar que representa produção. Adicionar binding D1 a preview separado antes de produção; secrets via Wrangler/dashboard, nunca `.env` versionado. MCP em Worker separado em ambiente preview.
+**Configuração reproduzível:** `mcp/scripts/configure-cloudflare.mjs` encontra D1/KV por nome exato usando Wrangler e escreve IDs apenas em `mcp/.wrangler/wrangler.generated.jsonc`, diretório ignorado pelo Git. Antes de configurar, defina `MYNDER_WORKERS_SUBDOMAIN` com o subdomínio `workers.dev` confirmado na conta. Comandos: `npm run cloudflare:configure --prefix mcp`, `npm run cloudflare:migrations:staging --prefix mcp`, `npm run cloudflare:migrate:staging --prefix mcp`, `npm run cloudflare:dry-run:staging --prefix mcp` e `npm run cloudflare:deploy:staging --prefix mcp`. O gerador usa o nome novo `mynder-mcp-oauth-staging`, `DB`, `OAUTH_KV`, issuer/resource desse Worker e a flag `global_fetch_strictly_public`; não reutiliza bindings nem secrets do Worker antigo.
 
-**Validar:** root público sem sessão, `/api/*` e `/mcp` sem sessão negados, sessão válida autorizada, preview isolado do banco de produção, rollback e logs sem tokens/conteúdo de mapa.
+**Pages Preview isolado:** o binding `DB` do preview aponta ao D1 limpo; production mantém a mesma configuração anterior sem D1/vars. `npm run deploy:preview` compila e publica `dist` mais `functions/` no alias de staging; não use `npm run deploy` para validar preview.
 
-**Gate externo:** o inventário Cloudflare read-only encontrou D1 `mynder-staging` com schema legado `users/sessions/maps`, incompatível com a migration atual; não migrar sem decisão/verificação. Não há KV Mynder (a única listada é de Job Radar). Escolher autorizar migração deliberada do staging ou usar D1 limpo e autorizar KV dedicado. Depois, recuperar/validar bindings do Worker, comparar Pages com o painel, validar preview isolado e obter autorização para deploy.
+**Evidência live:** Pages Preview e MCP staging retornam 200 para a raiz; `/api/session` e `/api/maps` sem token retornam 401 com `WWW-Authenticate`; `/mcp` sem token retorna 401 com desafio OAuth. O endpoint MCP publica metadata com issuer/audiência iguais ao próprio Worker. As rotas reais com identidade e D1 foram exercitadas nas suites locais; login OIDC, ferramentas MCP autorizadas, rollback operacional e logs sob tráfego autenticado permanecem para etapa 8.
+
+**Gate da etapa 8:** IdP, política de cadastro/abuso e cliente OAuth ainda precisam de escolha/configuração. Não há autenticação real em staging; produção não tem binding D1, secrets ou deploy de sync ativados.
 
 ## Etapa 8 — Testes ponta a ponta e produção
 

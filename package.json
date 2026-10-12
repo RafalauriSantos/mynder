@@ -9,6 +9,7 @@
     "test": "node --test document.test.mjs storage.test.mjs backup.test.mjs src/sync/contracts.test.mjs src/sync/local-store.test.mjs src/sync/client.test.mjs src/sync/engine.test.mjs",
     "test:cloudflare": "vitest run --config vitest.config.ts",
     "preview": "npm run build && wrangler dev",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name mynder --branch mynder-sync-staging",
     "deploy": "npm run build && wrangler pages deploy dist --project-name mynder"
   },
   "dependencies": {

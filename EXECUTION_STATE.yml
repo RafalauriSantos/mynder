@@ -7,7 +7,7 @@ repository:
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
   baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
-current_stage: 7
+current_stage: 8
 stages:
   - id: 0
     name: "Baseline e especificação executável"
@@ -94,8 +94,17 @@ stages:
     pushed: true
   - id: 7
     name: "Empacotamento e configuração Cloudflare"
-    status: pending
-    evidence: []
+    status: passed
+    evidence:
+      - "Pages `mynder` auditado: GitHub/main, `npm run build` → `dist`; painel comparado com `wrangler.jsonc`. O dashboard permanece fonte de verdade e produção não recebeu configuração nova."
+      - "Inventário preservado: D1 legado `mynder-staging` tinha 1 usuário, 4 sessões e 4 mapas; Worker legado `mynder-mcp-staging` tinha configuração/token do modelo anterior. Nenhum foi alterado ou reutilizado."
+      - "Provisionado D1 limpo `mynder-sync-staging` e aplicada remotamente `migrations/0001_sync.sql`; schema contém `sync_owners`/`sync_maps`, sem mapas ou usuários no banco novo."
+      - "Provisionado KV `mynder-oauth-staging`; novo Worker `mynder-mcp-oauth-staging` usa somente bindings DB/OAUTH_KV e flag `global_fetch_strictly_public`; deployment separado concluído."
+      - "Pages Preview ligado ao D1 novo e publicado no alias `mynder-sync-staging`; produção verificada sem D1 binding e sem variáveis/secrets. Deployment Preview registrou status `success`."
+      - "Smoke live: raiz Pages Preview 200; `/api/session` e `/api/maps` sem token 401 com desafio Bearer; `/mcp` sem token 401 com desafio OAuth; metadata MCP identifica issuer e resource exatos do Worker."
+      - "Gerador `mcp/scripts/configure-cloudflare.mjs` resolve recursos por nomes exatos, exige `MYNDER_WORKERS_SUBDOMAIN` e mantém IDs/hostname somente em config gerado dentro de `.wrangler/`, ignorado pelo Git. `wrangler deploy --dry-run` passou."
+      - "`npm run test --prefix mcp`: 26 passaram; `npm test`: 37 passaram; `npm run build`, `npm run build --prefix mcp`, `npm audit --prefix mcp` (0 vulnerabilidades), `git diff --check` passaram. Build mantém aviso informativo existente de `use client` em @xyflow/react."
+      - "OIDC real não está configurado; sessão válida foi validada por testes integrados locais, não pelo provedor real. Produção continua offline/JSON e sem sincronização habilitada."
     commit: null
     pushed: false
   - id: 8
@@ -109,14 +118,11 @@ open_gates:
     needed_before: 8
     description: "Antes de ativar publicamente, escolher provedor de login, política de cadastro/abuso e aceitar custos/limites; configurar issuer/audience/JWKS reais. Nenhum provedor está configurado."
   - id: cloudflare-resources
-    needed_before: 7
-    description: "Recursos de staging existem, mas `mynder-staging` tem schema legado incompatível: escolher autorizar migração deliberada ou usar D1 limpo. Não há KV Mynder: autorizar KV dedicado. Recuperar/validar bindings do Worker; IDs reais não vão para o Git."
-  - id: pages-config-migration
-    needed_before: 7
-    description: "Comparar a configuração do painel Pages com wrangler.jsonc atual antes de torná-lo fonte de verdade."
+    needed_before: 8
+    description: "Staging está isolado e validado. Antes de produção, provisionar/selecionar D1 de produção separado e bindings/secrets em ambiente production. O D1 legado com dados segue preservado."
   - id: oauth-client
     needed_before: 8
-    description: "Para login real, escolher IdP OIDC, registrar cliente com callbacks reais e configurar issuer/audience/JWKS/segredo fora do Git. OAuth MCP e DCR estão implementados; CIMD aguarda compatibility flag no Worker."
+    description: "Escolher IdP OIDC e política de cadastro/abuso, registrar clientes/callbacks reais e configurar issuer/audience/JWKS/segredo fora do Git. OAuth MCP e DCR estão implementados; CIMD foi habilitado apenas no Worker novo de staging com global_fetch_strictly_public."
   - id: dependency-advisories
     needed_before: 8
     description: "Revisar e resolver ou aceitar os 4 advisories de dependências de produção já presentes no lockfile de baseline (katex e source-map-js) antes da validação final de produção."
@@ -129,3 +135,7 @@ final_verification:
   mcp_local_oauth_flow: passed
   mcp_worker_build: passed
   mcp_dependency_audit: passed
+  staging_resources_and_migrations: passed
+  pages_preview_auth_guard: passed
+  mcp_staging_auth_guard: passed
+  production_login_and_sync: not_run
