@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {beforeEach,test} from 'node:test';
 import {blank} from '../document.ts';
-import {AccountSyncSession} from './account-session.ts';
+import {AccountSyncSession,mountGoogleSignIn} from './account-session.ts';
 
 const identity={issuer:'https://accounts.google.com',subject:'google-user-123'};
 let data;
@@ -9,6 +9,40 @@ let data;
 beforeEach(()=>{
   data=new Map();
   globalThis.localStorage={getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value)};
+});
+
+test('Google button reports when it is ready for a credential',async()=>{
+  const previousWindow=globalThis.window;
+  const events=[];
+  globalThis.window={google:{accounts:{id:{
+    initialize:()=>events.push('initialized'),
+    renderButton:()=>events.push('rendered'),
+  }}}};
+  try{
+    await mountGoogleSignIn({}, {clientId:'test-client',callback:()=>{},onError:()=>{},onReady:()=>events.push('ready')});
+    assert.deepEqual(events,['initialized','rendered','ready']);
+  }finally{
+    globalThis.window=previousWindow;
+  }
+});
+
+test('repeated Google button mounts initialize once and deliver the credential to the latest callback',async()=>{
+  const previousWindow=globalThis.window;
+  const events=[];
+  let googleCallback;
+  globalThis.window={google:{accounts:{id:{
+    initialize:config=>{events.push('initialized');googleCallback=config.callback},
+    renderButton:()=>events.push('rendered'),
+  }}}};
+  try{
+    const first=mountGoogleSignIn({}, {clientId:'remount-client',callback:()=>events.push('old callback'),onError:()=>{}});
+    const second=mountGoogleSignIn({}, {clientId:'remount-client',callback:()=>events.push('latest callback'),onError:()=>{}});
+    await Promise.all([first,second]);
+    googleCallback({credential:'redacted-test-token'});
+    assert.deepEqual(events,['initialized','rendered','rendered','latest callback']);
+  }finally{
+    globalThis.window=previousWindow;
+  }
 });
 
 function api(remote=[]){

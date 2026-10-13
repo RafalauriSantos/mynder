@@ -112,6 +112,7 @@ export type GoogleIdConfiguration={
   clientId:string;
   callback:(credential:string)=>void;
   onError:(message:string)=>void;
+  onReady?:()=>void;
 };
 
 type GoogleIdentityApi={
@@ -122,6 +123,8 @@ declare global {interface Window {google?:GoogleIdentityApi}}
 
 const GIS_SCRIPT_ID='mynder-google-identity-services';
 let googleApiPromise:Promise<GoogleIdentityApi>|null=null;
+let initializedGoogleClientId:string|null=null;
+let currentGoogleConfiguration:GoogleIdConfiguration|null=null;
 
 function loadGoogleIdentityApi():Promise<GoogleIdentityApi>{
   if(window.google)return Promise.resolve(window.google);
@@ -147,13 +150,20 @@ function loadGoogleIdentityApi():Promise<GoogleIdentityApi>{
 export async function mountGoogleSignIn(element:HTMLElement,configuration:GoogleIdConfiguration):Promise<void>{
   if(!configuration.clientId.trim())throw new Error('O login Google ainda não foi configurado.');
   const api=await loadGoogleIdentityApi();
-  api.accounts.id.initialize({
-    client_id:configuration.clientId,
-    auto_select:false,
-    callback:response=>{
-      if(typeof response.credential!=='string'||!response.credential){configuration.onError('O Google não retornou uma credencial válida.');return}
-      configuration.callback(response.credential);
-    },
-  });
+  currentGoogleConfiguration=configuration;
+  if(initializedGoogleClientId!==configuration.clientId){
+    api.accounts.id.initialize({
+      client_id:configuration.clientId,
+      auto_select:false,
+      callback:response=>{
+        const current=currentGoogleConfiguration;
+        if(!current)return;
+        if(typeof response.credential!=='string'||!response.credential){current.onError('O Google não retornou uma credencial válida.');return}
+        current.callback(response.credential);
+      },
+    });
+    initializedGoogleClientId=configuration.clientId;
+  }
   api.accounts.id.renderButton(element,{theme:'outline',size:'large',shape:'rectangular',text:'continue_with',logo_alignment:'left',width:280});
+  configuration.onReady?.();
 }

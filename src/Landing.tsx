@@ -8,6 +8,8 @@ type LandingProps = {
   onLocal: () => void;
   onCredential: (credential: string) => void;
   onError: (message: string) => void;
+  onGoogleReady?: () => void;
+  diagnostic?: string;
   disabled: boolean;
   error: string;
   busy: boolean;
@@ -34,7 +36,7 @@ const examples = [
   },
 ];
 
-export function Landing({onLocal, onCredential, onError, disabled, error, busy}: LandingProps) {
+export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnostic, disabled, error, busy}: LandingProps) {
   const [exampleIndex, setExampleIndex] = useState(0);
   const [compact, setCompact] = useState(() => window.matchMedia('(max-width: 600px)').matches);
   const documents = useMemo(() => examples.map(example => importMarkdown(compact ? example.mobileMarkdown : example.markdown)), [compact]);
@@ -64,10 +66,11 @@ export function Landing({onLocal, onCredential, onError, disabled, error, busy}:
             <h1 id="landing-title">Ideias não nascem <em>em linha reta.</em></h1>
             <p className="landing-lead">Dê forma ao que está na sua cabeça. Crie mapas mentais, conecte caminhos e encontre clareza para estudar, planejar ou criar.</p>
             <div className="landing-actions" id="comecar">
-              <div className="landing-google"><GoogleSignInButton onCredential={onCredential} onError={onError} disabled={disabled}/></div>
+              <div className="landing-google"><GoogleSignInButton onCredential={onCredential} onError={onError} onReady={onGoogleReady} disabled={disabled}/></div>
               <button className="landing-local" onClick={onLocal}>Experimentar sem conta <span aria-hidden="true">↗</span></button>
             </div>
             {busy && <p className="landing-auth-status" role="status">Validando sua conta…</p>}
+            {diagnostic && <p className="landing-auth-status" role="status">Diagnóstico do login: {diagnostic}</p>}
             {error && <p className="landing-auth-error" role="alert">{error}</p>}
             <p className="landing-privacy">Sem conta, os mapas ficam neste navegador. Com Google, você acessa os mapas da sua conta.</p>
           </div>
