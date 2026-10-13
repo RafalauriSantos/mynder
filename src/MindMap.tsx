@@ -22,7 +22,7 @@ function treeFromDocument(doc: Document): MindNode {
   return { content: 'Minhas ideias', children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
 }
 
-export function MindMap({ doc, onCreate }: { doc: Document; onCreate: () => void }) {
+export function MindMap({ doc, onCreate, maxInitialScale = 2 }: { doc: Document; onCreate: () => void; maxInitialScale?: number }) {
   const svg = useRef<SVGSVGElement>(null);
   const hasNodes = doc.topics.length > 0;
 
@@ -30,6 +30,7 @@ export function MindMap({ doc, onCreate }: { doc: Document; onCreate: () => void
     if (!svg.current || !hasNodes) return;
     const map = Markmap.create(svg.current, {
       autoFit: true,
+      maxInitialScale,
       duration: 240,
       initialExpandLevel: 6,
       maxWidth: 250,
@@ -41,7 +42,7 @@ export function MindMap({ doc, onCreate }: { doc: Document; onCreate: () => void
     return () => {
       map.destroy();
     };
-  }, [doc, hasNodes]);
+  }, [doc, hasNodes, maxInitialScale]);
 
   if (!hasNodes) return <div className="map-empty"><span>✳</span><h2>Seu mapa começa com uma ideia</h2><p>Escreva ou cole uma ideia em Markdown para criar os primeiros ramos.</p><button className="primary" onClick={onCreate}>Escrever uma ideia</button></div>;
   return <div className="mindmap-view"><svg ref={svg} className="markmap" role="img" aria-label={`Mapa mental: ${doc.title}`} /></div>;
