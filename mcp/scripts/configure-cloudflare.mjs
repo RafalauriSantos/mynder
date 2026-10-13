@@ -15,8 +15,12 @@ const databaseName = 'mynder-staging';
 const namespaceTitle = 'mynder-oauth-staging';
 const workerName = 'mynder-mcp-oauth-staging';
 const workersSubdomain = process.env.MYNDER_WORKERS_SUBDOMAIN?.trim();
+const googleClientId = process.env.MYNDER_GOOGLE_CLIENT_ID?.trim();
 if (!workersSubdomain || !/^[a-z0-9-]+$/.test(workersSubdomain)) {
   throw new Error('Set MYNDER_WORKERS_SUBDOMAIN to the exact workers.dev subdomain verified in the target Cloudflare account.');
+}
+if (googleClientId && !googleClientId.endsWith('.apps.googleusercontent.com')) {
+  throw new Error('MYNDER_GOOGLE_CLIENT_ID must be a Google OAuth Web client ID.');
 }
 
 function runWrangler(args) {
@@ -73,6 +77,11 @@ const config = {
   vars: {
     OAUTH_ISSUER: issuer,
     MCP_RESOURCE: `${issuer}/mcp`,
+    ...(googleClientId ? {
+      AUTH_ISSUER: 'https://accounts.google.com',
+      AUTH_AUDIENCE: googleClientId,
+      AUTH_JWKS_URL: 'https://www.googleapis.com/oauth2/v3/certs',
+    } : {}),
   },
   d1_databases: [{
     binding: 'DB',
