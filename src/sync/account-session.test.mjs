@@ -40,20 +40,29 @@ test('connect verifies account identity, loads remote maps, and never persists t
   assert.equal([...data.keys()].some(key=>key.includes(identity.subject)),false);
 });
 
+test('first login creates a starter map for an empty account',async()=>{
+  const server=api();
+  const {session,syncError}=await AccountSyncSession.connect('memory-token',server.fetcher);
+  assert.equal(syncError,undefined);
+  assert.equal(session.documents.length,1);
+  assert.equal(session.documents[0].title,'Nova ideia');
+  assert.deepEqual(server.stored.map(item=>item.document),session.documents);
+});
+
 test('confirmed anonymous import creates new account copies and preserves the anonymous JSON',async()=>{
   const anonymous=blank('Meu mapa local');
   const rawAnonymous=JSON.stringify([anonymous]);
   data.set('rascunho-v2',rawAnonymous);
   const server=api();
   const {session}=await AccountSyncSession.connect('memory-token',server.fetcher);
+  const starter=session.documents[0];
   const imported=await session.importAnonymousDocuments([anonymous]);
   assert.equal(imported.copies.length,1);
   assert.notEqual(imported.copies[0].id,anonymous.id);
   assert.equal(imported.copies[0].title,'Meu mapa local (importado)');
-  assert.deepEqual(session.documents,[imported.copies[0]]);
+  assert.deepEqual(session.documents,[starter,imported.copies[0]]);
   assert.equal(data.get('rascunho-v2'),rawAnonymous);
-  assert.deepEqual(server.stored.map(item=>item.document),imported.copies);
-  const create=server.requests.find(request=>request.init.method==='POST');
-  assert.equal('ownerId' in JSON.parse(create.init.body),false);
-  assert.equal('ownerId' in JSON.parse(create.init.body).document,false);
+  assert.deepEqual(server.stored.map(item=>item.document),[starter,...imported.copies]);
+  const creates=server.requests.filter(request=>request.init.method==='POST');
+  assert.equal(creates.every(create=>!('ownerId' in JSON.parse(create.init.body))&&!('ownerId' in JSON.parse(create.init.body).document)),true);
 });

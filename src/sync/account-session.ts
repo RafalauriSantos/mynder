@@ -1,4 +1,4 @@
-import {validate, type Document} from '../document.ts';
+import {blank, validate, type Document} from '../document.ts';
 import {createImportedCopies} from '../backup.ts';
 import {validateSyncIdentity, type SyncIdentity} from './contracts.ts';
 import {SyncApiClient} from './client.ts';
@@ -43,8 +43,18 @@ export class AccountSyncSession {
     const loaded=await loadAccountState(identity);
     if(loaded.blocked)throw new AccountSessionError('blocked');
     const session=new AccountSyncSession(identity,api,loaded.state);
-    try{return{session,syncResult:await session.sync()}}
-    catch(syncError){return{session,syncError}}
+    let syncResult:SyncResult|undefined;
+    let syncError:unknown;
+    try{syncResult=await session.sync()}
+    catch(error){syncError=error}
+    if(session.documents.length===0){
+      await session.replaceDocuments([blank()]);
+      if(!syncError){
+        try{syncResult=await session.sync()}
+        catch(error){syncError=error}
+      }
+    }
+    return syncError?{session,syncError}:{session,syncResult};
   }
 
   get documents():Document[]{return this.state.docs.map(validate)}
