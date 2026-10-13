@@ -73,18 +73,19 @@ export function Landing({onLocal, onCredential, onError, disabled, error, busy}:
           </div>
           <div className="landing-hero-art" aria-hidden="true">
             <span className="landing-art-caption">pensamento em movimento / 01</span>
-            <svg viewBox="0 0 500 440" fill="none" role="presentation">
+            <svg viewBox="0 0 500 400" fill="none" role="presentation">
               <path d="M160 223C221 223 206 84 300 84M160 223C240 223 228 219 337 219M160 223C223 223 217 355 303 355" stroke="#CCDFBE" strokeWidth="1.5"/>
               <path d="M337 219C400 219 395 147 449 147M337 219C407 219 404 297 451 297" stroke="#CCDFBE" strokeWidth="1.5" strokeDasharray="5 6"/>
-              <circle cx="160" cy="223" r="75" fill="#F2E8D3"/><circle cx="160" cy="223" r="81" stroke="#F2E8D3" strokeOpacity=".35"/>
-              <circle cx="300" cy="84" r="48" fill="#D9A873"/><circle cx="337" cy="219" r="54" fill="#B6C7A5"/><circle cx="303" cy="355" r="51" fill="#D6B7A6"/>
-              <circle cx="449" cy="147" r="7" fill="#D9A873"/><circle cx="451" cy="297" r="7" fill="#D6B7A6"/>
+              <rect x="90" y="190" width="140" height="66" rx="18" fill="#F2E8D3"/>
+              <rect x="244" y="57" width="112" height="54" rx="16" fill="#D9A873"/>
+              <rect x="276" y="192" width="122" height="54" rx="16" fill="#B6C7A5"/>
+              <rect x="243" y="328" width="120" height="54" rx="16" fill="#D6B7A6"/>
+              <circle cx="449" cy="147" r="5" fill="#D9A873"/><circle cx="451" cy="297" r="5" fill="#D6B7A6"/>
               <text x="160" y="228" textAnchor="middle" fill="#193830">SUA IDEIA</text>
               <text x="300" y="89" textAnchor="middle" fill="#193830">explorar</text>
               <text x="337" y="224" textAnchor="middle" fill="#193830">conectar</text>
               <text x="303" y="360" textAnchor="middle" fill="#193830">descobrir</text>
             </svg>
-            <span className="landing-art-note">uma ideia abre muitas portas ↗</span>
           </div>
         </div>
       </section>

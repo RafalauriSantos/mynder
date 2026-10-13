@@ -39,12 +39,11 @@
 .landing-auth-status, .landing-auth-error { max-width: 530px; margin: 12px 0 0; font-size: 12px; }
 .landing-auth-error { color: #ffd6c5; }
 .landing-privacy { max-width: 560px; margin: 16px 0 0; color: #b3c5b2; font-size: 11px; line-height: 1.5; }
-.landing-hero-art { position: relative; display: flex; align-items: center; justify-content: center; height: 470px; }
+.landing-hero-art { position: relative; display: flex; align-items: center; justify-content: center; height: 420px; }
 .landing-hero-art svg { width: min(100%, 510px); height: auto; overflow: visible; filter: drop-shadow(0 25px 35px #0c241d4a); }
-.landing-hero-art text { font: 700 12px "Trebuchet MS", sans-serif; letter-spacing: .4px; }
-.landing-art-caption, .landing-art-note { position: absolute; z-index: 1; color: #bfd1bc; font: italic 14px "Palatino Linotype", Georgia, serif; }
+.landing-hero-art text { font: 700 15px "Trebuchet MS", sans-serif; letter-spacing: .4px; }
+.landing-art-caption { position: absolute; z-index: 1; color: #bfd1bc; font: 11px "Trebuchet MS", sans-serif; letter-spacing: 1.1px; }
 .landing-art-caption { top: 0; right: 0; }
-.landing-art-note { bottom: 7px; left: 40px; transform: rotate(-4deg); }
 
 .landing-showcase { width: min(1220px, calc(100% - 80px)); margin: 0 auto; padding: 82px 0 102px; scroll-margin-top: 20px; }
 .landing-showcase-heading { display: flex; align-items: end; justify-content: space-between; gap: 35px; margin-bottom: 31px; }
@@ -109,7 +108,6 @@
   .landing-hero-art { height: 300px; }
   .landing-hero-art svg { width: min(100%, 360px); }
   .landing-art-caption { top: 25px; }
-  .landing-art-note { bottom: 15px; }
   .landing-showcase { padding: 65px 0 75px; }
   .landing-showcase-heading, .landing-feature-intro { align-items: start; flex-direction: column; gap: 13px; }
   .landing-features { padding: 70px 20px; }
@@ -131,7 +129,6 @@
   .landing-actions { align-items: flex-start; flex-direction: column; }
   .landing-hero-art { height: 280px; }
   .landing-art-caption { top: 12px; font-size: 12px; }
-  .landing-art-note { bottom: 0; font-size: 12px; }
   .landing-showcase h2, .landing-feature-intro h2 { font-size: 43px; }
   .landing-workspace-body { grid-template-columns: 1fr; }
   .landing-workspace-side { gap: 8px; padding: 13px; border-right: 0; border-bottom: 1px solid #e4e5d9; }
