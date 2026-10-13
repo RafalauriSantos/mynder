@@ -69,12 +69,18 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .mindmap-view { position: relative; flex: 1; min-height: 150px; overflow: hidden; background: var(--canvas); }
 .mindmap-view .markmap { display: block; width: 100%; height: 100%; --markmap-font: 15px/1.5 "Trebuchet MS", "Segoe UI", sans-serif; --markmap-text-color: var(--ink); --markmap-circle-open-bg: var(--paper); --markmap-highlight-node-bg: #bf55381a; }
 .mindmap-view .markmap-link { stroke-width: 2px; }
+.map-start { position: absolute; left: 28px; bottom: 28px; width: min(320px, calc(100% - 56px)); padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #fbfaf6f0; box-shadow: 0 14px 40px #37342717; backdrop-filter: blur(8px); }
+.map-start span { color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; }
+.map-start strong { display: block; margin-top: 10px; font: 22px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+.map-start p { margin: 8px 0 16px; color: #696c64; line-height: 1.5; }
+.map-start button { width: 100%; }
 .map-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 25px; text-align: center; background: var(--canvas); }
 .map-empty>span { color: var(--accent); font-size: 28px; }
 .map-empty h2 { margin: 12px 0 6px; font: 25px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
 .map-empty p { max-width: 330px; color: var(--muted); line-height: 1.6; }
 .map-empty button { margin-top: 8px; }
 .board { position: relative; order: 2; flex: 1; min-height: 150px; background: var(--canvas); }
+.canvas-hint { display: none; position: absolute; z-index: 4; right: 12px; bottom: 14px; left: 54px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fbfaf6e8; color: #696c64; font-size: 10px; line-height: 1.3; text-align: center; pointer-events: none; }
 .topic { position: relative; width: 224px; min-height: 65px; max-height: 300px; overflow: visible; padding: 17px 20px; border: 1.5px solid; border-radius: 12px; background: var(--paper); box-shadow: 0 5px 16px #3734270b; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
 .topic>span { display: block; max-height: 250px; overflow: auto; }
 .topic.chosen { box-shadow: 0 0 0 4px #bf553826, 0 7px 22px #37342714; }
@@ -123,6 +129,8 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
   .tools button { flex: none; min-height: 42px; scroll-snap-align: start; }
   .modal { align-items: flex-start; padding-top: 35px; }
   .modal textarea { height: 160px; }
+  .map-start { left: 12px; bottom: 12px; width: min(300px, calc(100% - 24px)); padding: 16px; }
+  .canvas-hint { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) {
