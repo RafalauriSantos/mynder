@@ -110,6 +110,12 @@ export function Landing({onLocal, onCredential, onError, disabled, error, busy}:
       </section>
     </main>
 
-    <footer className="landing-footer"><div><span className="landing-brand"><span className="landing-brand-mark" aria-hidden="true">✳</span><span>mynder</span></span><p>Um lugar para ver suas ideias crescerem.</p></div><a href="#comecar">Comece com uma ideia <span aria-hidden="true">↗</span></a></footer>
+    <footer className="landing-footer">
+      <div className="landing-footer-main">
+        <div className="landing-footer-identity"><a className="landing-brand" href="#inicio" aria-label="Mynder, voltar ao início"><span className="landing-brand-mark" aria-hidden="true">✳</span><span>mynder</span></a><p>Um lugar para dar forma às suas ideias.</p></div>
+        <nav aria-label="Navegação do rodapé"><a href="#amostra">Explorar a amostra</a><a href="#como-funciona">Como funciona</a><a href="#comecar">Começar</a></nav>
+      </div>
+      <div className="landing-footer-bottom"><span>© {new Date().getFullYear()} Mynder</span><a href="#inicio">Voltar ao topo <span aria-hidden="true">↑</span></a></div>
+    </footer>
   </div>;
 }
