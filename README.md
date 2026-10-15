@@ -73,6 +73,10 @@ Anote o modelo do aparelho e o navegador. Se algum passo falhar, informe o núme
 
 Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. O uso offline em celular físico foi confirmado pelo usuário e está registrado na etapa 7 da [SPEC.md](SPEC.md); o roteiro acima pode ser usado para repetir essa validação.
 
+## Integração com IA via MCP
+
+O servidor MCP fica em `worker/` e é separado do frontend Pages. Ele expõe `/mcp` por Streamable HTTP e usa D1 para persistir mapas. Consulte [worker/README.md](worker/README.md) e o [plano de produção](docs/superpowers/plans/2026-10-07-mcp-cloudflare-production.md) antes de configurar um ambiente Cloudflare.
+
 ## Licença
 
 MIT.
