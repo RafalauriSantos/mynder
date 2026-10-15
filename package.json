@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "node --test document.test.mjs storage.test.mjs backup.test.mjs",
+    "test": "tsx --test document.test.mjs storage.test.mjs backup.test.mjs edit.test.mjs",
+    "mcp:test": "npm --prefix worker test",
+    "mcp:dry-run": "npm --prefix worker run deploy -- --dry-run --config ./wrangler.jsonc",
     "preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler pages deploy dist --project-name mynder"
   },
@@ -25,6 +27,7 @@
     "@cloudflare/vite-plugin": "^1.61.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "tsx": "^4.23.15",
     "typescript": "latest",
     "vite-plugin-pwa": "^1.3.0",
     "wrangler": "^4.142.0"
