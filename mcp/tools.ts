@@ -4,6 +4,7 @@ import {SyncMapService} from '../server/maps/service.ts';
 import {SyncContractError,type SyncIdentity,type SyncMap} from '../src/sync/contracts.ts';
 import {SyncRepositoryError} from '../server/maps/repository.ts';
 import {z} from 'zod';
+import {registerNodeTools} from './node-tools.ts';
 
 const formatSchema=z.enum(['markdown','json']).default('markdown');
 const documentSchema=z.record(z.string(),z.unknown());
@@ -131,6 +132,8 @@ export function createMynderMcpServer(service:SyncMapService,identity:SyncIdenti
       return textResult({backup,count:documents.length,total_count:active.length,offset,has_more:nextOffset<active.length,...(nextOffset<active.length?{next_offset:nextOffset}:{}),utf8_bytes:new TextEncoder().encode(JSON.stringify(backup)).byteLength});
     });
   });
+
+  registerNodeTools(server,service,identity,canWrite,guarded as never);
 
   return server;
 }
