@@ -5,7 +5,7 @@ Worker separado que expõe os mapas Mynder por MCP via Streamable HTTP.
 ## Estado atual
 
 - Endpoint: `/mcp`.
-- Staging: `https://mynder-mcp-staging.mynder.workers.dev/mcp`.
+- Staging: `https://SEU-WORKER.workers.dev/mcp`.
 - Saúde: `/health`.
 - Autenticação local/primeiro ambiente: Bearer token configurado em `MCP_BEARER_TOKEN`.
 - Identidade inicial: `MCP_OWNER_ID` (modo single-owner; OAuth/Cloudflare Access será necessário antes de abrir para múltiplos usuários).
@@ -23,7 +23,7 @@ npm test
 npm run dev
 ```
 
-O `database_id` real deve ser colocado apenas na configuração de deploy do ambiente correspondente. Nunca commite tokens, IDs privados ou `.dev.vars`.
+O `database_id` em `wrangler.jsonc` é um placeholder. Copie o arquivo para `wrangler.local.jsonc` (ignorado pelo Git), preencha o ID real e publique com `npx wrangler deploy -c wrangler.local.jsonc`. Nunca commite tokens, IDs privados ou `.dev.vars`.
 
 ## Ferramentas MCP
 

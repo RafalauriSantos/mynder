@@ -8,7 +8,7 @@
 - OAuth ou Cloudflare Access configurado; Bearer fixo é apenas para desenvolvimento/single-owner.
 - Token e identificador do proprietário armazenados como secrets, nunca no Git.
 
-O ambiente de staging atualmente publicado usa `https://mynder-mcp-staging.mynder.workers.dev/mcp`. Ele está protegido por Bearer token e não deve ser tratado como endpoint público de produção.
+O ambiente de staging atualmente publicado usa `https://SEU-WORKER.workers.dev/mcp`. Ele está protegido por Bearer token e não deve ser tratado como endpoint público de produção.
 
 ## Validação antes do deploy
 

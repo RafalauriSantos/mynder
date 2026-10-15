@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "mynder-staging",
-      "database_id": "e1d05623-eaac-4022-885c-46e59d173292",
+      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID",
       "migrations_dir": "src/db/migrations"
     }
   ]

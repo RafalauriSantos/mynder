@@ -9,3 +9,5 @@ dist/
 
 .dev.vars
 worker/.dev.vars
+worker/wrangler.local.jsonc
+wrangler.local.jsonc

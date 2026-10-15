@@ -9,7 +9,7 @@ Legenda: `[ ]` pendente · `[~]` feito, aguardando validação · `[x]` validado
 ## Fase A — Base segura
 - [x] **A1.** Criar o branch `feat/mcp-claude-connection` e este checklist. O trabalho não commitado fica fora da `main`.
 - [~] **A2.** Corrigir a API HTTP do worker: `OPTIONS` devolve 500 (CORS quebrado) e `/api/maps` não aceita sessão por cookie. Com testes.
-- [~] **A3.** `.dev.vars` entrou no `.gitignore`. Decisão: o `database_id` do D1 fica no `wrangler.jsonc` (identificador, não segredo; sem token da conta não dá acesso).
+- [~] **A3.** `.dev.vars` entrou no `.gitignore`. Decisão: o `database_id` real fica em `worker/wrangler.local.jsonc` (ignorado pelo Git); o `wrangler.jsonc` tem placeholder.
 
 ## Fase B — Ferramentas que o Claude precisa
 - [~] **B1.** Extrair a lógica de edição de mapas para funções puras testáveis em `src/domain`: adicionar, renomear, mover e remover nó, mudar pai, ligar nós, recolher ramo e reorganizar o layout.
