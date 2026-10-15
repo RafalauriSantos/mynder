@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import {importMarkdown,validate} from './src/document.ts';
+import {addNode,renameNode,moveNode,deleteNode,linkNodes,unlinkNodes,setCollapsed,setColor,renameDocument,organizeDocument,duplicateDocument,outline} from './src/edit.ts';
+const base=()=>importMarkdown('# Raiz\n## A\n- A1\n## B');
+const by=(d,t)=>d.topics.find(n=>n.text===t);
+test('addNode adds under a parent, keeps markdown in sync and stays valid',()=>{const d=base();const {doc,nodeId}=addNode(d,'A2',by(d,'A').id);validate(doc);assert.equal(doc.topics.find(n=>n.id===nodeId).parentId,by(d,'A').id);assert.match(doc.markdown,/A2/);assert.equal(d.topics.length,4)});
+test('addNode without parent creates another root and rejects empty text or unknown parent',()=>{const d=base();const {doc}=addNode(d,'Outra raiz');assert.equal(doc.topics.filter(n=>!n.parentId).length,2);assert.throws(()=>addNode(d,'  '));assert.throws(()=>addNode(d,'x','nope'))});
+test('renameNode updates text and the title when renaming the first root',()=>{const d=base();assert.equal(renameNode(d,by(d,'Raiz').id,'Novo').title,'Novo');const r=renameNode(d,by(d,'A').id,'AA');assert.equal(r.title,'Raiz');assert.ok(by(r,'AA'));assert.throws(()=>renameNode(d,'nope','x'))});
+test('moveNode reparents and refuses cycles',()=>{const d=base();const moved=moveNode(d,by(d,'A1').id,by(d,'B').id);assert.equal(by(moved,'A1').parentId,by(d,'B').id);validate(moved);assert.throws(()=>moveNode(d,by(d,'A').id,by(d,'A1').id))});
+test('deleteNode removes the branch and related links but never the last tree',()=>{let d=base();d=linkNodes(d,by(d,'A1').id,by(d,'B').id).doc;const r=deleteNode(d,by(d,'A').id);assert.equal(r.topics.length,2);assert.equal(r.links.length,0);assert.throws(()=>deleteNode(d,by(d,'Raiz').id))});
+test('links: add, reject duplicates and self links, remove',()=>{const d=base();const {doc,linkId}=linkNodes(d,by(d,'A').id,by(d,'B').id);validate(doc);assert.throws(()=>linkNodes(doc,by(d,'B').id,by(d,'A').id));assert.throws(()=>linkNodes(d,by(d,'A').id,by(d,'A').id));assert.equal(unlinkNodes(doc,linkId).links.length,0);assert.throws(()=>unlinkNodes(doc,'x'))});
+test('collapse, color, title and organize keep documents valid',()=>{const d=base();assert.equal(by(setCollapsed(d,by(d,'A').id,true),'A').collapsed,true);assert.equal(by(setColor(d,by(d,'A').id,'#112233'),'A').color,'#112233');assert.throws(()=>setColor(d,by(d,'A').id,'red'));assert.equal(renameDocument(d,' T ').title,'T');assert.throws(()=>renameDocument(d,' '));validate(organizeDocument(d))});
+test('duplicateDocument gets a new id and title',()=>{const d=base();const c=duplicateDocument(d);assert.notEqual(c.id,d.id);assert.equal(c.title,'Raiz (cópia)');validate(c)});
+test('outline lists ids in hierarchy order',()=>{const d=base();const o=outline(d);assert.match(o,new RegExp(`- \\[${by(d,'A1').id}\\] A1`));assert.ok(o.indexOf('Raiz')<o.indexOf('A1'))});
+import {addBranch} from './src/edit.ts';
+test('addBranch grafts a markdown subtree under a parent with fresh ids',()=>{const d=base();const {doc,added}=addBranch(d,'# X\n## X1\n- X2',by(d,'B').id);validate(doc);assert.equal(added,3);assert.equal(by(doc,'X').parentId,by(d,'B').id);assert.equal(by(doc,'X2').parentId,by(doc,'X1').id);assert.equal(doc.topics.length,d.topics.length+3);assert.equal(new Set(doc.topics.map(n=>n.id)).size,doc.topics.length)});
+test('addBranch without parent adds new roots and rejects empty markdown',()=>{const d=base();const {doc}=addBranch(d,'# Y\n## Y1');assert.equal(doc.topics.filter(n=>!n.parentId).length,2);assert.throws(()=>addBranch(d,'   '))});

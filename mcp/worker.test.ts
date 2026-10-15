@@ -209,9 +209,13 @@ describe('OAuth 2.1 Mynder MCP Worker',()=>{
         expect(toolsA.map(tool=>tool.name)).toEqual([
           'mynder_list_maps','mynder_get_map','mynder_create_map','mynder_update_map',
           'mynder_delete_map','mynder_restore_map','mynder_export_backup',
+          'mynder_get_outline','mynder_get_markdown','mynder_create_map_from_markdown','mynder_set_markdown',
+          'mynder_add_node','mynder_add_branch','mynder_rename_node','mynder_move_node','mynder_delete_node',
+          'mynder_set_collapsed','mynder_set_color','mynder_link_nodes','mynder_unlink_nodes','mynder_rename_map',
+          'mynder_organize_map','mynder_duplicate_map',
         ]);
         const {tools:toolsB}=await b.client.listTools();
-        expect(toolsB.map(tool=>tool.name)).toEqual(['mynder_list_maps','mynder_get_map','mynder_export_backup']);
+        expect(toolsB.map(tool=>tool.name)).toEqual(['mynder_list_maps','mynder_get_map','mynder_export_backup','mynder_get_outline','mynder_get_markdown']);
 
         const document=blank('Mapa MCP privado');
         const created=await a.client.callTool({name:'mynder_create_map',arguments:{document}});
@@ -233,6 +237,54 @@ describe('OAuth 2.1 Mynder MCP Worker',()=>{
         expect(forged.isError).toBe(true);
         const backup=await a.client.callTool({name:'mynder_export_backup',arguments:{}});
         expect(JSON.parse(textOf(backup))).toMatchObject({total_count:1,has_more:false});
+      }finally{
+        await Promise.allSettled([a.client.close(),b.client.close(),a.transport.close(),b.transport.close()]);
+      }
+    }finally{
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('edits maps node by node through MCP and keeps each account private',async()=>{
+    installOidcMock();
+    try{
+      const clientId=await registerPublicClient();
+      const a=makeClient(await authorizeClient(clientId,'node-user-a',['mynder:read','mynder:write']));
+      const b=makeClient(await authorizeClient(clientId,'node-user-b',['mynder:read','mynder:write']));
+      const call=async(who:typeof a,name:string,args:Record<string,unknown>)=>{const r=await who.client.callTool({name,arguments:args});return{text:textOf(r as never),isError:r.isError===true}};
+      const idOf=(outline:string,label:string)=>new RegExp('\\[([^\\]]+)\\] '+label+'(?:\\s|$)','m').exec(outline)![1];
+      try{
+        await a.client.connect(a.transport);
+        await b.client.connect(b.transport);
+        const created=await call(a,'mynder_create_map_from_markdown',{markdown:'# Estudos\n## Matemática\n- Álgebra\n## Programação'});
+        expect(created.isError).toBe(false);
+        const map=/\(id: ([^)]+)\)/.exec(created.text)![1];
+        const prog=idOf(created.text,'Programação');
+
+        const added=await call(a,'mynder_add_node',{map_id:map,text:'TypeScript',parent_id:prog});
+        expect(added.text).toContain('TypeScript');
+        const branch=await call(a,'mynder_add_branch',{map_id:map,parent_id:prog,markdown:'# Cloudflare\n## Workers\n## D1'});
+        expect(branch.text).toContain('Workers');
+        const moved=await call(a,'mynder_move_node',{map_id:map,node_id:idOf(branch.text,'Álgebra'),new_parent_id:prog});
+        expect(moved.isError).toBe(false);
+        const renamed=await call(a,'mynder_rename_node',{map_id:map,node_id:idOf(moved.text,'Workers'),text:'Workers AI'});
+        expect(renamed.text).toContain('Workers AI');
+        const linked=await call(a,'mynder_link_nodes',{map_id:map,source_id:idOf(renamed.text,'Álgebra'),target_id:idOf(renamed.text,'D1')});
+        expect(linked.text).toContain('Conexões livres');
+        const deleted=await call(a,'mynder_delete_node',{map_id:map,node_id:prog});
+        expect(deleted.text).not.toContain('TypeScript');
+        expect(deleted.text).not.toContain('Conexões livres');
+        const set=await call(a,'mynder_set_markdown',{map_id:map,markdown:'# Estudos\n## Matemática\n- Álgebra\n- Geometria'});
+        expect(set.text).toContain('Geometria');
+        expect((await call(a,'mynder_get_markdown',{map_id:map})).text).toContain('Geometria');
+
+        expect((await call(a,'mynder_add_node',{map_id:map,text:'x',parent_id:'inexistente'})).isError).toBe(true);
+        expect((await call(a,'mynder_get_outline',{map_id:'inexistente'})).isError).toBe(true);
+        expect((await call(b,'mynder_get_outline',{map_id:map})).isError).toBe(true);
+        expect((await call(b,'mynder_delete_node',{map_id:map,node_id:idOf(set.text,'Matemática')})).isError).toBe(true);
+        expect((await call(a,'mynder_get_outline',{map_id:map})).isError).toBe(false);
+        const copy=await call(a,'mynder_duplicate_map',{map_id:map,title:'Cópia'});
+        expect(/\(id: ([^)]+)\)/.exec(copy.text)![1]).not.toBe(map);
       }finally{
         await Promise.allSettled([a.client.close(),b.client.close(),a.transport.close(),b.transport.close()]);
       }
