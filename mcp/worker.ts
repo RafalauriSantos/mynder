@@ -228,7 +228,9 @@ async function handleAuthorization(request:Request,env:MynderMcpEnv,server:OAuth
       const consent=await oauth.beginConsent(parsed);
       consent.headers.set('content-type','text/html; charset=utf-8');
       consent.headers.set('cache-control','no-store');
-      consent.headers.set('content-security-policy',"default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'; style-src 'unsafe-inline'");
+      // O envio do formulário redireciona ao provedor de login; o Chrome aplica form-action também ao redirecionamento.
+      const upstreamOrigin=env.AUTH_ISSUER?new URL(env.AUTH_ISSUER).origin:'';
+      consent.headers.set('content-security-policy',"default-src 'none'; form-action 'self'"+(upstreamOrigin?' '+upstreamOrigin:'')+"; base-uri 'none'; frame-ancestors 'none'; style-src 'unsafe-inline'");
       consent.headers.set('x-content-type-options','nosniff');
       return new Response(consentPage(description,consent.handle),{headers:consent.headers});
     }
@@ -236,7 +238,7 @@ async function handleAuthorization(request:Request,env:MynderMcpEnv,server:OAuth
       const form=await request.formData();
       const handle=form.get('handle');
       if(typeof handle!=='string'||!handle)return response(400,'Solicitação de consentimento inválida. Reinicie a conexão MCP.');
-      return startUpstreamSignIn(request,form,env,oauth,handle);
+      return await startUpstreamSignIn(request,form,env,oauth,handle);
     }
     return new Response('Method not allowed',{status:405,headers:{allow:'GET, POST','cache-control':'no-store'}});
   }catch(error){return handleAuthorizationError(error)}

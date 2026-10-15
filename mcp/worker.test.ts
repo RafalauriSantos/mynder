@@ -119,6 +119,7 @@ async function authorizeClient(clientId:string,subject:string,scopes:string[]):P
   const consent=await handleMcpRequest(new Request(authorization),workerEnv,context);
   expect(consent.status).toBe(200);
   expect(consent.headers.get('content-security-policy')).toContain("frame-ancestors 'none'");
+  expect(consent.headers.get('content-security-policy')).toContain("form-action 'self' "+issuer);
   const html=await consent.text();
   const handle=html.match(/name="handle" value="([^"]+)"/)?.[1];
   expect(handle).toBeTruthy();
