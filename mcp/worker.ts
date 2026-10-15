@@ -248,7 +248,7 @@ function makeResourceServer(env:MynderMcpEnv,authorizationServer:OAuthAuthorizat
   const config=endpoints(env);
   return new OAuthResourceServer<MynderMcpEnv,OAuthUserProps>({
     resourceMetadata:{resource:config.resource,authorization_servers:[config.issuer]},
-    requiredScopes:['mynder:read'],
+    requiredScopes:['mynder:read','mynder:write'],
     validateToken:()=> (resource,token)=>authorizationServer.validateToken(resource,token,env),
     handler:{fetch:async(request,_env,context)=>{
       if(new URL(request.url).pathname!=='/mcp')return new Response('Not found',{status:404});

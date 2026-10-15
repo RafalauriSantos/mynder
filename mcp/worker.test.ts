@@ -196,7 +196,7 @@ describe('OAuth 2.1 Mynder MCP Worker',()=>{
       expect(await authorizationMetadata.json()).toMatchObject({issuer:oauthIssuer});
       const resourceMetadata=await handleMcpRequest(new Request(oauthIssuer+'/.well-known/oauth-protected-resource/mcp'),workerEnv,context);
       expect(resourceMetadata.status).toBe(200);
-      expect(await resourceMetadata.json()).toMatchObject({resource,authorization_servers:[oauthIssuer]});
+      expect(await resourceMetadata.json()).toMatchObject({resource,authorization_servers:[oauthIssuer],scopes_supported:['mynder:read','mynder:write']});
 
       const clientId=await registerPublicClient();
       const tokenA=await authorizeClient(clientId,'oauth-user-a',['mynder:read','mynder:write']);
