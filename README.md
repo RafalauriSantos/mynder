@@ -2,6 +2,8 @@
 
 Espaço visual para organizar ideias, conectar conceitos e desenhar livremente no mesmo quadro.
 
+> English: see [README.en.md](README.en.md).
+
 Mynder tem dois modos no mesmo quadro: **Mapa mental**, renderizado com Markmap, e **Canvas livre**, para reorganizar nós, conectá-los e desenhar. As duas vistas compartilham a hierarquia. Edite o Markdown para regenerar o mapa; mudanças compatíveis preservam os nós e conexões existentes.
 
 ## Executar
@@ -74,6 +76,8 @@ Anote o modelo do aparelho e o navegador. Se algum passo falhar, informe o núme
 Rode `npm test` para validar regras de documentos e armazenamento e `npm run build` para validar a compilação. O uso offline em celular físico foi confirmado pelo usuário e está registrado na etapa 7 da [SPEC.md](SPEC.md); o roteiro acima pode ser usado para repetir essa validação.
 
 ## Integração com IA via MCP
+
+Com o MCP conectado, uma IA (por exemplo o Claude) cria, reorganiza e edita seus mapas nó a nó. Guia de conexão e lista de ferramentas em [worker/README.md](worker/README.md); para rodar o backend na sua própria conta Cloudflare, veja [README.en.md](README.en.md#self-hosting-the-backend).
 
 O servidor MCP fica em `worker/` e é separado do frontend Pages. Ele expõe `/mcp` por Streamable HTTP e usa D1 para persistir mapas. Consulte [worker/README.md](worker/README.md) e o [plano de produção](docs/superpowers/plans/2026-10-07-mcp-cloudflare-production.md) antes de configurar um ambiente Cloudflare.
 

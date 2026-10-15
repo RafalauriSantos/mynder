@@ -25,10 +25,10 @@ Legenda: `[ ]` pendente · `[~]` feito, aguardando validação · `[x]` validado
 - [x] **C4.** Teste ao vivo: o Claude cria um mapa, reorganiza e apaga um nó, e confere o resultado.
 
 ## Fase D — Ver o resultado no app
-- [~] **D1.** O botão de sincronização do app deixa de usar `prompt()` e passa a ter uma tela de configuração.
-- [~] **D2.** "Carregar nuvem" não sobrescreve edição local sem avisar, e conflito de versão mostra mensagem clara.
-- [ ] **D3.** Validar no `mynder.pages.dev` que um mapa criado pelo Claude aparece no app.
+- [x] **D1.** O botão de sincronização do app deixa de usar `prompt()` e passa a ter uma tela de configuração.
+- [x] **D2.** "Carregar nuvem" não sobrescreve edição local sem avisar, e conflito de versão mostra mensagem clara.
+- [x] **D3.** Validar no `mynder.pages.dev` que um mapa criado pelo Claude aparece no app.
 
 ## Fase E — Fechamento
-- [ ] **E1.** README em inglês e guia para rodar o backend por conta própria (open source).
+- [~] **E1.** README em inglês e guia para rodar o backend por conta própria (open source).
 - [ ] **E2.** Commits organizados, PR e checagem de CI.
