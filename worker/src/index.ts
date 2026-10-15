@@ -13,6 +13,19 @@ function server(env: Env, ownerId: string) {
   return mcp;
 }
 
+/** Origem permitida: a configurada, previews do próprio projeto Pages e localhost (desenvolvimento). */
+export function resolveOrigin(request: Request, env: Env): string | undefined {
+  const origin = request.headers.get('origin');
+  if (!origin) return env.MCP_ALLOWED_ORIGIN;
+  if (origin === env.MCP_ALLOWED_ORIGIN) return origin;
+  try {
+    const { protocol, hostname } = new URL(origin);
+    if (protocol === 'https:' && /^[a-z0-9-]+\.mynder\.pages\.dev$/.test(hostname)) return origin;
+    if (protocol === 'http:' && (hostname === 'localhost' || hostname === '127.0.0.1')) return origin;
+  } catch { /* origem inválida */ }
+  return env.MCP_ALLOWED_ORIGIN;
+}
+
 function corsHeaders(origin?: string): Record<string, string> {
   return { 'Access-Control-Allow-Origin': origin ?? 'null', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Headers': 'authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS', Vary: 'Origin' };
 }
@@ -44,7 +57,7 @@ export default {
       return createMcpHandler(() => server(env, ownerId), { route: '/mcp' })(request, env, ctx);
     }
     if (url.pathname.startsWith('/api/maps')) {
-      const allowedOrigin = env.MCP_ALLOWED_ORIGIN;
+      const allowedOrigin = resolveOrigin(request, env);
       if (request.method === 'OPTIONS') return json(null, 204, allowedOrigin);
       const ownerId = await authenticateApi(request, env);
       if (!ownerId) return json({ error: 'Unauthorized' }, 401, allowedOrigin);
@@ -63,7 +76,10 @@ export default {
           const body = await request.json() as { document?: unknown; expectedVersion?: number };
           if (!body.document || !body.expectedVersion) return json({ error: 'document and expectedVersion are required' }, 400, allowedOrigin);
           return json(await updateMap(env.DB, ownerId, mapId, validate(body.document) as Document, body.expectedVersion), 200, allowedOrigin);
-        } catch (error) { return json({ error: error instanceof Error ? error.message : 'Invalid map' }, 400, allowedOrigin); }
+        } catch (error) {
+          const conflict = error instanceof Error && error.message === 'MAP_NOT_FOUND_OR_VERSION_CONFLICT';
+          return json({ error: error instanceof Error ? error.message : 'Invalid map' }, conflict ? 409 : 400, allowedOrigin);
+        }
       }
       return json({ error: 'Not found' }, 404, allowedOrigin);
     }

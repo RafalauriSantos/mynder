@@ -90,3 +90,15 @@ describe('MCP map tools', () => {
     expect((await call('get_outline', { mapId: map })).isError).toBe(false);
   });
 });
+
+describe('REST maps API', () => {
+  it('answers 409 when the expected version is stale', async () => {
+    const environment = { DB: createTestDb(), MCP_BEARER_TOKEN: 'secret', MCP_OWNER_ID: 'owner-a', MCP_ALLOWED_ORIGIN: 'https://mynder.pages.dev' };
+    const created = await call('create_map', { markdown: '# Raiz' }, 'secret', environment);
+    const map = mapIdOf(created.text);
+    const document = JSON.parse((await call('get_map', { mapId: map }, 'secret', environment)).text);
+    const put = (expectedVersion: number) => worker.fetch(new Request(`https://mcp.test/api/maps/${map}`, { method: 'PUT', headers: { authorization: 'Bearer secret', 'content-type': 'application/json' }, body: JSON.stringify({ document, expectedVersion }) }), environment, ctx);
+    expect((await put(1)).status).toBe(200);
+    expect((await put(1)).status).toBe(409);
+  });
+});

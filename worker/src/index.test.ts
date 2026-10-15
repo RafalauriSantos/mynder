@@ -29,3 +29,13 @@ describe('mynder MCP worker', () => {
     expect(response.headers.get('access-control-allow-origin')).toBe('https://mynder.pages.dev');
   });
 });
+
+describe('CORS origins', () => {
+  const preflight = (origin: string) => worker.fetch(new Request('https://mynder-mcp.test/api/maps', { method: 'OPTIONS', headers: { origin } }), env, ctx);
+  it('allows Pages previews and localhost but not other sites', async () => {
+    expect((await preflight('https://abc123.mynder.pages.dev')).headers.get('access-control-allow-origin')).toBe('https://abc123.mynder.pages.dev');
+    expect((await preflight('http://localhost:5173')).headers.get('access-control-allow-origin')).toBe('http://localhost:5173');
+    expect((await preflight('https://evil.example')).headers.get('access-control-allow-origin')).toBe('https://mynder.pages.dev');
+    expect((await preflight('https://mynder.pages.dev.evil.example')).headers.get('access-control-allow-origin')).toBe('https://mynder.pages.dev');
+  });
+});

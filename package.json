@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "tsx --test document.test.mjs storage.test.mjs backup.test.mjs edit.test.mjs",
+    "test": "tsx --test document.test.mjs storage.test.mjs backup.test.mjs edit.test.mjs sync.test.mjs",
     "mcp:test": "npm --prefix worker test",
     "mcp:dry-run": "npm --prefix worker run deploy -- --dry-run --config ./wrangler.jsonc",
     "preview": "npm run build && wrangler dev",
