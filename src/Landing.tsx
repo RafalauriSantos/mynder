@@ -145,14 +145,7 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
     </main>
 
     <footer className="landing-footer" id="aberto">
-      <div className="landing-footer-id">
-        <a className="landing-brand" href="#inicio" aria-label="Mynder, voltar ao início"><span className="landing-brand-mark" aria-hidden="true">✳</span>mynder</a>
-        <p>Código aberto sob licença MIT.</p>
-      </div>
-      <nav className="landing-footer-links" aria-label="Rodapé">
-        <a href="https://github.com/RafalauriSantos/mynder" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://github.com/RafalauriSantos/mynder/blob/main/README.en.md" target="_blank" rel="noreferrer">README in English</a>
-      </nav>
+      <p>O Mynder é código aberto, sob licença MIT. <a href="https://github.com/RafalauriSantos/mynder" target="_blank" rel="noreferrer">Ver no GitHub</a></p>
     </footer>
   </div>;
 }
