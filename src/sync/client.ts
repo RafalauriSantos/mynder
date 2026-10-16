@@ -45,7 +45,8 @@ export class SyncApiClient{
     baseUrl='',
   ){
     this.tokenProvider=tokenProvider;
-    this.fetcher=fetcher;
+    // Browsers reject window.fetch called with another receiver ("Illegal invocation"), so never call it as this.fetcher(...).
+    this.fetcher=(input,init)=>fetcher(input,init);
     this.baseUrl=baseUrl;
   }
 
