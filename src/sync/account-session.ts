@@ -113,6 +113,8 @@ export type GoogleIdConfiguration={
   callback:(credential:string)=>void;
   onError:(message:string)=>void;
   onReady?:()=>void;
+  buttonShape?:'pill'|'rectangular';
+  buttonWidth?:number;
 };
 
 type GoogleIdentityApi={
@@ -164,6 +166,6 @@ export async function mountGoogleSignIn(element:HTMLElement,configuration:Google
     });
     initializedGoogleClientId=configuration.clientId;
   }
-  api.accounts.id.renderButton(element,{theme:'outline',size:'large',shape:'rectangular',text:'continue_with',logo_alignment:'left',width:280});
+  api.accounts.id.renderButton(element,{theme:'outline',size:'large',shape:configuration.buttonShape??'rectangular',text:'continue_with',logo_alignment:'left',width:configuration.buttonWidth??280});
   configuration.onReady?.();
 }
