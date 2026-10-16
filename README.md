@@ -2,6 +2,8 @@
 
 Espaço visual para organizar ideias, conectar conceitos e desenhar livremente no mesmo quadro.
 
+> English: see [README.en.md](README.en.md).
+
 Mynder tem dois modos no mesmo quadro: **Mapa mental**, renderizado com Markmap, e **Canvas livre**, para reorganizar nós, conectá-los e desenhar. As duas vistas compartilham a hierarquia. Edite o Markdown para regenerar o mapa; mudanças compatíveis preservam os nós e conexões existentes.
 
 ## Executar
