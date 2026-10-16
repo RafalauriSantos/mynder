@@ -1,7 +1,8 @@
 import {useEffect,useRef} from 'react';
 import {mountGoogleSignIn} from './account-session.ts';
 
-const clientId=(import.meta.env.VITE_GOOGLE_CLIENT_ID??'').trim();
+export const GOOGLE_CLIENT_ID=(import.meta.env.VITE_GOOGLE_CLIENT_ID??'').trim();
+const clientId=GOOGLE_CLIENT_ID;
 
 export function GoogleSignInButton({onCredential,onError,onReady,disabled=false,shape,width}:{onCredential:(credential:string)=>void;onError:(message:string)=>void;onReady?:()=>void;disabled?:boolean;shape?:'pill'|'rectangular';width?:number}){
   const element=useRef<HTMLDivElement>(null);

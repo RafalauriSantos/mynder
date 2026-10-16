@@ -26,23 +26,28 @@ export type AccountConnectResult=Readonly<{
 export class AccountSyncSession {
   readonly identity:SyncIdentity;
   private readonly api:SyncApiClient;
+  private readonly credential:{token:string};
+  private readonly fetcher:typeof fetch;
   private state:AccountLocalState;
   private generation=0;
   private activeSync:Promise<SyncResult>|null=null;
 
-  private constructor(identity:SyncIdentity,api:SyncApiClient,state:AccountLocalState){
+  private constructor(identity:SyncIdentity,api:SyncApiClient,credential:{token:string},fetcher:typeof fetch,state:AccountLocalState){
     this.identity=identity;
     this.api=api;
+    this.credential=credential;
+    this.fetcher=fetcher;
     this.state=state;
   }
 
   static async connect(token:string,fetcher:typeof fetch=fetch):Promise<AccountConnectResult>{
     if(typeof token!=='string'||!token.trim())throw new AccountSessionError('invalid');
-    const api=new SyncApiClient(async()=>token,fetcher);
+    const credential={token};
+    const api=new SyncApiClient(async()=>credential.token,fetcher);
     const identity=validateSyncIdentity(await api.session());
     const loaded=await loadAccountState(identity);
     if(loaded.blocked)throw new AccountSessionError('blocked');
-    const session=new AccountSyncSession(identity,api,loaded.state);
+    const session=new AccountSyncSession(identity,api,credential,fetcher,loaded.state);
     let syncResult:SyncResult|undefined;
     let syncError:unknown;
     try{syncResult=await session.sync()}
@@ -58,6 +63,15 @@ export class AccountSyncSession {
   }
 
   get documents():Document[]{return this.state.docs.map(validate)}
+
+  /** Swaps in a fresh Google ID token, but only when it belongs to the account already connected. */
+  async refreshToken(token:string):Promise<void>{
+    if(typeof token!=='string'||!token.trim())throw new AccountSessionError('invalid');
+    const candidate=new SyncApiClient(async()=>token,this.fetcher);
+    const identity=validateSyncIdentity(await candidate.session());
+    if(identity.issuer!==this.identity.issuer||identity.subject!==this.identity.subject)throw new AccountSessionError('invalid');
+    this.credential.token=token;
+  }
 
   async replaceDocuments(documents:Document[]):Promise<void>{
     const validated=documents.map(validate);
@@ -118,7 +132,7 @@ export type GoogleIdConfiguration={
 };
 
 type GoogleIdentityApi={
-  accounts:{id:{initialize:(config:{client_id:string;callback:(response:{credential?:string})=>void;auto_select?:boolean})=>void;renderButton:(element:HTMLElement,options:{theme:string;size:string;shape:string;text:string;logo_alignment:string;width:number})=>void}};
+  accounts:{id:{initialize:(config:{client_id:string;callback:(response:{credential?:string})=>void;auto_select?:boolean})=>void;renderButton:(element:HTMLElement,options:{theme:string;size:string;shape:string;text:string;logo_alignment:string;width:number})=>void;prompt?:()=>void;disableAutoSelect?:()=>void}};
 };
 
 declare global {interface Window {google?:GoogleIdentityApi}}
@@ -149,23 +163,44 @@ function loadGoogleIdentityApi():Promise<GoogleIdentityApi>{
   return googleApiPromise;
 }
 
+function initializeGoogleOnce(api:GoogleIdentityApi,clientId:string):void{
+  if(initializedGoogleClientId===clientId)return;
+  api.accounts.id.initialize({
+    client_id:clientId,
+    auto_select:true,
+    callback:response=>{
+      const current=currentGoogleConfiguration;
+      if(!current)return;
+      if(typeof response.credential!=='string'||!response.credential){current.onError('O Google não retornou uma credencial válida.');return}
+      current.callback(response.credential);
+    },
+  });
+  initializedGoogleClientId=clientId;
+}
+
+const GOOGLE_HINT_KEY='mynder-google-hint';
+/** Only a flag that this browser signed in before. The token itself is never stored. */
+export function rememberGoogleSignIn():void{try{localStorage.setItem(GOOGLE_HINT_KEY,'1')}catch{/* storage unavailable */}}
+export function hasGoogleSignInHint():boolean{try{return localStorage.getItem(GOOGLE_HINT_KEY)==='1'}catch{return false}}
+export function forgetGoogleSignIn():void{
+  try{localStorage.removeItem(GOOGLE_HINT_KEY)}catch{/* storage unavailable */}
+  try{window.google?.accounts.id.disableAutoSelect?.()}catch{/* Google script not loaded */}
+}
+
+/** Asks Google for a fresh credential without a click; works when the person is signed in to Google and approved Mynder before. */
+export async function requestSilentGoogleCredential(configuration:GoogleIdConfiguration):Promise<void>{
+  if(!configuration.clientId.trim())throw new Error('O login Google ainda não foi configurado.');
+  const api=await loadGoogleIdentityApi();
+  currentGoogleConfiguration=configuration;
+  initializeGoogleOnce(api,configuration.clientId);
+  api.accounts.id.prompt?.();
+}
+
 export async function mountGoogleSignIn(element:HTMLElement,configuration:GoogleIdConfiguration):Promise<void>{
   if(!configuration.clientId.trim())throw new Error('O login Google ainda não foi configurado.');
   const api=await loadGoogleIdentityApi();
   currentGoogleConfiguration=configuration;
-  if(initializedGoogleClientId!==configuration.clientId){
-    api.accounts.id.initialize({
-      client_id:configuration.clientId,
-      auto_select:false,
-      callback:response=>{
-        const current=currentGoogleConfiguration;
-        if(!current)return;
-        if(typeof response.credential!=='string'||!response.credential){current.onError('O Google não retornou uma credencial válida.');return}
-        current.callback(response.credential);
-      },
-    });
-    initializedGoogleClientId=configuration.clientId;
-  }
+  initializeGoogleOnce(api,configuration.clientId);
   api.accounts.id.renderButton(element,{theme:'outline',size:'large',shape:configuration.buttonShape??'rectangular',text:'continue_with',logo_alignment:'left',width:configuration.buttonWidth??280});
   configuration.onReady?.();
 }
