@@ -62,7 +62,6 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
       <section className="landing-hero" aria-labelledby="landing-title">
         <div className="landing-hero-inner">
           <div className="landing-hero-copy">
-            <p className="landing-overline"><span aria-hidden="true"/> UM LUGAR PARA PENSAR VISUALMENTE</p>
             <h1 id="landing-title">Ideias não nascem <em>em linha reta.</em></h1>
             <p className="landing-lead">Dê forma ao que está na sua cabeça. Crie mapas mentais, conecte caminhos e encontre clareza para estudar, planejar ou criar.</p>
             <div className="landing-actions" id="comecar">
@@ -75,7 +74,6 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
             <p className="landing-privacy">Sem conta, os mapas ficam neste navegador. Com Google, você acessa os mapas da sua conta.</p>
           </div>
           <div className="landing-hero-art" aria-hidden="true">
-            <span className="landing-art-caption">pensamento em movimento / 01</span>
             <svg viewBox="0 0 500 400" fill="none" role="presentation">
               <path d="M160 223C221 223 206 84 300 84M160 223C240 223 228 219 337 219M160 223C223 223 217 355 303 355" stroke="#CCDFBE" strokeWidth="1.5"/>
               <path d="M337 219C400 219 395 147 449 147M337 219C407 219 404 297 451 297" stroke="#CCDFBE" strokeWidth="1.5" strokeDasharray="5 6"/>
@@ -94,7 +92,7 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
       </section>
 
       <section className="landing-showcase" id="amostra" aria-labelledby="sample-title">
-        <div className="landing-showcase-heading"><div><p className="landing-section-label">O MYNDER POR DENTRO</p><h2 id="sample-title">Veja a ideia ganhar forma.</h2></div><p>Toque nos exemplos e explore o mapa. Esta amostra é interativa e não altera seus mapas.</p></div>
+        <div className="landing-showcase-heading"><div><h2 id="sample-title">Veja a ideia ganhar forma.</h2></div><p>Toque nos exemplos e explore o mapa. Esta amostra é interativa e não altera seus mapas.</p></div>
         <div className="landing-workspace">
           <div className="landing-workspace-top"><div className="landing-window-dots" aria-hidden="true"><i/><i/><i/></div><span>mynder <b> / </b> espaço de ideias</span><span className="landing-workspace-badge">AMOSTRA</span></div>
           <div className="landing-workspace-body">
@@ -109,8 +107,8 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
       </section>
 
       <section className="landing-features" id="como-funciona" aria-labelledby="features-title">
-        <div className="landing-feature-intro"><div><p className="landing-section-label">DA PRIMEIRA IDEIA AO TODO</p><h2 id="features-title">Pense do seu jeito.</h2></div><p>Uma tela para começar simples e aprofundar quando fizer sentido.</p></div>
-        <div className="landing-feature-grid"><article><span>01 / ESTRUTURE</span><h3>Comece com texto.</h3><p>Escreva ou cole anotações em Markdown e transforme os tópicos em um mapa mental.</p><div aria-hidden="true"># ideia<br/>　↳ um caminho<br/>　↳ outro caminho</div></article><article><span>02 / EXPLORE</span><h3>Abra outras conexões.</h3><p>Leve o mapa ao canvas para mover tópicos, desenhar e conectar ideias livremente.</p><div className="landing-feature-sketch" aria-hidden="true">○ <span>─ ─ ✳ ─ ─</span> ○</div></article><article><span>03 / CONTINUE</span><h3>Seu espaço acompanha você.</h3><p>Salve localmente ou entre com Google para manter os mapas da conta sincronizados.</p><div className="landing-feature-end" aria-hidden="true">um mapa de cada vez <span>↗</span></div></article></div>
+        <div className="landing-feature-intro"><div><h2 id="features-title">Pense do seu jeito.</h2></div><p>Uma tela para começar simples e aprofundar quando fizer sentido.</p></div>
+        <div className="landing-feature-grid"><article><h3>Comece com texto.</h3><p>Escreva ou cole anotações em Markdown e transforme os tópicos em um mapa mental.</p><div aria-hidden="true"># ideia<br/>　↳ um caminho<br/>　↳ outro caminho</div></article><article><h3>Abra outras conexões.</h3><p>Leve o mapa ao canvas para mover tópicos, desenhar e conectar ideias livremente.</p><div className="landing-feature-sketch" aria-hidden="true">○ <span>─ ─ ✳ ─ ─</span> ○</div></article><article><h3>Seu espaço acompanha você.</h3><p>Salve localmente ou entre com Google para manter os mapas da conta sincronizados.</p><div className="landing-feature-end" aria-hidden="true">um mapa de cada vez <span>↗</span></div></article></div>
       </section>
     </main>
 
