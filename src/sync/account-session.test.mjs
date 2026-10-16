@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import {beforeEach,test} from 'node:test';
 import {blank} from '../document.ts';
-import {AccountSyncSession,mountGoogleSignIn} from './account-session.ts';
+import {AccountSyncSession,forgetGoogleSignIn,hasGoogleSignInHint,mountGoogleSignIn,rememberGoogleSignIn,requestSilentGoogleCredential} from './account-session.ts';
 
 const identity={issuer:'https://accounts.google.com',subject:'google-user-123'};
 let data;
 
 beforeEach(()=>{
   data=new Map();
-  globalThis.localStorage={getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value)};
+  globalThis.localStorage={getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value),removeItem:key=>data.delete(key)};
 });
 
 test('Google button reports when it is ready for a credential',async()=>{
@@ -99,4 +99,62 @@ test('confirmed anonymous import creates new account copies and preserves the an
   assert.deepEqual(server.stored.map(item=>item.document),[starter,...imported.copies]);
   const creates=server.requests.filter(request=>request.init.method==='POST');
   assert.equal(creates.every(create=>!('ownerId' in JSON.parse(create.init.body))&&!('ownerId' in JSON.parse(create.init.body).document)),true);
+});
+
+test('refreshToken swaps the bearer used by later requests for the same account',async()=>{
+  const server=api();
+  const {session}=await AccountSyncSession.connect('first-token',server.fetcher);
+  await session.refreshToken('second-token');
+  server.requests.length=0;
+  await session.sync();
+  assert.equal(server.requests.length>0,true);
+  assert.equal(server.requests.every(request=>request.init.headers.authorization==='Bearer second-token'),true);
+});
+
+test('refreshToken refuses a credential from a different Google account and keeps the old one',async()=>{
+  const server=api();
+  const fetcher=async(url,init={})=>url==='/api/session'&&init.headers.authorization==='Bearer other-account-token'
+    ?Response.json({identity:{issuer:identity.issuer,subject:'someone-else'}})
+    :server.fetcher(url,init);
+  const {session}=await AccountSyncSession.connect('first-token',fetcher);
+  await assert.rejects(session.refreshToken('other-account-token'),{code:'invalid'});
+  server.requests.length=0;
+  await session.sync();
+  assert.equal(server.requests.every(request=>request.init.headers.authorization==='Bearer first-token'),true);
+});
+
+test('silent Google sign-in prompts without a click, initializes once and uses the latest callback',async()=>{
+  const previousWindow=globalThis.window;
+  const events=[];
+  let googleCallback;
+  globalThis.window={google:{accounts:{id:{
+    initialize:config=>{events.push(`initialized auto_select=${config.auto_select}`);googleCallback=config.callback},
+    renderButton:()=>events.push('rendered'),
+    prompt:()=>events.push('prompted'),
+  }}}};
+  try{
+    await requestSilentGoogleCredential({clientId:'silent-client',callback:()=>events.push('first'),onError:()=>{}});
+    await requestSilentGoogleCredential({clientId:'silent-client',callback:()=>events.push('second'),onError:()=>{}});
+    googleCallback({credential:'redacted-test-token'});
+    assert.deepEqual(events,['initialized auto_select=true','prompted','prompted','second']);
+  }finally{
+    globalThis.window=previousWindow;
+  }
+});
+
+test('the sign-in hint is a flag only, and signing out clears it and disables auto select',()=>{
+  const previousWindow=globalThis.window;
+  const events=[];
+  globalThis.window={google:{accounts:{id:{disableAutoSelect:()=>events.push('disabled')}}}};
+  try{
+    assert.equal(hasGoogleSignInHint(),false);
+    rememberGoogleSignIn();
+    assert.equal(hasGoogleSignInHint(),true);
+    assert.equal([...data.values()].every(value=>value==='1'),true);
+    forgetGoogleSignIn();
+    assert.equal(hasGoogleSignInHint(),false);
+    assert.deepEqual(events,['disabled']);
+  }finally{
+    globalThis.window=previousWindow;
+  }
 });
