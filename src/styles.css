@@ -56,10 +56,6 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .mindmap-view { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--canvas); }
 .mindmap-view .markmap { display: block; width: 100%; height: 100%; --markmap-font: 15px/1.5 "Trebuchet MS", "Segoe UI", sans-serif; --markmap-text-color: var(--ink); --markmap-circle-open-bg: var(--paper); --markmap-highlight-node-bg: #bf55381a; }
 .mindmap-view .markmap-link { stroke-width: 2px; }
-.map-start { position: absolute; left: 28px; bottom: 28px; width: min(320px, calc(100% - 56px)); padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #fbfaf6f0; box-shadow: 0 14px 40px #37342717; backdrop-filter: blur(8px); }
-.map-start strong { display: block; font: 22px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
-.map-start p { margin: 8px 0 16px; color: #696c64; line-height: 1.5; }
-.map-start button { width: 100%; }
 .map-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 25px; text-align: center; background: var(--canvas); }
 .map-empty>span { color: var(--accent); font-size: 28px; }
 .map-empty h2 { margin: 12px 0 6px; font: 25px/1.2 "Palatino Linotype", "Book Antiqua", Georgia, serif; }
@@ -150,6 +146,12 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
   .canvas-hint { top: 64px; right: 12px; bottom: auto; left: 12px; }
   .modal { align-items: flex-start; padding-top: 35px; }
   .modal textarea { height: 160px; }
-  .map-start { left: 12px; bottom: 12px; width: min(300px, calc(100% - 24px)); padding: 16px; }
   .canvas-hint { display: block; }
 }
+
+/* Botão + inline em cada ramo do mapa mental */
+.mm-add { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 8px; border: 1px solid #dfb9a9; border-radius: 50%; background: var(--accent-soft); color: #8e3f2c; font: 600 15px/1 "Trebuchet MS", "Segoe UI", sans-serif; vertical-align: middle; cursor: pointer; opacity: 0; user-select: none; transition: opacity .14s ease, background .14s ease; }
+.markmap-node:hover .mm-add, .mm-add:focus-visible, .only-root .mm-add { opacity: 1; }
+.mm-add:hover { background: #ecd3c6; }
+.mm-add:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (hover: none) { .mm-add { opacity: .85; width: 26px; height: 26px; } }
