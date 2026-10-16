@@ -24,7 +24,7 @@ function treeFromDocument(doc: Document, editable: boolean): MindNode {
   return { content: 'Minhas ideias' + (editable ? addButton('', 'Minhas ideias') : ''), children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
 }
 
-export function MindMap({ doc, onCreate, onAdd, maxInitialScale = 2 }: { doc: Document; onCreate: () => void; onAdd?: (parentId?: string) => void; maxInitialScale?: number }) {
+export function MindMap({ doc, onCreate, onStart, onCanvas, onAdd, maxInitialScale = 2 }: { doc: Document; onCreate: () => void; onStart?: () => void; onCanvas?: () => void; onAdd?: (parentId?: string) => void; maxInitialScale?: number }) {
   const svg = useRef<SVGSVGElement>(null);
   const addRef = useRef(onAdd);
   addRef.current = onAdd;
@@ -88,6 +88,7 @@ export function MindMap({ doc, onCreate, onAdd, maxInitialScale = 2 }: { doc: Do
     };
   }, [doc, hasNodes, maxInitialScale, editable]);
 
+  if (!hasNodes && onStart && onCanvas) return <div className="map-empty"><h2>Como você quer começar?</h2><div className="start-choice"><button className="primary" onClick={onStart}><strong>Mapa mental</strong><span>Ramos a partir de uma ideia central</span></button><button onClick={onCanvas}><strong>Canvas livre</strong><span>Um quadro aberto para mover, conectar e desenhar</span></button></div><button className="link-btn" onClick={onCreate}>ou escrever em Markdown</button></div>;
   if (!hasNodes) return <div className="map-empty"><span>✳</span><h2>Seu mapa começa com uma ideia</h2><p>Escreva ou cole uma ideia em Markdown para criar os primeiros ramos.</p><button className="primary" onClick={onCreate}>Escrever uma ideia</button></div>;
   return <div className="mindmap-view"><svg ref={svg} className={`markmap${doc.topics.length === 1 ? ' only-root' : ''}`} role="group" aria-label={editable ? `Mapa mental: ${doc.title}. Use o botão + de cada ramo para adicionar ideias.` : `Mapa mental: ${doc.title}`} /></div>;
 }

@@ -80,6 +80,7 @@ test('first login creates a starter map for an empty account',async()=>{
   assert.equal(syncError,undefined);
   assert.equal(session.documents.length,1);
   assert.equal(session.documents[0].title,'Nova ideia');
+  assert.equal(session.documents[0].topics.length,0);
   assert.deepEqual(server.stored.map(item=>item.document),session.documents);
 });
 

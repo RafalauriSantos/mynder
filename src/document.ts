@@ -8,6 +8,10 @@ export const id = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().
 export function blank(title = 'Nova ideia'): Document {
  return {version:2,id:id(),title,topics:[{id:id(),text:title,position:{x:0,y:0},collapsed:false,color:colors[0]}],links:[],drawings:[],viewport:{x:100,y:180,zoom:1},markdown:'',updatedAt:Date.now()};
 }
+/** A map with nothing on it: the person chooses a mind map or a free canvas. */
+export function empty(title = 'Nova ideia'): Document {
+ return {...blank(title),topics:[]};
+}
 export function descendants(doc: Document, root: string): Set<string> {
  const result = new Set<string>([root]); let changed = true;
  while(changed){changed=false;for(const node of doc.topics)if(node.parentId&&result.has(node.parentId)&&!result.has(node.id)){result.add(node.id);changed=true}}
