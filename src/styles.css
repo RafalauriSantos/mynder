@@ -86,7 +86,7 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
  .map-entry{position:relative;margin-bottom:4px}
-.map-entry>button:first-child{width:100%;margin-bottom:0;padding-right:44px}
+.map-entry>.map-title{width:100%;margin-bottom:0;padding:9px 44px 9px 28px}
 .delete-map{position:absolute;top:50%;right:5px;display:inline-flex;align-items:center;justify-content:center;width:32px;min-width:32px;height:32px;min-height:32px;margin:0;padding:0;border:0;border-radius:7px;background:transparent;color:#8a8178;transform:translateY(-50%);opacity:.7}
 .map-entry:hover .delete-map,.delete-map:focus-visible,.delete-map:hover{opacity:1}
 .delete-map:hover:not(:disabled),.delete-map:focus-visible{color:#a33;background:#f3e5df;border-color:transparent}
@@ -161,3 +161,14 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .mm-add:hover { background: #ecd3c6; }
 .mm-add:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (hover: none) { .mm-add { opacity: .85; width: 26px; height: 26px; } }
+
+/* Reordenar mapas: a alça aparece ao passar o mouse e sempre em telas de toque */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.map-entry .map-grip { position: absolute; z-index: 1; top: 50%; left: 4px; display: inline-flex; align-items: center; justify-content: center; width: 22px; min-width: 22px; height: 32px; min-height: 32px; margin: 0; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #9a9283; cursor: grab; opacity: 0; touch-action: none; transform: translateY(-50%); }
+.map-entry:hover .map-grip, .map-entry .map-grip:focus-visible, .is-reordering .map-grip { opacity: 1; }
+.map-entry .map-grip:hover:not(:disabled) { border-color: transparent; background: #e1dccf; color: var(--ink); }
+.map-entry .map-grip:active:not(:disabled) { transform: translateY(-50%); }
+.is-reordering { cursor: grabbing; user-select: none; }
+.map-entry.dragging { position: relative; z-index: 2; }
+.map-entry.dragging > .map-title { border-color: #d6cfc0 !important; background: #e7e2d8 !important; box-shadow: 0 8px 20px rgba(55, 52, 39, 0.18); }
+@media (hover: none) { .map-entry .map-grip { left: 2px; width: 36px; min-width: 36px; height: 44px; min-height: 44px; opacity: .7; } .map-entry>.map-title { padding-left: 40px; } }

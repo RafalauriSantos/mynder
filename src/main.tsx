@@ -12,6 +12,8 @@ import {SyncApiError} from './sync/client';
 import {makeSyncError} from './sync/contracts';
 import {MindMap} from './MindMap';
 import {Popover} from './ui';
+import {MapList} from './MapList';
+import {moveById} from './order';
 import {ArrowUpRight,Circle,Database,Download,Ellipsis,Eraser,FileText,GitBranchPlus,Hand,Highlighter,LayoutGrid,LogOut,Maximize,Minimize,MousePointer2,Network,PanelLeft,Pencil,Plus,Redo2,RefreshCw,Save,Scan,Square,Trash2,Type,Undo2,Upload,UserRound,X,type LucideIcon} from 'lucide-react';
 import {Landing} from './Landing';
 import {registerSW} from 'virtual:pwa-register';
@@ -34,6 +36,7 @@ function App(){
  useEffect(()=>{const flush=()=>{if(blocked&&!accountSession)return;if(accountSession)void accountSession.replaceDocuments(docsRef.current).catch(()=>setStatus('Falha ao salvar — exporte um backup'));else{try{save(docsRef.current)}catch{setStatus('Falha ao salvar — exporte um backup')}}};const hidden=()=>{if(document.visibilityState==='hidden')flush()};window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',hidden);return()=>{window.removeEventListener('pagehide',flush);document.removeEventListener('visibilitychange',hidden)}},[docs,blocked,accountSession]);
  const choose=(key:string)=>{setActive(key);setMode('map');setSelection(null);setEdge(null);setDrawing(null);setLinkMode(false);setSidebar(false);setEdit(null)};
  const addDoc=(d:Document)=>{setDocs(ds=>[...ds,d]);choose(d.id)};
+ const reorderDoc=(mapId:string,toIndex:number)=>setDocs(ds=>moveById(ds,mapId,toIndex));
  const requestMapDeletion=(map:Document)=>{if(docs.length===1){setMessage('Crie outro mapa antes de apagar este.');return}setMapDeletion(map)};
  const deleteMap=()=>{if(!mapDeletion)return;const remaining=docs.filter(item=>item.id!==mapDeletion.id);setDocs(remaining);history.current.delete(mapDeletion.id);if(active===mapDeletion.id)choose(remaining[0].id);setMapDeletion(null);setMessage(`Mapa “${mapDeletion.title}” apagado.`)};
  const switchMode=(next:'map'|'canvas')=>{setMode(next);setSelection(null);setEdge(null);setDrawing(null);setLinkMode(false);setFocusId(null)};
@@ -82,7 +85,7 @@ function App(){
  const newByText=()=>{setEditingMarkdown(false);setMarkdown('')};
  const editBranches=()=>{if(!doc)return;setEditingMarkdown(true);setMarkdown(toMarkdown(doc))};
  const statusError=status.startsWith('Falha')||status.startsWith('Não foi');
- return <div className={`shell${rail?' rail-hidden':''}${focus?' focus':''}`}><aside className={sidebar?'open':''}><header><b className="wordmark"><span aria-hidden="true">✳</span> mynder</b><button className="icon-btn" onClick={()=>setSidebar(false)} aria-label="Fechar lista"><X size={18}/></button></header><button className="primary new-map" onClick={()=>addDoc(blank())}><Plus size={16}/>Novo mapa</button><nav aria-label="Seus mapas">{docs.map(d=><div className="map-entry" key={d.id}><button className={active===d.id?'active':''} aria-current={active===d.id?'true':undefined} onClick={()=>choose(d.id)}>{d.title}</button><button className="delete-map" aria-label={`Apagar mapa ${d.title}`} title="Apagar mapa" onClick={()=>requestMapDeletion(d)}><Trash2 size={15}/></button></div>)}</nav><footer>{accountSession?'Mapas desta conta salvos neste aparelho e sincronizados com segurança.':'Seus mapas ficam neste navegador.'}<br/>Exporte para levar a outro dispositivo.</footer></aside>{sidebar&&<button className="scrim" aria-label="Fechar lista" onClick={()=>setSidebar(false)}/>}<main>
+ return <div className={`shell${rail?' rail-hidden':''}${focus?' focus':''}`}><aside className={sidebar?'open':''}><header><b className="wordmark"><span aria-hidden="true">✳</span> mynder</b><button className="icon-btn" onClick={()=>setSidebar(false)} aria-label="Fechar lista"><X size={18}/></button></header><button className="primary new-map" onClick={()=>addDoc(blank())}><Plus size={16}/>Novo mapa</button><MapList docs={docs} activeId={active} onChoose={choose} onDelete={requestMapDeletion} onReorder={reorderDoc}/><footer>{accountSession?'Mapas desta conta salvos neste aparelho e sincronizados com segurança.':'Seus mapas ficam neste navegador.'}<br/>Exporte para levar a outro dispositivo.</footer></aside>{sidebar&&<button className="scrim" aria-label="Fechar lista" onClick={()=>setSidebar(false)}/>}<main>
  <header className="top"><button className="icon-btn" onClick={toggleSidebar} aria-label="Lista de mapas" title="Lista de mapas"><PanelLeft size={18}/></button><strong>{doc?.title??'Seus mapas'}</strong>
  <div className="view-tabs" role="tablist" aria-label="Modo de visualização"><button role="tab" aria-selected={mode==='map'} className={mode==='map'?'selected':''} onClick={()=>switchMode('map')}><Network size={15}/><span>Mapa mental</span></button><button role="tab" aria-selected={mode==='canvas'} className={mode==='canvas'?'selected':''} onClick={()=>switchMode('canvas')}><LayoutGrid size={15}/><span>Canvas livre</span></button></div>
  <span className={`status${statusError?' error':''}`} role="status">{status}</span>
