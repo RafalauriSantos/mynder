@@ -119,6 +119,7 @@ async function authorizeClient(clientId:string,subject:string,scopes:string[]):P
   const consent=await handleMcpRequest(new Request(authorization),workerEnv,context);
   expect(consent.status).toBe(200);
   expect(consent.headers.get('content-security-policy')).toContain("frame-ancestors 'none'");
+  expect(consent.headers.get('content-security-policy')).toContain("form-action 'self' "+issuer);
   const html=await consent.text();
   const handle=html.match(/name="handle" value="([^"]+)"/)?.[1];
   expect(handle).toBeTruthy();
@@ -195,7 +196,7 @@ describe('OAuth 2.1 Mynder MCP Worker',()=>{
       expect(await authorizationMetadata.json()).toMatchObject({issuer:oauthIssuer});
       const resourceMetadata=await handleMcpRequest(new Request(oauthIssuer+'/.well-known/oauth-protected-resource/mcp'),workerEnv,context);
       expect(resourceMetadata.status).toBe(200);
-      expect(await resourceMetadata.json()).toMatchObject({resource,authorization_servers:[oauthIssuer]});
+      expect(await resourceMetadata.json()).toMatchObject({resource,authorization_servers:[oauthIssuer],scopes_supported:['mynder:read','mynder:write']});
 
       const clientId=await registerPublicClient();
       const tokenA=await authorizeClient(clientId,'oauth-user-a',['mynder:read','mynder:write']);
