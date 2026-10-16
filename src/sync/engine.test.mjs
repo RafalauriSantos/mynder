@@ -93,3 +93,17 @@ test('successful remote writes checkpoint locally before the next operation',asy
   assert.ok(checkpoints.length>=3);
   assert.ok(checkpoints.every(count=>count>=0&&count<=2));
 });
+
+test('sync keeps the local map order and appends maps that only exist in the cloud',async()=>{
+  const first=blank('Primeiro');
+  const second=blank('Segundo');
+  const cloudOnly=blank('Só nuvem');
+  const api=new FakeApi([
+    {document:second,revision:1,updatedAt:1},
+    {document:first,revision:1,updatedAt:2},
+    {document:cloudOnly,revision:1,updatedAt:3},
+  ]);
+  const baselines={[second.id]:known(second),[first.id]:known(first)};
+  const result=await syncAccount(api,state([second,first],baselines));
+  assert.deepEqual(result.state.docs.map(doc=>doc.title),['Segundo','Primeiro','Só nuvem']);
+});
