@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test,beforeEach} from 'node:test';
-import {blank} from './src/document.ts';
+import {blank,validate} from './src/document.ts';
 import {load,save,decode} from './src/storage.ts';
 let data,failKey;
 beforeEach(()=>{data=new Map();failKey='';globalThis.localStorage={getItem:k=>data.get(k)??null,setItem:(k,v)=>{if(k===failKey)throw new Error('QuotaExceededError');data.set(k,v)}}});
@@ -10,3 +10,5 @@ test('corrupt primary recovers backup without overwriting original',()=>{const d
 test('invalid backup leaves storage blocked and untouched',()=>{data.set('rascunho-v2','broken');data.set('rascunho-v2-backup','also broken');assert.equal(load().blocked,true);assert.equal(data.get('rascunho-v2'),'broken')});
 test('legacy migration preserves canvas and original markdown',()=>{const original=JSON.stringify([{title:'Old',markdown:'# Original',nodes:[{id:'a',text:'Edited',x:50,y:70,color:'#333'},{id:'b',text:'Child',x:80,y:90,color:'#333'}],edges:[{id:'e',from:'a',to:'b'}]}]);data.set('rascunho-documents-v1',original);const result=load();assert.equal(result.blocked,false);assert.equal(result.docs[0].topics[0].text,'Edited');assert.equal(result.docs[0].markdown,'# Original');assert.equal(result.docs[0].links.length,1);assert.equal(data.get('rascunho-documents-v1'),original)});
 test('duplicate documents are rejected',()=>{const d=blank();assert.throws(()=>decode(JSON.stringify([d,d])))});
+
+test('a first visit opens a single empty map',()=>{const result=load();assert.equal(result.blocked,false);assert.equal(result.docs.length,1);assert.deepEqual(result.docs[0].topics,[]);assert.doesNotThrow(()=>validate(result.docs[0]));save(result.docs);assert.deepEqual(load().docs,result.docs)});

@@ -1,4 +1,4 @@
-import {blank, validate, type Document} from '../document.ts';
+import {empty, validate, type Document} from '../document.ts';
 import {createImportedCopies} from '../backup.ts';
 import {validateSyncIdentity, type SyncIdentity} from './contracts.ts';
 import {SyncApiClient} from './client.ts';
@@ -53,7 +53,7 @@ export class AccountSyncSession {
     try{syncResult=await session.sync()}
     catch(error){syncError=error}
     if(session.documents.length===0){
-      await session.replaceDocuments([blank()]);
+      await session.replaceDocuments([empty()]);
       if(!syncError){
         try{syncResult=await session.sync()}
         catch(error){syncError=error}
