@@ -47,3 +47,13 @@ test('API client restores a tombstone through the conditional restore route',asy
   assert.equal(captured.url,`/api/maps/${encodeURIComponent(document.id)}/restore`);
   assert.equal(captured.init.method,'POST');
 });
+
+test('injected fetch is never called with the client as receiver, which browsers reject as Illegal invocation',async()=>{
+  const browserLikeFetch=function(){
+    if(this!==undefined&&this!==globalThis)throw new TypeError("Failed to execute 'fetch' on 'Window': Illegal invocation");
+    return Promise.resolve(Response.json({identity:{issuer:'https://accounts.google.com',subject:'subject-1'}}));
+  };
+  const client=new SyncApiClient(async()=>'memory-only-token',browserLikeFetch);
+  const identity=await client.session();
+  assert.equal(identity.subject,'subject-1');
+});
