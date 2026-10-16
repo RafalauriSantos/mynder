@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { Markmap } from 'markmap-view';
 import type { Document, Topic } from './document';
 
+const escapeHtml = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const addButton = (id: string, label: string) => `<span class="mm-add" role="button" tabindex="0" data-add="${escapeHtml(id)}" aria-label="Adicionar ramo a ${escapeHtml(label)}" title="Adicionar ramo">+</span>`;
 const branchColors = ['#bf5538', '#536c58', '#b58236', '#627b9b', '#986b85'];
 type MindNode = { content: string; children: MindNode[]; payload?: { color: string } };
 
-function treeFromDocument(doc: Document): MindNode {
+function treeFromDocument(doc: Document, editable: boolean): MindNode {
   const children = new Map<string | undefined, Topic[]>();
   for (const topic of doc.topics) {
     const siblings = children.get(topic.parentId) ?? [];
@@ -13,17 +15,20 @@ function treeFromDocument(doc: Document): MindNode {
     children.set(topic.parentId, siblings);
   }
   const build = (topic: Topic, color: string): MindNode => ({
-    content: topic.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>'),
+    content: topic.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>') + (editable ? addButton(topic.id, topic.text.slice(0, 60)) : ''),
     payload: { color },
     children: (children.get(topic.id) ?? []).map((child, index) => build(child, topic.parentId ? color : branchColors[index % branchColors.length])),
   });
   const roots = children.get(undefined) ?? [];
   if (roots.length === 1) return build(roots[0], '#262a26');
-  return { content: 'Minhas ideias', children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
+  return { content: 'Minhas ideias' + (editable ? addButton('', 'Minhas ideias') : ''), children: roots.map((root, index) => build(root, branchColors[index % branchColors.length])) };
 }
 
-export function MindMap({ doc, onCreate, maxInitialScale = 2 }: { doc: Document; onCreate: () => void; maxInitialScale?: number }) {
+export function MindMap({ doc, onCreate, onAdd, maxInitialScale = 2 }: { doc: Document; onCreate: () => void; onAdd?: (parentId?: string) => void; maxInitialScale?: number }) {
   const svg = useRef<SVGSVGElement>(null);
+  const addRef = useRef(onAdd);
+  addRef.current = onAdd;
+  const editable = Boolean(onAdd);
   const hasNodes = doc.topics.length > 0;
 
   useEffect(() => {
@@ -34,6 +39,18 @@ export function MindMap({ doc, onCreate, maxInitialScale = 2 }: { doc: Document;
       element.setAttribute('height', String(element.clientHeight));
     };
     sizeSvg();
+    const addFrom = (event: Event) => {
+      const button = (event.target as Element | null)?.closest?.('.mm-add');
+      if (!button) return false;
+      event.preventDefault();
+      event.stopPropagation();
+      addRef.current?.(button.getAttribute('data-add') || undefined);
+      return true;
+    };
+    const onClick = (event: MouseEvent) => { addFrom(event); };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Enter' || event.key === ' ') addFrom(event); };
+    element.addEventListener('click', onClick, true);
+    element.addEventListener('keydown', onKey, true);
     let lastWidth = element.clientWidth;
     let lastHeight = element.clientHeight;
     const map = Markmap.create(element, {
@@ -48,7 +65,7 @@ export function MindMap({ doc, onCreate, maxInitialScale = 2 }: { doc: Document;
       lineWidth: node => Math.max(1.5, 3 - node.state.depth * 0.2),
     });
     let cancelled = false;
-    void map.setData(treeFromDocument(doc)).then(() => {
+    void map.setData(treeFromDocument(doc, editable)).then(() => {
       if (!cancelled && element.clientWidth > 0 && element.clientHeight > 0) void map.fit();
     });
     const observer = new ResizeObserver(() => {
@@ -65,10 +82,12 @@ export function MindMap({ doc, onCreate, maxInitialScale = 2 }: { doc: Document;
     return () => {
       cancelled = true;
       observer.disconnect();
+      element.removeEventListener('click', onClick, true);
+      element.removeEventListener('keydown', onKey, true);
       map.destroy();
     };
-  }, [doc, hasNodes, maxInitialScale]);
+  }, [doc, hasNodes, maxInitialScale, editable]);
 
   if (!hasNodes) return <div className="map-empty"><span>✳</span><h2>Seu mapa começa com uma ideia</h2><p>Escreva ou cole uma ideia em Markdown para criar os primeiros ramos.</p><button className="primary" onClick={onCreate}>Escrever uma ideia</button></div>;
-  return <div className="mindmap-view"><svg ref={svg} className="markmap" role="img" aria-label={`Mapa mental: ${doc.title}`} />{doc.topics.length === 1 && <div className="map-start"><strong>Uma ideia, muitos caminhos.</strong><p>Adicione ramos para transformar esta ideia em um mapa.</p><button className="primary" onClick={onCreate}>Adicionar ramos</button></div>}</div>;
+  return <div className="mindmap-view"><svg ref={svg} className={`markmap${doc.topics.length === 1 ? ' only-root' : ''}`} role="group" aria-label={editable ? `Mapa mental: ${doc.title}. Use o botão + de cada ramo para adicionar ideias.` : `Mapa mental: ${doc.title}`} /></div>;
 }
