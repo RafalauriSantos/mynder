@@ -106,7 +106,7 @@ export function Landing({onLocal, onCredential, onError, onGoogleReady, diagnost
           <div className="landing-cta-block" id="comecar">
             <div className="landing-actions">
               <button type="button" className="landing-primary" onClick={onLocal}>Experimentar sem conta <span aria-hidden="true">→</span></button>
-              <div className="landing-google"><GoogleSignInButton onCredential={onCredential} onError={onError} onReady={onGoogleReady} disabled={disabled} shape="pill"/></div>
+              <div className="landing-google"><GoogleSignInButton onCredential={onCredential} onError={onError} onReady={onGoogleReady} disabled={disabled} shape="pill" width={240}/></div>
             </div>
             {busy && <p className="landing-auth-status" role="status">Validando sua conta…</p>}
             {diagnostic && <p className="landing-auth-status" role="status">Diagnóstico do login: {diagnostic}</p>}
