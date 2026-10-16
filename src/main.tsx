@@ -82,11 +82,16 @@ function App(){
  },[accountSession]);
  const [updating,setUpdating]=useState(false);const [updateStuck,setUpdateStuck]=useState(false);
  useEffect(()=>{
-  // O navegador só procura versão nova ao abrir a página. Com a aba aberta, pergunta por conta própria.
-  const check=()=>{if(document.visibilityState==='visible'&&navigator.onLine)void swRegistration.current?.update().catch(()=>{})};
-  const timer=setInterval(check,60*1000);
+  // O navegador só procura versão nova ao abrir a página. Com a aba aberta, pergunta quando você volta para ela,
+  // sem relógio: voltar à aba, ganhar foco ou a internet voltar são os momentos em que importa ver o que mudou.
+  let lastCheck=0;
+  const check=()=>{
+   if(document.visibilityState!=='visible'||!navigator.onLine||Date.now()-lastCheck<15000)return;
+   lastCheck=Date.now();
+   void swRegistration.current?.update().catch(()=>{});
+  };
   document.addEventListener('visibilitychange',check);window.addEventListener('focus',check);window.addEventListener('online',check);
-  return()=>{clearInterval(timer);document.removeEventListener('visibilitychange',check);window.removeEventListener('focus',check);window.removeEventListener('online',check)};
+  return()=>{document.removeEventListener('visibilitychange',check);window.removeEventListener('focus',check);window.removeEventListener('online',check)};
  },[]);
  useEffect(()=>{
   const touch=()=>{lastActivity.current=Date.now()};
