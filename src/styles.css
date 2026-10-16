@@ -169,6 +169,9 @@ main { position: relative; display: flex; flex: 1; flex-direction: column; min-w
 .map-entry .map-grip:hover:not(:disabled) { border-color: transparent; background: #e1dccf; color: var(--ink); }
 .map-entry .map-grip:active:not(:disabled) { transform: translateY(-50%); }
 .is-reordering { cursor: grabbing; user-select: none; }
-.map-entry.dragging { position: relative; z-index: 2; }
-.map-entry.dragging > .map-title { border-color: #d6cfc0 !important; background: #e7e2d8 !important; box-shadow: 0 8px 20px rgba(55, 52, 39, 0.18); }
+aside nav { position: relative; margin-inline: -6px; padding-inline: 6px; overflow-x: hidden; }
+.map-entry > .map-title { transition: box-shadow .22s ease, background-color .22s ease, border-color .22s ease; }
+.map-entry.dragging { z-index: 3; will-change: transform; }
+.map-entry.dragging > .map-title { border-color: #d6cfc0 !important; background: #fbfaf6 !important; box-shadow: 0 14px 30px rgba(55, 52, 39, 0.22), 0 2px 6px rgba(55, 52, 39, 0.1); }
+.map-entry.dragging .map-grip { color: var(--ink); cursor: grabbing; }
 @media (hover: none) { .map-entry .map-grip { left: 2px; width: 36px; min-width: 36px; height: 44px; min-height: 44px; opacity: .7; } .map-entry>.map-title { padding-left: 40px; } }
