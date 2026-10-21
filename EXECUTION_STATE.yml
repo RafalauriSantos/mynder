@@ -1,144 +1,146 @@
 project: mynder
-objective: "Sincronização multiusuário Cloudflare com MCP autenticado, preservando offline e JSON"
-updated_at: "2026-10-12"
+objective: "Multi-user Cloudflare sync with authenticated MCP, preserving offline use and JSON"
+updated_at: "2026-10-21"
 repository:
-  path: "C:\\Users\\Rafael lauri\\Projects\\Mynder"
+  path: "/home/rafael-lauri/projetos/mynder"
   branch: main
   remote: "https://github.com/RafalauriSantos/mynder.git"
   baseline_commit: "1e7fc25"
-  baseline_status: "main igual a origin/main; artefatos não rastreados .playwright-cli/ e output/ preservados"
+  baseline_status: "main equal to origin/main; untracked artifacts .playwright-cli/ and output/ preserved"
+  note_2026_10_21: "Path updated to the current machine (it was recorded as a Windows path). The remote is the same. Review branch chore/review-cleanup, with local commits not yet pushed."
 current_stage: 8
 stages:
   - id: 0
-    name: "Baseline e especificação executável"
+    name: "Baseline and executable specification"
     status: passed
     evidence:
-      - "Checkout confirmado: main; origin/main; HEAD 1e7fc25; branch inicialmente sem alterações rastreadas."
-      - "Artefatos preexistentes .playwright-cli/ e output/ não rastreados foram preservados e não serão incluídos."
-      - "npm test: 18 passaram, 0 falharam."
-      - "npm run build: passou; aviso existente de diretiva use client em @xyflow/react."
-      - "SPEC.md, IMPLEMENTATION.md e EXECUTION_STATE.yml revisados; gates externos explicitados, sem credenciais ou IDs inventados."
-      - "Cloudflare D1 docs consultada em 2026-10-12: limite de 2.000.000 bytes por string/BLOB/linha; etapa 1 medirá bytes e etapa 2 reavaliará margem."
+      - "Checkout confirmed: main; origin/main; HEAD 1e7fc25; branch initially had no tracked changes."
+      - "Pre-existing untracked artifacts .playwright-cli/ and output/ were preserved and will not be included."
+      - "npm test: 18 passed, 0 failed."
+      - "npm run build: passed; existing 'use client' directive warning from @xyflow/react."
+      - "SPEC.md, IMPLEMENTATION.md and EXECUTION_STATE.yml reviewed; external gates made explicit, with no credentials or invented IDs."
+      - "Cloudflare D1 docs checked on 2026-10-12: a limit of 2,000,000 bytes per string/BLOB/row; stage 1 will measure bytes and stage 2 will re-check the margin."
     commit: "75f43d4"
     pushed: true
   - id: 1
-    name: "Contratos de documento, identidade e sync"
+    name: "Document, identity and sync contracts"
     status: passed
     evidence:
-      - "node --test src/sync/contracts.test.mjs: 7 passaram, 0 falharam."
-      - "npm test: 25 passaram, 0 falharam."
-      - "npm run build: passou; aviso existente de diretiva use client em @xyflow/react."
-      - "Payload mede TextEncoder UTF-8, preserva JSON local, rejeita ownerId/owner_id, identidade/revisão inválidas e limite excedido; erros são estruturas seguras serializáveis."
-      - "Fixtures sintéticas UTF-8: pequena 291 B; média 9.703 B; grande 386.274 B; a grande contém 200 tópicos, 250 ligações e 100 desenhos com 200 pontos."
-      - "Teto provisório de payload: 1.900.000 bytes vs. linha D1 de 2.000.000 bytes na documentação oficial; revalidar overhead do schema na etapa 2."
+      - "node --test src/sync/contracts.test.mjs: 7 passed, 0 failed."
+      - "npm test: 25 passed, 0 failed."
+      - "npm run build: passed; existing 'use client' directive warning from @xyflow/react."
+      - "The payload measures UTF-8 with TextEncoder, preserves local JSON, rejects ownerId/owner_id, invalid identity/revision, and an exceeded limit; errors are serializable safe structures."
+      - "Synthetic UTF-8 fixtures: small 291 B; medium 9,703 B; large 386,274 B; the large one contains 200 topics, 250 links and 100 drawings with 200 points each."
+      - "Provisional payload cap: 1,900,000 bytes vs. the documented D1 row limit of 2,000,000 bytes; re-check the schema overhead in stage 2."
     commit: "30c0b0a"
     pushed: true
   - id: 2
-    name: "Schema e repositório D1"
+    name: "D1 schema and repository"
     status: passed
     evidence:
-      - "npm run test:cloudflare: 7 testes Workers/Miniflare passaram; D1 local, sem chamada ou alteração de recurso remoto."
-      - "Cobertura: aplicação repetível da migration, CRUD, isolamento A/B com mesmo mapId, atualização concorrente com uma única revisão vencedora, conflitos obsoletos, tombstone/restauração e retry idempotente."
-      - "Documento sintético com JSON próximo de 1,9 MB foi gravado no D1 local; CHECK de JSON válido e teto em bytes UTF-8 passou; metadados da linha couberam abaixo do limite documentado de 2 MB."
-      - "npm test: 25 passaram, 0 falharam."
-      - "npm run build: passou, incluindo TypeScript do servidor; aviso existente de diretiva use client em @xyflow/react."
-      - "Vitest usa binding TEST_DB gerado somente em memória de configuração local; nenhum ID/binding real Cloudflare foi usado."
-      - "npm audit --omit=dev: 4 advisories existentes no lockfile de baseline (katex 0.16.47, source-map-js 1.2.1); não corrigidos neste escopo e adicionados como gate antes de produção."
+      - "npm run test:cloudflare: 7 Workers/Miniflare tests passed; local D1, no call or change to remote resources."
+      - "Coverage: repeatable migration application, CRUD, isolation A/B with the same mapId, concurrent update with a single winning revision, stale conflicts, tombstone/restore and idempotent retry."
+      - "A synthetic document with JSON near 1.9 MB was written to local D1; the valid-JSON CHECK and the UTF-8 byte cap passed; row metadata fit below the documented 2 MB limit."
+      - "npm test: 25 passed, 0 failed."
+      - "npm run build: passed, including the server TypeScript; existing 'use client' directive warning from @xyflow/react."
+      - "The Vitest run uses a TEST_DB binding generated in memory for local configuration only; no real Cloudflare binding or ID was used."
+      - "npm audit --omit=dev: 4 existing advisories in the baseline lockfile (katex 0.16.47, source-map-js 1.2.1); not fixed in this scope and added as a gate before production."
     commit: "ba7c890"
     pushed: true
   - id: 3
-    name: "Autenticação configurável e API Pages"
+    name: "Configurable authentication and Pages API"
     status: passed
     evidence:
-      - "`server/auth/identity.ts` valida JWT via JWKS remoto HTTPS, assinatura RS256/ES256, issuer, audience, expiração e subject; a identidade contém apenas issuer + subject."
-      - "Middleware deixa o app estático público e exige Bearer em `/api/*`; configuração ausente ou JWKS indisponível falha de forma fechada e segura."
-      - "Pages API implementa sessão, lista/criação, leitura/atualização condicional e tombstone; corpo JSON lido com limite em streaming, sem cache, envelopes restritos e proprietário sempre derivado da identidade verificada."
-      - "npm run test:cloudflare: 23 testes passaram, incluindo fluxo JWT assinado → middleware → endpoint → D1 local e isolamento de identidade."
-      - "npm test: 25 testes passaram; npm run build: passou incluindo TypeScript das Functions; git diff --check passou."
-      - "npm audit --omit=dev continua reportando 4 advisories de produção (3 baixos em KaTeX/markmap-lib e 1 alto em source-map-js), presentes desde o lockfile baseline; sem atualização ampla automática."
-      - "Nenhum provedor público, binding/ID remoto, segredo ou configuração de produção foi criado; API não está ativada em produção."
+      - "`server/auth/identity.ts` validates JWT via a remote HTTPS JWKS, RS256/ES256 signature, issuer, audience, expiration and subject; the identity contains only issuer + subject."
+      - "Middleware leaves the static app public and requires a Bearer token on `/api/*`; missing configuration or unavailable JWKS fails closed and safe."
+      - "The Pages API implements session, list/create, conditional read/update and tombstone; the JSON body is read with a streaming limit, no cache, restricted envelopes, and the owner is always derived from the verified identity."
+      - "npm run test:cloudflare: 23 tests passed, including the signed JWT flow → middleware → endpoint → local D1 and identity isolation."
+      - "npm test: 25 tests passed; npm run build: passed including the Functions TypeScript; git diff --check passed."
+      - "npm audit --omit=dev still reported 4 production advisories (3 low in KaTeX/markmap-lib and 1 high in source-map-js), present since the baseline lockfile; no broad automatic update."
+      - "No public provider, remote binding/ID, secret or production configuration was created; the API was not enabled in production."
     commit: "ba05338"
     pushed: true
   - id: 4
-    name: "Cache local separado e sincronização"
+    name: "Separate local cache and sync"
     status: passed
     evidence:
-      - "`src/sync/local-store.ts` usa SHA-256 de issuer + subject para particionar cache e backup; `rascunho-v2` anônimo não é lido, movido ou alterado pelo store de contas."
-      - "`src/sync/client.ts` pede Bearer token por callback em memória, não persiste credenciais e valida payload/resposta; suporta session, list, create, update condicional e delete tombstone."
-      - "`src/sync/engine.ts` reconcilia novos, remotos, alterações, exclusões e conflitos sem merge destrutivo; checkpoints após operações remotas concluídas."
-      - "npm test: 36 testes passaram, incluindo partição A/B/anon, backup local, chamadas autenticadas, envio/recebimento, conflito e tombstone; 0 falhas."
-      - "npm run test:cloudflare: 23 testes passaram; npm run build passou; git diff --check passou."
-      - "Integração visual e importação inicial do espaço anônimo não foram habilitadas sem provedor/login; o cache de conta permanece isolado e o modo local permanece padrão."
+      - "`src/sync/local-store.ts` uses SHA-256 of issuer + subject to partition the cache and backup; the anonymous `rascunho-v2` is not read, moved or changed by the account store."
+      - "`src/sync/client.ts` requests a Bearer token through an in-memory callback, does not persist credentials, and validates payload/response; it supports session, list, create, conditional update and tombstone delete."
+      - "`src/sync/engine.ts` reconciles new, remote, changed, deleted and conflicting items without destructive merge; checkpoints after completed remote operations."
+      - "npm test: 36 tests passed, including the A/B/anon partition, local backup, authenticated calls, send/receive, conflict and tombstone; 0 failures."
+      - "npm run test:cloudflare: 23 tests passed; npm run build passed; git diff --check passed."
+      - "Visual integration and the initial import of the anonymous space were not enabled without a provider/login; the account cache stays isolated and local mode remains the default."
     commit: "c089c0e"
     pushed: true
   - id: 5
-    name: "Serviço de domínio compartilhado"
+    name: "Shared domain service"
     status: passed
     evidence:
-      - "`server/maps/service.ts` centraliza validação de identidade/documento e list/get/create/conditional update/delete/restore sobre o repositório D1."
-      - "Pages handlers não acessam SQL/repositório diretamente; todos chamam o serviço. Novo `POST /api/maps/:id/restore` usa revisão esperada e mesma identidade autenticada."
-      - "Teste integrado local percorreu create → tombstone → restore → read; identidade cruzada continua recebendo 404."
-      - "npm run test:cloudflare: 24 passaram; npm test: 37 passaram; npm run build e git diff --check passaram."
+      - "`server/maps/service.ts` centralizes identity and document validation and list/get/create/conditional update/delete/restore over the D1 repository."
+      - "Pages handlers do not access SQL/repository directly; all of them call the service. The new `POST /api/maps/:id/restore` uses the expected revision and the same authenticated identity."
+      - "The integrated local test ran create → tombstone → restore → read; a cross identity keeps receiving 404."
+      - "npm run test:cloudflare: 24 passed; npm test: 37 passed; npm run build and git diff --check passed."
     commit: "97dfe69"
     pushed: true
   - id: 6
-    name: "Worker MCP autenticado"
+    name: "Authenticated MCP Worker"
     status: passed
     evidence:
-      - "Worker stateless usa `@modelcontextprotocol/server` Streamable HTTP e `@cloudflare/workers-oauth-provider` 1.2.x; authorization server/resource server implementam OAuth 2.1, DCR, PKCE, token com audiência exata e metadata MCP. CIMD fica desabilitado até configurar `global_fetch_strictly_public` no Worker real."
-      - "Fluxo local completo: DCR → consentimento HTML escapado/CSRF → OIDC discovery → PKCE upstream → validação de assinatura/JWKS/issuer/audience/nonce → token OAuth MCP. Nenhuma chave, segredo ou ID remoto usado."
-      - "Teste SDK/Workers local: 401 sem token; identidade A com read+write e B somente read; B não recebe ferramentas de escrita nem lê mapa de A; ownerId forjado rejeitado; conflito não sobrescreve; exclusão sem elicitação não apaga; backup JSON válido."
-      - "`npm run test --prefix mcp` / `npm run test:cloudflare`: 26 passaram; `npm test`: 37 passaram; `npm run build` e `npm run build --prefix mcp` passaram; `npm audit --prefix mcp`: 0 vulnerabilidades; `git diff --check` passou. Aviso root existente de `use client` em @xyflow/react."
-      - "Inventário Cloudflare somente-leitura encontrou Worker `mynder-mcp-staging` e D1 `mynder-staging`; schema D1 legado incompatível; não há KV namespace Mynder. Nenhum recurso ou configuração remota foi alterado."
+      - "The stateless Worker uses `@modelcontextprotocol/server` Streamable HTTP and `@cloudflare/workers-oauth-provider` 1.2.x; the authorization server and resource server implement OAuth 2.1, DCR, PKCE, exact-audience tokens and MCP metadata. CIMD stays disabled until `global_fetch_strictly_public` is configured on the real Worker."
+      - "Full local flow: DCR → escaped HTML consent with CSRF → OIDC discovery → upstream PKCE → signature/JWKS/issuer/audience/nonce validation → OAuth MCP token. No key, secret or remote ID was used."
+      - "Local SDK/Workers test: 401 without a token; identity A with read+write and B read-only; B does not receive write tools and cannot read A's map; a forged ownerId is rejected; a conflict does not overwrite; deletion without elicitation does not delete; valid JSON backup."
+      - "`npm run test --prefix mcp` / `npm run test:cloudflare`: 26 passed; `npm test`: 37 passed; `npm run build` and `npm run build --prefix mcp` passed; `npm audit --prefix mcp`: 0 vulnerabilities; git diff --check passed. The existing root warning about `use client` in @xyflow/react remains."
+      - "Read-only Cloudflare inventory found Worker `mynder-mcp-staging` and D1 `mynder-staging`; an incompatible legacy D1 schema; there is no Mynder KV namespace. No remote resource or configuration was changed."
     commit: "e0def4e"
     pushed: true
   - id: 7
-    name: "Empacotamento e configuração Cloudflare"
+    name: "Packaging and Cloudflare configuration"
     status: passed
     evidence:
-      - "Pages `mynder` auditado: GitHub/main, `npm run build` → `dist`; painel comparado com `wrangler.jsonc`. O dashboard permanece fonte de verdade e produção não recebeu configuração nova."
-      - "Inventário preservado: D1 `mynder-staging` tinha 1 usuário, 4 sessões e 4 mapas; Worker legado `mynder-mcp-staging` não foi alterado."
-      - "D1 `mynder-sync-staging` foi temporariamente criado, sem usuários/mapas; removido somente após backup e restauração local validada do banco preservado, migração do schema e auditoria de bindings sem referências."
-      - "Provisionado KV `mynder-oauth-staging`; novo Worker `mynder-mcp-oauth-staging` usa somente bindings DB/OAUTH_KV e flag `global_fetch_strictly_public`; deployment separado concluído."
-      - "Pages Preview e production do projeto `mynder` agora compartilham o D1 único `mynder-staging`; configuração fail-closed preservada."
-      - "Smoke live: raiz Pages Preview 200; `/api/session` e `/api/maps` sem token 401 com desafio Bearer; `/mcp` sem token 401 com desafio OAuth; metadata MCP identifica issuer e resource exatos do Worker."
-      - "Gerador `mcp/scripts/configure-cloudflare.mjs` resolve recursos por nomes exatos, exige `MYNDER_WORKERS_SUBDOMAIN` e mantém IDs/hostname somente em config gerado dentro de `.wrangler/`, ignorado pelo Git. `wrangler deploy --dry-run` passou."
-      - "Commit `7739793` enviado para `origin/main`; o build/deploy automático Pages de produção para esse commit terminou com status `success`. A configuração de produção permaneceu sem binding D1 e sem autenticação/sync ativados."
-      - "`npm run test --prefix mcp`: 26 passaram; `npm test`: 37 passaram; `npm run build`, `npm run build --prefix mcp`, `npm audit --prefix mcp` (0 vulnerabilidades), `git diff --check` passaram. Build mantém aviso informativo existente de `use client` em @xyflow/react."
-      - "OIDC real não está configurado; sessão válida foi validada por testes integrados locais, não pelo provedor real. Produção continua offline/JSON e sem sincronização habilitada."
+      - "Pages project `mynder` audited: GitHub/main, `npm run build` → `dist`; the dashboard was compared with `wrangler.jsonc`. The dashboard remains the source of truth, and production received no new configuration."
+      - "Preserved inventory: D1 `mynder-staging` had 1 user, 4 sessions and 4 maps; legacy Worker `mynder-mcp-staging` was not changed."
+      - "D1 `mynder-sync-staging` was created temporarily, with no users or maps; it was removed only after a backup and a validated local restore of the preserved database, schema migration and an audit of bindings with no references."
+      - "KV `mynder-oauth-staging` provisioned; the new Worker `mynder-mcp-oauth-staging` uses only the DB/OAUTH_KV bindings and the `global_fetch_strictly_public` flag; separate deployment completed."
+      - "Pages Preview and production of the `mynder` project now share the single D1 `mynder-staging`; fail-closed configuration preserved."
+      - "Live smoke: Pages Preview root 200; `/api/session` and `/api/maps` without a token 401 with a Bearer challenge; `/mcp` without a token 401 with an OAuth challenge; MCP metadata identifies the Worker's exact issuer and resource."
+      - "Generator `mcp/scripts/configure-cloudflare.mjs` resolves resources by exact names, requires `MYNDER_WORKERS_SUBDOMAIN`, and keeps IDs/hostname only in the generated config inside `.wrangler/`, which Git ignores. `wrangler deploy --dry-run` passed."
+      - "Commit `7739793` pushed to `origin/main`; the automatic Pages production build/deploy for that commit finished with status `success`. Production stayed without a D1 binding and with authentication/sync not enabled."
+      - "`npm run test --prefix mcp`: 26 passed; `npm test`: 37 passed; `npm run build`, `npm run build --prefix mcp`, `npm audit --prefix mcp` (0 vulnerabilities), git diff --check passed. The build keeps the existing informational `use client` warning from @xyflow/react."
+      - "Real OIDC is not configured; a valid session was validated by local integrated tests, not by the real provider. Production remains offline/JSON with sync not enabled."
     commit: "7739793"
     pushed: true
   - id: 8
-    name: "Testes ponta a ponta e produção"
+    name: "End-to-end tests and production"
     status: in_progress
     evidence:
-      - "Audit inicial root: 4 advisories de produção (source-map-js alto, KaTeX 3 baixos). `npm audit fix` sem `--force` removeu advisories de source-map-js/ferramentas; override de KaTeX em 0.19.0 removeu o último alerta sem downgrade de markmap."
-      - "`npm audit --omit=dev`: 0 vulnerabilidades; `npm audit --prefix mcp`: 0 vulnerabilidades. `npm ls katex --all` confirma KaTeX 0.19.0 sob markmap-lib/markdown-it-katex."
-      - "Após atualizar dependências: `npm test` 37/37; `npm run test:cloudflare` 26/26; `npm run build`, `npm run build --prefix mcp` e `git diff --check` passaram. Aviso `use client` de @xyflow/react permanece informativo."
-      - "Commit `af9ba4b` enviado para `origin/main`; o deploy automático Pages de produção terminou com status `success`."
-      - "Decisões do usuário: Google OIDC; cadastro para qualquer conta Google com e-mail verificado; exatamente um D1 Mynder total, compartilhado entre ambientes."
-      - "Login Google, sessão/cache isolado por conta, cópia consentida de mapas anônimos e sync foram integrados. Client ID público ausente: UI informa login não configurado e operação local continua disponível."
-      - "D1 `mynder-staging` recebeu migration sem alterar 1 usuário/4 sessões/4 mapas. Backup SQL exportado e restore conferido. D1 vazio duplicado removido após auditoria: nenhum Worker/Pages usava o binding removido. Pages Preview/production e Worker MCP OAuth usam apenas o D1 preservado."
-      - "Worker MCP OAuth redeployado; endpoints Pages/MCP sem credencial respondem 401. Login Google real, duas contas/dispositivos e MCP autenticado ainda não foram testados."
-      - "Commit `fcd30e8` enviado para `origin/main`; deployment Pages de production para o commit terminou com `success`. URL principal e URL do deployment servem o bundle que contém a UI Google/sync."
-      - "Smoke live: `mynder.pages.dev` e Preview retornam 200; `/api/session` nas duas origens retorna 401 com desafio Bearer sem token. Client ID Google não está configurado, então login real permanece indisponível e a app local continua utilizável."
-      - "npm test 39/39; npm run test:cloudflare 27/27; npm run build e npm run build --prefix mcp passaram; Playwright local validou criação/persistência offline, 0 erros e 0 avisos no console; ambos os audits reportam 0 vulnerabilidades; git diff --check passou."
-      - "Gate externo: registrar Google OAuth Web Client, configurar Client ID público no build e secrets AUTH_ISSUER/AUDIENCE/JWKS/secret no Cloudflare. Secret não deve ser colado no chat nem commitado."
+      - "Initial root audit: 4 production advisories (high source-map-js, 3 low KaTeX). `npm audit fix` without `--force` removed the source-map-js/tooling advisories; a KaTeX override to 0.19.0 removed the last alert without downgrading markmap."
+      - "`npm audit --omit=dev`: 0 vulnerabilities; `npm audit --prefix mcp`: 0 vulnerabilities. `npm ls katex --all` confirms KaTeX 0.19.0 under markmap-lib/markdown-it-katex."
+      - "After updating dependencies: `npm test` 37/37; `npm run test:cloudflare` 26/26; `npm run build`, `npm run build --prefix mcp` and `git diff --check` passed. The @xyflow/react `use client` warning remains informational."
+      - "Commit `af9ba4b` pushed to `origin/main`; the automatic Pages production deploy finished with status `success`."
+      - "User decisions: Google OIDC; sign-up for any Google account with a verified email; exactly one total Mynder D1, shared between environments."
+      - "Google sign-in, session/cache isolated per account, consented copy of anonymous maps and sync were integrated. Public Client ID missing: the UI reports that sign-in is not configured, and local operation remains available."
+      - "D1 `mynder-staging` received the migration without changing 1 user / 4 sessions / 4 maps. SQL backup exported and restore checked. The duplicate empty D1 was removed after an audit: no Worker/Pages used the removed binding. Pages Preview/production and the MCP OAuth Worker use only the preserved D1."
+      - "MCP OAuth Worker redeployed; Pages/MCP endpoints without credentials return 401. Real Google sign-in, two accounts/devices and authenticated MCP were not yet tested."
+      - "Commit `fcd30e8` pushed to `origin/main`; the Pages production deployment for the commit finished with `success`. The main URL and the deployment URL serve the bundle that contains the Google/sync UI."
+      - "Live smoke: `mynder.pages.dev` and Preview return 200; `/api/session` on both origins returns 401 with a Bearer challenge without a token. The Google Client ID is not configured, so real sign-in remains unavailable and the local app stays usable."
+      - "npm test 39/39; npm run test:cloudflare 27/27; npm run build and npm run build --prefix mcp passed; local Playwright validated offline creation/persistence, 0 errors and 0 console warnings; both audits report 0 vulnerabilities; git diff --check passed."
+      - "External gate: register a Google OAuth Web Client, set the public Client ID in the build and the AUTH_ISSUER/AUDIENCE/JWKS/secret values in Cloudflare. The secret must not be pasted in chat or committed."
+      - "21/10/2026 review (branch chore/review-cleanup, local commits not yet pushed): unit tests moved to Node 22.18 (`.nvmrc`, `engines`); vite moved to devDependencies and updated to 8.3.5; markdown-it updated to 14.3.3; TypeScript pinned to ^7.0.2; Cloudflare, jose, plugin-react and vitest patch/minor updates; CI builds the MCP Worker; READMEs updated. Production audit: 0 vulnerabilities."
     commit: "fcd30e8"
     pushed: true
 open_gates:
   - id: auth-provider
     needed_before: 8
-    description: "Google OIDC e cadastro de usuário verificado escolhidos. Configurar credenciais reais e validar o fluxo; rever cotas/custos antes de uso amplo."
+    description: "Google OIDC and sign-up for verified users were chosen. Configure real credentials and validate the flow; review quotas/costs before broad use."
   - id: cloudflare-resources
     needed_before: 8
-    description: "Um D1 total escolhido, configurado para Preview e production; ambientes compartilham dados. Confirmar backup/restauração operacional antes de uso amplo."
+    description: "One total D1 was chosen and configured for Preview and production; environments share data. Confirm operational backup/restore before broad use."
   - id: oauth-client
     needed_before: 8
-    description: "Registrar Google OAuth Web Client e callback MCP; configurar AUTH_ISSUER/AUDIENCE/JWKS e OIDC_CLIENT_SECRET via Cloudflare secrets/settings; configurar VITE_GOOGLE_CLIENT_ID no build. OAuth MCP e DCR estão implementados."
+    description: "Register a Google OAuth Web Client and the MCP callback; set AUTH_ISSUER/AUDIENCE/JWKS and OIDC_CLIENT_SECRET through Cloudflare secrets/settings; set VITE_GOOGLE_CLIENT_ID at build time. OAuth MCP and DCR are implemented."
   - id: account-login-sync-ui
     needed_before: 8
-    description: "Implementação local integrada; validar login real e sync autenticado em múltiplas contas/dispositivos após provisionar credenciais Google."
+    description: "Local implementation integrated; validate real sign-in and authenticated sync across multiple accounts/devices after provisioning Google credentials."
 final_verification:
   npm_test: passed
   npm_build: passed

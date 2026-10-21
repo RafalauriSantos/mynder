@@ -1,160 +1,173 @@
-# Mynder — especificação do produto
+# Mynder — product specification
 
-## Visão
+## Vision
 
-Mynder é uma ferramenta pública para raciocínio visual individual. Cada pessoa trabalha em seu próprio espaço privado: começa com uma ideia, organiza conceitos como um mapa mental e continua no mesmo quadro, criando nós, relações e desenhos à mão livre.
+Mynder is a public tool for individual visual thinking. Each person works in their own private space: they start with an idea, organize concepts as a mind map, and keep working on the same board by creating nodes, relations and freehand drawings.
 
-**Promessa do produto:** transformar pensamentos em um mapa visual que continua editável.
+**Product promise:** turn thoughts into a visual map that stays editable.
 
-## Para quem
+## Audience
 
-Para quem estuda, planeja projetos ou precisa organizar uma explicação sem ter de escolher entre uma árvore rígida e uma tela em branco.
+For people who study, plan projects or need to organize an explanation without choosing between a rigid tree and a blank canvas.
 
-**Direção de produto (27/09/2026):** o Mynder deve poder ser usado por pessoas diferentes com contas próprias. Cada pessoa vê e sincroniza apenas os próprios quadros; compartilhar quadros com outras pessoas continua sendo uma etapa futura separada.
+**Product direction (27/09/2026):** Mynder should be usable by different people with their own accounts. Each person sees and syncs only their own boards. Sharing boards with other people remains a separate future step.
 
-## Princípios
+## Principles
 
-1. **O quadro é o centro.** Hierarquia, conexões livres e desenhos convivem no mesmo espaço.
-2. **Começar é rápido.** Uma ideia pode ser colada como texto ou Markdown e virar uma estrutura visual.
-3. **A estrutura continua maleável.** Nós podem ser movidos, editados, recolhidos, reorganizados e conectados de outras formas.
-4. **Os dados pertencem à pessoa.** O uso local não depende de conta ou conexão; exportação em formato aberto permite levar os quadros para fora do serviço.
-5. **Interface quieta, conteúdo em destaque.** A identidade deve parecer uma ferramenta de pensamento, com espaço, contraste legível e controles claros.
+1. **The board is the center.** Hierarchy, free connections and drawings live in the same space.
+2. **Starting is fast.** An idea can be pasted as text or Markdown and become a visual structure.
+3. **The structure stays malleable.** Nodes can be moved, edited, collapsed, reorganized and connected in other ways.
+4. **Data belongs to the person.** Local use does not depend on an account or a connection; open-format export lets people take their boards out of the service.
+5. **Quiet interface, content in focus.** The identity should feel like a thinking tool, with space, readable contrast and clear controls.
 
-## Experiência principal
+## Main experience
 
-1. A pessoa cria um quadro ou cola texto/Markdown.
-2. Mynder converte títulos e listas em uma hierarquia e mostra o mapa mental.
-3. A pessoa alterna para o canvas livre para mover nós, criar conexões e desenhar.
-4. As duas vistas mostram a mesma hierarquia; editar Markdown atualiza o mapa e o canvas.
-5. O quadro salva localmente e pode ser exportado como JSON.
+1. The person creates a board or pastes text/Markdown.
+2. Mynder turns headings and lists into a hierarchy and shows the mind map.
+3. The person switches to the free canvas to move nodes, create connections and draw.
+4. Both views show the same hierarchy; editing the Markdown updates the map and the canvas.
+5. The board saves locally and can be exported as JSON.
 
-## Escopo do protótipo atual
+## Scope of the initial prototype (historical)
 
-- Lista local de quadros, com criação e seleção.
-- Modo Mapa mental com Markmap e expansão/recolhimento de ramos.
-- Modo Canvas livre com a hierarquia editável, conexões independentes e desenhos.
-- Conversão de texto/Markdown em hierarquia compartilhada; regenerar Markdown atualiza as duas vistas.
-- O estado sem nós oferece ação direta para inserir Markdown e reconstruir o mesmo quadro.
-- Edição de texto, criação de nós filhos e irmãos, mudança de pai, recolhimento de ramos e organização automática.
-- Conexões livres entre nós.
-- Desenho livre: caneta, marca-texto, formas, setas, texto e borracha.
-- Seleção, arraste, zoom, pan, ajuste à tela, desfazer/refazer e exportação/importação JSON.
-- Exportação de um mapa ou de todos os mapas em um backup JSON; importar backup acrescenta cópias sem substituir documentos locais.
-- Salvamento no `localStorage`; sem conta, servidor de dados ou sincronização entre dispositivos.
-- Direção para as próximas etapas: permitir que pessoas criem suas próprias contas e sincronizem entre dispositivos. O servidor deve autorizar cada operação pelos dados de identidade verificados e pelo proprietário do quadro; nunca confiar em um `ownerId` enviado pelo navegador. Uma conta não pode ler, alterar ou excluir dados de outra.
-- Os quadros locais continuam editáveis e exportáveis sem login ou rede. No mesmo navegador, o espaço local anônimo e os caches de contas autenticadas devem ficar separados; importar dados para uma conta exige confirmação e nunca apaga a cópia local.
-- Layout responsivo para desktop e celular; na revisão de 27/09/2026, o canvas foi conferido em viewport de navegador de 390 × 844 px. A revisão não substitui teste em aparelho físico.
+- Local board list, with creation and selection.
+- Mind map mode with Markmap and expanding/collapsing branches.
+- Free canvas mode with an editable hierarchy, independent connections and drawings.
+- Text/Markdown conversion into a shared hierarchy; regenerating the Markdown updates both views.
+- The empty state offers a direct action to enter Markdown and rebuild the same board.
+- Text editing, creating child and sibling nodes, changing parent, collapsing branches and automatic layout.
+- Free connections between nodes.
+- Freehand drawing: pen, highlighter, shapes, arrows, text and eraser.
+- Selection, dragging, zoom, pan, fit to screen, undo/redo and JSON export/import.
+- Export of one map or of all maps as a JSON backup; importing a backup adds copies without replacing local boards.
+- Saving to `localStorage`. This prototype had no account, data server or sync between devices. Those came later (see "Current state" below).
+- Direction for the next steps: let people create their own accounts and sync between devices. The server must authorize each operation from the verified identity data and the board owner; it must never trust an `ownerId` sent by the browser. One account cannot read, change or delete another account's data.
+- Local boards stay editable and exportable without login or network. In the same browser, the anonymous local space and the caches of signed-in accounts must stay separate. Importing data into an account requires confirmation and never deletes the local copy.
+- Responsive layout for desktop and mobile. In the review of 27/09/2026, the canvas was checked in a browser viewport of 390 × 844 px. That review does not replace testing on a physical device.
 
-## Distinções importantes
+## Important distinctions
 
-- A estrutura dos nós é compartilhada entre Mapa mental e Canvas. Conexões livres e desenhos são recursos do Canvas.
-- A edição de Markdown reconstrói a hierarquia. IDs e posições de nós cujo caminho e texto continuam iguais são preservados; conexões ligadas a nós removidos são descartadas e desenhos permanecem no quadro.
-- A aparência desejada pode se aproximar de mapas mentais visuais como os do NotebookLM, mas Mynder deve manter edição livre e desenho no próprio quadro.
-- “Profissional” nesta etapa significa identidade coerente, interface confiável, boa usabilidade e dados exportáveis; não implica login ou infraestrutura de equipe.
+- The node structure is shared between Mind map and Canvas. Free connections and drawings are Canvas features.
+- Editing the Markdown rebuilds the hierarchy. IDs and positions of nodes whose path and text stay the same are preserved; connections attached to removed nodes are discarded, and drawings stay on the board.
+- The desired look may be close to visual mind maps such as NotebookLM's, but Mynder must keep free editing and drawing on the board itself.
+- "Professional" at this stage means a coherent identity, a reliable interface, good usability and exportable data; it does not imply login or team infrastructure.
 
-## Fora do protótipo local atual
+## Out of scope of the local prototype (historical)
 
-Login, nuvem e sincronização ainda não estão implementados. Colaboração simultânea, compartilhamento de quadros, inteligência artificial, agentes, RAG, integrações MCP, banco externo fora do plano aprovado, permissões de equipe e cobrança não fazem parte da primeira versão multiusuário.
+When this section was written, login, cloud and sync were not implemented. They are now (see "Current state"). Still out of scope for the first multi-user version: simultaneous collaboration, board sharing, artificial intelligence, agents, RAG, permissions for teams and billing.
 
-## Critérios de qualidade
+## Quality criteria
 
-- Uma pessoa consegue criar um quadro, importar uma ideia e continuar editando sem sair da tela principal.
-- Contas diferentes não conseguem ver nem alterar quadros umas das outras; a separação é validada no servidor, não só na interface.
-- Alternar entre contas no mesmo navegador não mistura os respectivos quadros locais; o espaço local anônimo permanece separado.
-- Hierarquia e conexões livres são visualmente distinguíveis.
-- Salvamento e exportação são compreensíveis; dados existentes continuam legíveis após atualizações.
-- Indisponibilidade da nuvem ou do provedor de identidade não impede abrir, editar e exportar quadros locais.
-- Dados sincronizados podem ser exportados em formato Mynder independente do provedor e restaurados após falha ou troca de serviço.
-- Os controles essenciais funcionam em telas pequenas e não bloqueiam o quadro.
-- A marca Mynder aparece de forma consistente na interface, na aba e nos materiais do projeto.
+- A person can create a board, import an idea and keep editing without leaving the main screen.
+- Different accounts cannot see or change each other's boards; the separation is enforced on the server, not only in the interface.
+- Switching accounts in the same browser does not mix their local boards; the anonymous local space stays separate.
+- Hierarchy and free connections are visually distinguishable.
+- Saving and export are understandable; existing data stays readable after updates.
+- An outage of the cloud or of the identity provider does not prevent opening, editing and exporting local boards.
+- Synced data can be exported in the provider-independent Mynder format and restored after a failure or a change of service.
+- Essential controls work on small screens and do not block the board.
+- The Mynder brand appears consistently in the interface, the tab and the project materials.
 
-## Validação automatizada
+## Automated validation
 
-`npm test` cobre regras de Markdown, hierarquia, regeneração, conexões, validação JSON e armazenamento local. GitHub Actions roda os testes e a compilação em cada push para `main` e em pull requests. A interação e a qualidade visual continuam precisando de revisão no navegador; esta etapa ainda não inclui testes de ponta a ponta.
+Current state (21/10/2026):
 
-## Próximas etapas
+- `npm test` runs the unit tests for Markdown rules, hierarchy, regeneration, connections, JSON validation, local storage, backup, ordering and the sync client and engine. It needs Node 22.18 or newer, pinned in `.nvmrc`.
+- `npm run test:cloudflare` runs the Pages Functions and MCP Worker tests with Miniflare and D1 locally.
+- `npm run build` builds the app, and `npm run build --prefix mcp` builds the MCP Worker.
+- GitHub Actions runs all of the above on every push to `main` and on pull requests.
+- The editor and canvas interactions still need review in the browser. There are no end-to-end tests.
 
-### Etapa 1 — Fundamento visual e identidade (concluída)
+## Next steps
 
-Aplicar a marca Mynder, estabelecer tipografia, cores, hierarquia de controles e estados de interação. Preservar o formato dos documentos e as chaves de armazenamento atuais.
+### Step 1 — Visual foundation and identity (done)
 
-### Etapa 2 — Refinar o fluxo de mapa mental (concluída)
+Apply the Mynder brand and set the typography, colors, control hierarchy and interaction states. Keep the current document format and storage keys.
 
-Dar mais clareza ao começo por texto/Markdown, à edição da estrutura e à transição para o quadro livre. Refinar controles de navegação, edição por toque e apresentação radial/orgânica sem duplicar os dados.
+### Step 2 — Refine the mind map flow (done)
 
-**Validação (27/09/2026):** na versão publicada, em viewport de navegador de 390 × 844 px, foi conferido o fluxo Markdown → mapa → edição do Markdown → Canvas; o novo ramo apareceu nas duas vistas com a hierarquia correspondente. Depois, o usuário confirmou ter testado em celular físico com um quadro próprio, incluindo editar o mapa, usar o Canvas e salvar/recarregar; relatou que tudo funcionou bem. O modelo do aparelho, o navegador e interações específicas como conexão e desenho não foram detalhados. **Etapa concluída** com base nessa validação relatada pelo usuário.
+Make the start from text/Markdown, the structure editing and the move to the free board clearer. Refine navigation controls, touch editing and the radial/organic presentation without duplicating data.
 
-### Etapa 3 — Robustez de uso pessoal
+**Validation (27/09/2026):** on the published version, in a browser viewport of 390 × 844 px, the flow Markdown → map → Markdown editing → Canvas was checked; the new branch appeared in both views with the matching hierarchy. Then the user confirmed testing on a physical phone with their own board, including editing the map, using the Canvas and saving/reloading, and reported that everything worked well. The device model, the browser and specific interactions such as connecting and drawing were not detailed. **Step completed** based on that reported validation.
 
-Revisar estados vazios, salvamento, recuperação e exportação/importação; validar o uso real em celular e desktop.
+### Step 3 — Personal use robustness
 
-**Estado vazio (concluído):** em viewport de navegador de 390 × 844 px, apagar o último nó mostrou a ação para escrever uma ideia. Preencher o Markdown reconstituiu o mesmo quadro, sem duplicar a lista; após salvar e recarregar, a hierarquia continuou disponível no Canvas. Isso não substitui a validação em aparelho físico.
+Review empty states, saving, recovery and export/import; validate real use on phone and desktop.
 
-**Exportação/importação e canvas móvel (concluídos no navegador):** em viewport de 390 × 844 px, exportar e importar um quadro preservou os 7 nós e sua hierarquia. No Canvas, uma conexão livre e um desenho foram mantidos no JSON exportado; salvar e recarregar manteve esses elementos no quadro. Durante essa revisão, a barra de ações de um nó selecionado cobria os controles superiores em tela pequena e impedia tocar em “Importar JSON”. A barra agora ocupa uma faixa própria entre os controles do quadro e o Canvas, com rolagem horizontal no celular. Após o ajuste, a importação foi repetida com um nó selecionado e funcionou. A tela também foi revisada em viewport de navegador de 1280 × 800 px.
+**Empty state (done):** in a browser viewport of 390 × 844 px, deleting the last node showed the action to write an idea. Filling in the Markdown rebuilt the same board without duplicating the list; after saving and reloading, the hierarchy was still available in the Canvas. This does not replace validation on a physical device.
 
-**Validação física (27/09/2026):** após o roteiro atualizado, o usuário confirmou que testou no celular com um quadro próprio e que está tudo certo. Considero confirmados os fluxos do roteiro: editar Markdown, manipular e desenhar no Canvas, salvar e recarregar, exportar e importar JSON, e recuperar um quadro vazio separado. O modelo do aparelho e o navegador não foram informados.
+**Export/import and mobile canvas (done in the browser):** in a 390 × 844 px viewport, exporting and importing a board kept the 7 nodes and their hierarchy. In the Canvas, a free connection and a drawing were kept in the exported JSON; saving and reloading kept those elements on the board. During this review, the action bar of a selected node covered the top controls on small screens and blocked tapping "Import JSON". The bar now has its own band between the board controls and the Canvas, with horizontal scrolling on mobile. After the fix, the import was repeated with a node selected and worked. The screen was also reviewed in a 1280 × 800 px viewport.
 
-**Validação automatizada da etapa 3 (27/09/2026):** `npm test` passou com 14 testes; `npm run build` concluiu. O bundler emitiu um aviso informativo sobre `use client` em `@xyflow/react`. A revisão do navegador não registrou erros de console. O ajuste visual foi revisado nas viewports de navegador indicadas acima; não equivale a teste físico.
+**Physical validation (27/09/2026):** after the updated script, the user confirmed that they tested on a phone with their own board and that everything was fine. The flows in the script are considered confirmed: editing Markdown, manipulating and drawing on the Canvas, saving and reloading, exporting and importing JSON, and recovering an empty board separately. The device model and the browser were not reported.
 
-**Etapa 3 concluída:** validações automatizadas, revisão de navegador e teste físico relatado pelo usuário cobrem os fluxos desta etapa. O roteiro usado está em [README.md](README.md), seção “Testar a versão publicada no celular”.
+**Automated validation of step 3 (27/09/2026):** `npm test` passed with 14 tests; `npm run build` completed. The bundler emitted an informational warning about `use client` in `@xyflow/react`. The browser review recorded no console errors. The visual fix was reviewed in the browser viewports listed above; this is not equivalent to a physical device test.
 
-### Etapa 4 — Decisão de produto
+**Step 3 completed:** automated validation, browser review and the physical test reported by the user cover the flows of this step. The script used is in [README.pt-BR.md](README.pt-BR.md), section "Testar no celular".
 
-**Direção definida com o usuário:** o app será público e poderá ser usado por pessoas com contas próprias; cada conta terá seus quadros privados. A ordem segue: primeiro sincronizar os quadros da mesma pessoa entre seus dispositivos; depois, em etapa separada, permitir compartilhar quadros com outras pessoas. A autenticação, o isolamento local e remoto, os custos e a proteção contra abuso ainda precisam de plano antes da implementação.
+### Step 4 — Product decision
 
-**Limite atual:** o protótipo continua local, com exportação/importação JSON. Nenhuma sincronização ou colaboração foi implementada. Planejar cada uma em uma etapa própria, começando pela sincronização pessoal e considerando seus efeitos em privacidade, autenticação, suporte e custo.
+**Direction set with the user:** the app will be public and can be used by people with their own accounts; each account has private boards. The order is: first sync one person's boards across their devices; then, in a separate step, allow sharing boards with other people. Authentication, local and remote isolation, costs and abuse protection still needed a plan before implementation.
 
-### Etapa 5 — Planejar sincronização multiusuário (revisão necessária)
+**Current limit (at the time):** the prototype was still local, with JSON export/import. No sync or collaboration had been implemented. Each would be planned in its own step, starting with personal sync and considering its effects on privacy, authentication, support and cost.
 
-O usuário aprovou a direção de sincronização em 27/09/2026 e esclareceu que o app deve servir a outras pessoas, cada uma com seus próprios quadros privados. Isso muda o plano anterior, que enfatizava sincronização pessoal. [SYNC_PLAN.md](SYNC_PLAN.md) está em revisão para abranger cadastro público, isolamento de dados por conta no servidor e separação dos dados locais por conta. Cloudflare IdP restrito a membros da conta não atende cadastro público; nenhuma autenticação, backend ou sync foi iniciada.
+### Step 5 — Plan multi-user sync (review needed)
 
-### Etapa 6 — Portabilidade local completa
+The user approved the sync direction on 27/09/2026 and clarified that the app must serve other people, each with their own private boards. That changed the earlier plan, which emphasized personal sync. [SYNC_PLAN.md](SYNC_PLAN.md) was under review to cover public sign-up, per-account data isolation on the server and separation of local data by account. An identity provider limited to members of the account does not cover public sign-up.
 
-**Implementação concluída:** o botão “Backup completo” exporta todos os mapas, incluindo conexões, desenhos e viewport, num JSON identificado como backup Mynder v1. A importação ainda aceita JSON de mapa individual e também reconhece o backup completo; mapas entram como cópias com novos IDs de documento, sem substituir os que já existem. Arquivos antigos de mapa continuam aceitos.
+### Step 6 — Full local portability
 
-**Validação feita:** `npm test` passou com 18 testes, incluindo roundtrip de múltiplos mapas, preservação de conteúdo de canvas, importação do formato individual e rejeição de backups inválidos; `npm run build` passou. Na versão publicada `mynder.pages.dev`, um fluxo Playwright isolado usou três mapas fictícios: baixou um arquivo Mynder v1 com os três mapas, importou-o e exibiu as três cópias com sufixo “(importado)”. Uma cópia foi aberta tanto no Mapa mental como no Canvas. O estado responsivo foi conferido em viewport de 390 × 844 px; console sem erros nem avisos. A interface local também havia sido revista em 713 × 720 px.
+**Implementation done:** the "Full backup" button exports all maps, including connections, drawings and viewport, as one JSON file identified as a Mynder v1 backup. Import still accepts a single-map JSON and also recognizes the full backup; maps come in as copies with new document IDs, without replacing existing ones. Old map files are still accepted.
 
-**Validação física confirmada (27/09/2026):** o usuário confirmou que conseguiu baixar e importar o backup completo pelo navegador do celular, usando um quadro próprio e seguindo o roteiro em aba privada para manter a lista original intacta. O modelo do aparelho e o navegador não foram informados.
+**Validation done:** `npm test` passed with 18 tests, including a round trip of multiple maps, preservation of canvas content, import of the single-map format and rejection of invalid backups; `npm run build` passed. On the published `mynder.pages.dev`, an isolated Playwright flow used three fictional maps: it downloaded a Mynder v1 file with the three maps, imported it and showed the three copies with the "(imported)" suffix. One copy was opened in both the Mind map and the Canvas. The responsive state was checked at 390 × 844 px; the console had no errors or warnings. The local interface had also been reviewed at 713 × 720 px.
 
-**Etapa 6 concluída:** portabilidade de múltiplos mapas foi validada por testes automatizados, navegador isolado e teste físico relatado pelo usuário.
+**Physical validation confirmed (27/09/2026):** the user confirmed they could download and import the full backup in the phone browser, using their own board and following the script in a private tab to keep the original list intact. The device model and the browser were not reported.
 
-### Etapa 7 — Acesso local quando a rede falha (concluída)
+**Step 6 completed:** portability of multiple maps was validated by automated tests, an isolated browser and a physical test reported by the user.
 
-**Objetivo:** depois de uma primeira visita conectada, permitir abrir o shell do app sem rede e continuar editando e salvando mapas existentes no armazenamento local. A implementação não cria conta, API ou sync. O service worker pré-armazena os recursos de produção e mostra uma confirmação para atualizações; antes de atualizar, salva os mapas locais. A primeira abertura, outro navegador/dispositivo ou dados do site apagados ainda exigem rede; backups continuam necessários.
+### Step 7 — Local access when the network fails (done)
 
-**Validação em desktop (27/09/2026):** build de produção local servido por `wrangler pages dev`, viewport de navegador de 1536 × 864 px. O aviso “Mynder está pronto para abrir sem conexão neste navegador” apareceu. Com o servidor interrompido, recarregar abriu o app pelo cache; um quadro sintético previamente salvo apareceu na lista, foi editado sem conexão e continuou disponível após novo recarregamento offline. O botão Exportar permaneceu disponível; o download não pôde ser confirmado no desktop.
+**Goal:** after a first connected visit, allow opening the app shell without network and keep editing and saving existing maps in local storage. The implementation does not create an account, API or sync. The service worker pre-caches the production assets and shows a confirmation for updates; before updating, it saves the local maps. The first opening, another browser/device or cleared site data still require a network; backups are still needed.
 
-**Publicado para validação física (27/09/2026):** o commit `4918136` foi publicado automaticamente em produção pelo Cloudflare Pages e o painel registrou status `success`. O app está disponível em [mynder.pages.dev](https://mynder.pages.dev/).
+**Desktop validation (27/09/2026):** local production build served by `wrangler pages dev`, browser viewport of 1536 × 864 px. The message "Ready to open offline in this browser" appeared. With the server stopped, reloading opened the app from the cache; a synthetic board saved earlier appeared in the list, was edited offline and remained available after another offline reload. The Export button stayed available; the download could not be confirmed on desktop.
 
-**Validação física confirmada pelo usuário (27/09/2026):** o usuário confirmou que o teste offline passou em um celular físico usando um quadro próprio. O roteiro cobria primeira abertura conectada, reabertura com a rede desligada, edição e salvamento, recarregamento offline com a edição preservada e exportação do JSON sem conexão. Isso confirma também a exportação que não pôde ser verificada no teste desktop. Modelo do aparelho e navegador não foram informados.
+**Published for physical validation (27/09/2026):** commit `4918136` was published automatically to production by Cloudflare Pages, and the dashboard recorded status `success`. The app is available at [mynder.pages.dev](https://mynder.pages.dev/).
 
-**Etapa 7 concluída:** shell do app, quadro local, edição/salvamento após recarga offline e exportação foram validados em uso físico relatado pelo usuário; o desktop também confirmou a reabertura e persistência offline. A confirmação física é relato do usuário, sem telemetria ou identificação do aparelho.
+**Physical validation confirmed by the user (27/09/2026):** the user confirmed that the offline test passed on a physical phone using their own board. The script covered the first connected opening, reopening with the network off, editing and saving, offline reload with the edit preserved and JSON export without a connection. This also confirms the export that could not be verified in the desktop test. The device model and browser were not reported.
 
-## Decisão técnica atual
+**Step 7 completed:** app shell, local board, editing/saving after an offline reload and export were validated in physical use as reported by the user; desktop also confirmed offline reopening and persistence. The physical confirmation is the user's report, with no telemetry or device identification.
 
-Aplicação web em React, TypeScript e Vite; canvas baseado em React Flow; desenhos vetoriais persistidos como dados; armazenamento local no navegador; hospedagem estática no Cloudflare Pages. Manter a solução simples enquanto o fluxo principal é validado.
+## Current technical decision
 
-## Estado atual e alvo executável: sincronização Cloudflare + MCP
+Web app in React, TypeScript and Vite; canvas based on React Flow; vector drawings persisted as data; local storage in the browser; static hosting on Cloudflare Pages. Keep the solution simple while the main flow is validated.
 
-**Estado confirmado em 12/10/2026:** app React/Vite mantém `localStorage`, exportação/importação JSON e modo offline. Login Google, cache por conta, importação consentida e sincronização estão integrados localmente. Pages e Worker usam o mesmo D1 Cloudflare `mynder-staging`; o banco preservou 1 usuário, 4 sessões e 4 mapas, e as tabelas novas de sync foram adicionadas sem alterar esses registros. Preview e produção compartilham intencionalmente esse único D1. O banco Mynder vazio duplicado foi removido após backup do banco preservado, teste de restauração e auditoria sem bindings. Google OIDC/cadastro verificado foram escolhidos, mas credenciais reais ainda não foram configuradas; portanto login e sync autenticados não foram validados com Google real. O Worker MCP OAuth foi publicado separadamente e exige upstream OIDC configurado. Endpoints sem credenciais continuam falhando fechados.
+## Current state and executable target: Cloudflare + MCP sync
 
-**Objetivo:** permitir que uma pessoa use seus mapas em mais de um dispositivo e solicite operações nos próprios mapas via MCP. A nuvem será uma cópia sincronizada recuperável; o armazenamento local permanece editável e exportável sem rede. Cada API e ferramenta MCP obterá o proprietário exclusivamente de uma identidade autenticada e validada no servidor. O cliente nunca escolhe ou fornece a identidade proprietária.
+**Status as of 12/10/2026:** the React/Vite app keeps `localStorage`, JSON export/import and offline mode. Google sign-in, per-account cache, consented import and sync are integrated locally. Pages and the Worker use the same Cloudflare D1 `mynder-staging`; the database kept 1 user, 4 sessions and 4 maps, and the new sync tables were added without changing those records. Preview and production intentionally share that single D1. The duplicate empty Mynder database was removed after backing up the preserved database, testing a restore and auditing it without bindings. Google OIDC/sign-up were chosen, but real credentials were not yet configured at that time, so authenticated login and sync had not been validated with real Google. The MCP OAuth Worker was published separately and requires a configured OIDC upstream. Endpoints without credentials keep failing closed.
 
-**Arquitetura alvo:** manter o frontend em `mynder.pages.dev`; Pages Functions em `/api/*` e binding D1 para sincronização; um Worker remoto MCP para `/mcp`, conectado ao mesmo serviço de domínio e D1. O MCP usa OAuth 2.1 para autorizar o cliente de IA, e a autenticação externa do usuário mapeia para uma identidade Mynder estável. O transporte e os tokens nunca são armazenados em `localStorage`. O Worker MCP pode usar um subdomínio `workers.dev` até haver domínio próprio.
+**Status update (21/10/2026):**
 
-**Invariantes:**
+- The README describes sign-in and sync as working for accounts added as Google test users. This review did not re-validate the Google flow end to end.
+- `npm test` needs Node 22.18 or newer (pinned in `.nvmrc`). The system Node on the development machine was built without TypeScript support, so it could not run the suite.
+- Production dependency audit: 0 vulnerabilities. Two high advisories (`vite`, `markdown-it`) were fixed, and `vite` moved to `devDependencies`.
+- CI builds the MCP Worker in addition to the app.
 
-- Documentos v2 locais e backups Mynder v1 continuam legíveis e exportáveis; uso anônimo/offline não exige conta.
-- A primeira importação de mapas anônimos para uma conta exige confirmação e copia, sem apagar a fonte local.
-- O servidor deriva `owner_id` da sessão validada. Todas as consultas de mapas incluem o proprietário autenticado; `ownerId` do corpo, URL ou MCP args é ignorado ou rejeitado.
-- Revisões remotas são condicionais. Conflito, indisponibilidade, autenticação expirada, cotas e limites de tamanho preservam a edição local e mostram pendência/erro acionável.
-- O payload JSON de cada documento para sync tem teto inicial de 1.900.000 bytes UTF-8, abaixo do limite D1 documentado de 2.000.000 bytes por linha; documentos maiores continuam locais/exportáveis e recebem erro recuperável. A etapa D1 deve confirmar o espaço reservado para colunas/metadados antes de manter esse teto.
-- Exclusões remotas são tombstones recuperáveis; conflito nunca usa última gravação vence sem aviso.
-- Ferramentas MCP chamam o mesmo serviço de domínio que a API. O escopo de cada token é mínimo; exclusão pede confirmação explícita e gera recuperação.
-- Nenhum segredo, token OAuth, ID real de database, ID de conta, hostname ou configuração Cloudflare específica da conta é commitado. O gerador local resolve IDs por nomes exatos e grava somente em `.wrangler/`, ignorado pelo Git. Configuração de produção só muda após comparação com o painel.
+**Objective:** let a person use their maps on more than one device and request operations on their own maps via MCP. The cloud will be a recoverable synced copy; local storage stays editable and exportable without a network. Each API and MCP tool will get the owner only from an authenticated identity validated on the server. The client never chooses or provides the owner identity.
 
-**Cloudflare (12/10/2026):** um D1 total (`mynder-staging`) atende Pages Preview/produção e Worker MCP. Um KV separado atende OAuth MCP. O binding não dá acesso aos outros D1 da conta; consultas do Mynder separam mapas por identidade verificada. Ambientes compartilham banco e devem ser tratados como um só limite operacional/de dados. O D1 de sync vazio duplicado foi removido; o D1 restante preserva os dados antigos e tem backup local de recuperação, fora do Git.
+**Target architecture:** keep the frontend on `mynder.pages.dev`; Pages Functions under `/api/*` and a D1 binding for sync; a remote MCP Worker for `/mcp`, connected to the same domain service and D1. MCP uses OAuth 2.1 to authorize the AI client, and the user's external authentication maps to a stable Mynder identity. Transport and tokens are never stored in `localStorage`. The MCP Worker can use a `workers.dev` subdomain until there is a custom domain.
 
-**Gates restantes:** configurar credenciais Google reais (Client ID público no build e secret/issuer/audience/JWKS nos ambientes Cloudflare), depois validar login, sync entre duas contas/dispositivos, recuperação/offline e cliente MCP autenticado. A decisão é manter apenas um D1, compartilhado entre Preview e produção; não criar banco adicional. Antes de uso amplo, revisar cotas/custos e validar backup/restauração.
+**Invariants:**
 
-**Plano executável e evidências:** [IMPLEMENTATION.md](IMPLEMENTATION.md) define as etapas e gates; [EXECUTION_STATE.yml](EXECUTION_STATE.yml) é o registro autoritativo da etapa atual, validações, commits, publicação e bloqueios. Uma etapa passa apenas após os comandos e critérios listados passarem. O objetivo permanece aberto até login, sync, isolamento multiusuário, offline/backup, MCP autorizado e validação de produção estarem comprovados.
+- Local v2 documents and Mynder v1 backups stay readable and exportable; anonymous/offline use does not require an account.
+- The first import of anonymous maps into an account requires confirmation and copies them without deleting the local source.
+- The server derives `owner_id` from the validated session. Every map query includes the authenticated owner; an `ownerId` in the body, URL or MCP arguments is ignored or rejected.
+- Remote revisions are conditional. Conflict, outage, expired authentication, quotas and size limits keep the local edit and show an actionable pending state or error.
+- The JSON payload of each document for sync has an initial cap of 1,900,000 UTF-8 bytes, below the documented D1 limit of 2,000,000 bytes per row. Larger documents stay local/exportable and get a recoverable error. The D1 step must confirm the space reserved for columns and metadata before keeping this cap.
+- Remote deletions are recoverable tombstones; conflicts never use last-write-wins without a warning.
+- MCP tools call the same domain service as the API. Each token has the minimum scope; deletion requires explicit confirmation and creates a recovery path.
+- No secret, OAuth token, real database ID, account ID, hostname or account-specific Cloudflare configuration is committed. The local generator resolves IDs by exact names and writes only to `.wrangler/`, which Git ignores. Production configuration changes only after comparison with the dashboard.
+
+**Cloudflare (12/10/2026):** one D1 database (`mynder-staging`) serves Pages Preview/production and the MCP Worker. A separate KV serves MCP OAuth. The binding does not give access to the account's other D1 databases; Mynder queries separate maps by verified identity. Environments share the database and must be treated as one operational and data boundary. The duplicate empty sync D1 was removed; the remaining D1 keeps the old data and has a local recovery backup, outside Git.
+
+**Remaining gates:** configure real Google credentials (public Client ID at build time and secret/issuer/audience/JWKS in the Cloudflare environments), then validate login, sync between two accounts/devices, recovery/offline and an authenticated MCP client. The decision is to keep a single D1, shared between Preview and production; do not create an extra database. Before broad use, review quotas/costs and validate backup/restore.
+
+**Executable plan and evidence:** [IMPLEMENTATION.md](IMPLEMENTATION.md) defines the steps and gates; [EXECUTION_STATE.yml](EXECUTION_STATE.yml) is the authoritative record of the current step, validations, commits, publication and blockers. A step passes only after the listed commands and criteria pass. The goal stays open until login, sync, multi-user isolation, offline/backup, authorized MCP and production validation are proven.

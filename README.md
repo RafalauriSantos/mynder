@@ -114,7 +114,7 @@ Start with `mynder_list_maps` and `mynder_get_outline`, which shows the ID of ea
 
 ## More documentation
 
-`SPEC.md`, `IMPLEMENTATION.md` and `SYNC_PLAN.md` are the product spec and the implementation notes (in Portuguese).
+`SPEC.md` and `IMPLEMENTATION.md` are the product spec and the implementation plan. `SYNC_PLAN.md` is the sync planning notes and is still in Portuguese.
 
 ## License
 
