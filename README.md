@@ -20,7 +20,7 @@ Keyboard shortcuts: `Ctrl/Cmd+S` save, `Ctrl/Cmd+Z` undo, `F` focus mode.
 
 ## Run it
 
-Requires Node 22 (the version CI uses).
+Requires Node 22.18 or newer. CI uses Node 22, and `.nvmrc` pins 22.18.0 for `nvm use`.
 
 ```bash
 npm install
@@ -32,7 +32,7 @@ npm run build
 
 To try the app from a phone on the same network, run `npm run dev -- --host 0.0.0.0` and open `http://<your-computer-ip>:5173/`.
 
-If `npm test` fails with `ERR_UNKNOWN_FILE_EXTENSION`, your Node build cannot import `.ts` files directly. CI runs the official Node 22 and is the reference.
+If `npm test` fails with `ERR_UNKNOWN_FILE_EXTENSION` or `Node.js is not compiled with TypeScript support`, your Node build cannot import `.ts` files. Some system packages are built this way. Switch to Node 22.18 or newer (`nvm use`).
 
 ## How it is built
 
