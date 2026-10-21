@@ -10,7 +10,7 @@ Aplicativo publicado: [mynder.pages.dev](https://mynder.pages.dev/).
 
 ## Executar
 
-Use Node 22 (a versão do CI).
+Use Node 22.18 ou mais novo. O CI usa Node 22, e o `.nvmrc` fixa 22.18.0 para `nvm use`.
 
 ```bash
 npm install
@@ -46,7 +46,7 @@ Na primeira vez, o app oferece copiar os mapas locais para a conta. As cópias s
 
 ### Uso sem conexão
 
-Depois de abrir o Mynder conectado pelo menos uma vez e aparecer “Mynder está pronto para abrir sem conexão neste navegador”, o shell e os arquivos da aplicação ficam em cache para reabrir o app sem rede. Os quadros continuam no `localStorage` desse navegador; o primeiro acesso, outro navegador ou dados do site apagados exigem conexão. Isso não substitui backups exportados. Quando uma nova versão estiver disponível, o app oferece **Atualizar** ou deixar para depois, e a atualização salva os mapas antes de recarregar.
+Depois de abrir o Mynder conectado pelo menos uma vez e aparecer “Pronto para abrir sem conexão neste navegador.”, o shell e os arquivos da aplicação ficam em cache para reabrir o app sem rede. Os quadros continuam no `localStorage` desse navegador; o primeiro acesso, outro navegador ou dados do site apagados exigem conexão. Isso não substitui backups exportados. Quando uma nova versão estiver disponível, o app oferece **Atualizar** ou deixar para depois, e a atualização salva os mapas antes de recarregar.
 
 ## Testar no celular
 
@@ -70,7 +70,7 @@ Abra [mynder.pages.dev](https://mynder.pages.dev/) no navegador do celular e use
 
 Use o mesmo navegador e aparelho durante todo o teste, e confirme que tem um backup recente.
 
-1. Com a internet ligada, abra [mynder.pages.dev](https://mynder.pages.dev/) e espere aparecer “Mynder está pronto para abrir sem conexão neste navegador”. Abra um quadro seu.
+1. Com a internet ligada, abra [mynder.pages.dev](https://mynder.pages.dev/) e espere aparecer “Pronto para abrir sem conexão neste navegador.”. Abra um quadro seu.
 2. Faça uma alteração pequena e salve. Desligue Wi-Fi e dados móveis (ou ative o modo avião), feche a aba e abra novamente o mesmo endereço.
 3. Confirme que o app e o quadro abrem. Faça outra alteração, salve e recarregue a página ainda sem internet; confira se ela continua lá.
 4. Em **···**, toque em **Exportar este mapa** sem internet e confira se o arquivo JSON aparece nos Downloads/Arquivos. Depois, ligue a internet novamente.
@@ -85,7 +85,19 @@ npm run test:cloudflare  # Pages Functions e Worker MCP
 npm run build
 ```
 
-Se `npm test` falhar com `ERR_UNKNOWN_FILE_EXTENSION`, seu Node não importa arquivos `.ts` diretamente; o CI, com o Node 22 oficial, é a referência. O uso offline em celular físico foi confirmado e está registrado na etapa 7 da [SPEC.md](SPEC.md).
+Se `npm test` falhar com `ERR_UNKNOWN_FILE_EXTENSION` ou `Node.js is not compiled with TypeScript support`, seu Node não importa arquivos `.ts`; alguns pacotes do sistema são compilados assim. Use o Node 22.18 ou mais novo (`nvm use`). O uso offline em celular físico foi confirmado e está registrado na etapa 7 da [SPEC.md](SPEC.md).
+
+## Servidor MCP
+
+Qualquer assistente que fale MCP pode criar, reorganizar e editar seus mapas nó a nó. O Worker fica em `mcp/` e é protegido por OAuth 2.1 com login Google (PKCE). Para publicar o seu, veja a seção de self-hosting no [README.md](README.md#self-hosting).
+
+Os tokens levam os escopos `mynder:read` e `mynder:write`. As ferramentas de escrita só são oferecidas a tokens com `mynder:write`. Cada conta vê apenas os próprios mapas.
+
+- **Leitura:** `mynder_list_maps`, `mynder_get_map`, `mynder_get_outline`, `mynder_get_markdown`, `mynder_export_backup`
+- **Mapas (escrita):** `mynder_create_map`, `mynder_create_map_from_markdown`, `mynder_duplicate_map`, `mynder_rename_map`, `mynder_organize_map`, `mynder_delete_map` (pede confirmação humana e é recuperável), `mynder_restore_map`, `mynder_update_map`
+- **Estrutura (escrita):** `mynder_set_markdown`, `mynder_add_node`, `mynder_add_branch`, `mynder_rename_node`, `mynder_move_node`, `mynder_delete_node`, `mynder_set_collapsed`, `mynder_set_color`, `mynder_link_nodes`, `mynder_unlink_nodes`
+
+Comece com `mynder_list_maps` e `mynder_get_outline`, que mostra o ID de cada nó.
 
 ## Limitações conhecidas
 
